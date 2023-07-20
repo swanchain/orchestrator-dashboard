@@ -11,6 +11,11 @@ body {
     width: 100%;
     min-height: 100%;
     background-color: #180e1a;
+    background-image:
+            linear-gradient(to top left, red, transparent),
+            linear-gradient(to top right, blue, transparent),
+            linear-gradient(to bottom left, green, transparent),
+            linear-gradient(to bottom right, yellow, transparent);
     font-size: 116px;
     color: #fff;
 }
@@ -53,6 +58,10 @@ body {
     /* font-family: 'Merriweather Sans'; */
     font-family: 'Roboto,sans-serif';
     font-family: 'Helvetica-Neue';
+    font-family: 'Lumanosimo', cursive;
+    font-family: 'Raleway', sans-serif;
+    font-family: 'Tektur', cursive;
+    font-family: 'VT323', monospace;
 }
 
 /* body::-webkit-scrollbar-track, #app::-webkit-scrollbar-track {

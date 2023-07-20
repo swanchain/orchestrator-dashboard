@@ -1,5 +1,5 @@
 <template>
-    <section id="container" v-loading="providersLoad">
+    <section id="container">
         <img :src="lagrangeLogo" class="lagrange-logo" />
         <h1>Lagrange Provider Status</h1>
         <div class="describe">
@@ -14,7 +14,7 @@
                 <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
                     <div class="grid-content">
                         <h6>Network Providers</h6>
-                        <b>{{pagin.total}}</b>
+                        <b  v-loading="providersLoad">{{pagin.total}}</b>
                     </div>
                 </el-col>
                 <el-col :xs="24" :sm="24" :md="18" :lg="18" :xl="18">
@@ -26,13 +26,13 @@
         <div class="providers-network mt-border">
             <div class="title">Lagrange Network Providers</div>
             <el-input v-model="networkInput" placeholder="Search Providers" clearable />
-            <el-table :data="providersData" style="width: 100%" empty-text="No Data">
+            <el-table :data="providersData" style="width: 100%" empty-text="No Data"  v-loading="providersLoad">
                 <el-table-column prop="name" label="Name" min-width="180" />
                 <el-table-column prop="country" label="Country" />
                 <el-table-column prop="region" label="Region" />
                 <el-table-column prop="uptime" label="Uptime">
                     <template #default="scope">
-                        <div style="color: #c37af9;">
+                        <div style="color: #ffffff;">
                             {{scope.row.uptime ? `${scope.row.uptime * 100}%`:'0%' }}
                         </div>
                     </template>
@@ -278,10 +278,12 @@ export default defineComponent({
       tr {
         background-color: transparent;
         th {
+          word-break: break-word;
           padding: 0.1rem 0;
           background-color: #fff;
           .cell {
             color: #000;
+            word-break: break-word;
           }
         }
         td {
@@ -290,7 +292,7 @@ export default defineComponent({
           border-color: rgba(255, 255, 255, 0.4);
           i {
             margin-right: 5px;
-            color: #c37af9;
+            color: #ffffff;
             font-size: 18px;
             @media screen and (max-width: 1600px) {
               font-size: 16px;
@@ -336,9 +338,6 @@ export default defineComponent({
         }
       }
     }
-  }
-  :deep(.el-loading-mask) {
-    background-color: rgba(0, 0, 0, 0.6);
   }
 }
 </style>
