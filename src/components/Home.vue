@@ -47,8 +47,8 @@ export default defineComponent({
   min-height: 100vh;
   .content {
     .el-backtop {
-      background-color: #c37af9;
-      color: #fff;
+      background-color: #ffffff;
+      color: #7c2d8a;
     }
   }
   .el-container {

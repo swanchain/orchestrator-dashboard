@@ -32,7 +32,7 @@
                 <el-table-column prop="region" label="Region" />
                 <el-table-column prop="uptime" label="Uptime">
                     <template #default="scope">
-                        <div style="color: #c37af9;">
+                        <div style="color: #ffffff;">
                             {{scope.row.uptime ? `${scope.row.uptime * 100}%`:'0%' }}
                         </div>
                     </template>
