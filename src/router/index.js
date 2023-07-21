@@ -12,13 +12,13 @@ const main = () =>
 
 const routes = [{
         path: '/',
-        redirect: '/dashboard'
+        redirect: '/provider-status'
     },
     {
         path: '/',
         component: home,
         children: [{
-            path: '/dashboard',
+            path: '/provider-status',
             name: 'dashboard',
             component: main,
             meta: {
