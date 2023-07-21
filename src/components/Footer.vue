@@ -5,13 +5,7 @@
       <img :src="lagrangeLogo" class="lagrange-logo" />
     </div>
     <div class="describe">
-      Use
-      <a href="/">Praetor App</a>
-      to become an Akash provider.
-      <br /> Uptime uses seven-day average runtime of provider service.
-      <br /> Total CPU, Memory and Storage calculated by using active providers on the Network.
-      <br /> Please support is by delegating AKT -
-      <a rel="noreferrer" href="/" target="_blank">Delegate Us</a>
+      Total CPU, Memory and Storage calculated by using active providers on the Network.
     </div>
   </div>
 </template>

@@ -32,7 +32,7 @@
                 <el-table-column prop="region" label="Region" />
                 <el-table-column prop="uptime" label="Uptime">
                     <template #default="scope">
-                        <div style="color: #ffffff;">
+                        <div>
                             {{scope.row.uptime ? `${scope.row.uptime * 100}%`:'0%' }}
                         </div>
                     </template>
@@ -303,6 +303,9 @@ export default defineComponent({
           td {
             background-color: rgba(255, 255, 255, 0.95);
             color: #000;
+            i {
+              color: #000;
+            }
           }
         }
       }
