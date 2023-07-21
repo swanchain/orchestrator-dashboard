@@ -15,7 +15,7 @@ const addOptions = {
 }
 
 module.exports = {
-  publicPath: '',
+  publicPath: '/',
 
   outputDir: process.env.VUE_APP_OUTPUTDIR,
 
