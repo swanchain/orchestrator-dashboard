@@ -14,7 +14,7 @@
                 <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
                     <div class="grid-content">
                         <h6>Network Providers</h6>
-                        <b  v-loading="providersLoad">{{pagin.total}}</b>
+                        <b v-loading="providersLoad">{{pagin.total}}</b>
                     </div>
                 </el-col>
                 <el-col :xs="24" :sm="24" :md="18" :lg="18" :xl="18">
@@ -26,7 +26,7 @@
         <div class="providers-network mt-border">
             <div class="title">Lagrange Network Providers</div>
             <el-input v-model="networkInput" placeholder="Search Providers" clearable />
-            <el-table :data="providersData" style="width: 100%" empty-text="No Data"  v-loading="providersLoad">
+            <el-table :data="providersData" style="width: 100%" empty-text="No Data" v-loading="providersLoad">
                 <el-table-column prop="name" label="Name" min-width="180" />
                 <el-table-column prop="country" label="Country" />
                 <el-table-column prop="region" label="Region" />
