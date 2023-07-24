@@ -26,3 +26,6 @@ pnpm-debug.log*
 *.sw?
 
 dist.zip
+dist/
+provider_prod/
+provider_prod.zip
