@@ -3,7 +3,7 @@
         <img :src="lagrangeLogo" class="lagrange-logo" />
         <h1>Lagrange Provider Status</h1>
         <div class="describe">
-            Use this status page to check an Akash Provider information and status.
+            Use this status page to check an Lagrange Provider information and status.
             <br> This list is refreshed every 5 minutes. Below snapshop taken at
             <strong>{{gmtTime}}</strong>
         </div>
