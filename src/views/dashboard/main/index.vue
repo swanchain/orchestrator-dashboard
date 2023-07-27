@@ -55,7 +55,7 @@
                       <p>
                         <strong>{{child.used}}</strong>used</p>
                     </div>
-                    <div v-else-if="keys !== 'model'" class="flex-warp">
+                    <div v-else-if="keys === 'gpu'" class="flex-warp">
                       <div v-for="g in child.details" :key="g" class="li-body">
                         <p>{{g.product_name}} ({{keys}})</p>
                         <p>
