@@ -33,16 +33,16 @@
       <el-table :data="providersData" @expand-change="expandChange" style="width: 100%" empty-text="No Data" v-loading="providersLoad">
         <el-table-column type="expand">
           <template #default="props">
-            <div class="service-body" v-if="props.row.computing_provider">
+            <div class="service-body" v-if="props.row.computer_provider">
               <div class="tit">city</div>
               <el-divider />
-              <div class="desc">{{ props.row.computing_provider.city}}</div>
+              <div class="desc">{{ props.row.computer_provider.city}}</div>
               <div class="tit">country</div>
               <el-divider />
-              <div class="desc">{{ props.row.computing_provider.country}}</div>
+              <div class="desc">{{ props.row.computer_provider.country}}</div>
               <div class="tit">Resources</div>
               <el-divider />
-              <div v-for="n in props.row.computing_provider.machines" :key="n" class="list">
+              <div v-for="n in props.row.computer_provider.machines" :key="n" class="list">
                 <div class="li-title">Machine ID: {{n.machine_id}}</div>
                 <ul>
                   <li v-for="(child, keys, k) in n.specs" :key="k">
@@ -427,6 +427,10 @@ export default defineComponent({
                   border: 1px solid #e4e7ed;
                   border-radius: 5px;
                   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                  @media screen and (max-width: 768px) {
+                    padding: 0.1rem 0.5rem;
+                    margin: 0.25rem 0.25rem 0 0;
+                  }
                   p {
                     padding: 3px 0;
                     font-size: 14px;
