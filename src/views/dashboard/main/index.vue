@@ -472,12 +472,23 @@ export default defineComponent({
             background-color: rgba(255, 255, 255, 0.95) !important;
           }
         }
+        &.expanded,
         &:hover {
           td {
             background-color: rgba(255, 255, 255, 0.85);
             color: #000;
             i {
               color: #000;
+            }
+          }
+        }
+        &.expanded {
+          td {
+            background-color: rgba(255, 255, 255, 0.95);
+          }
+          &:hover {
+            td {
+              background-color: rgba(255, 255, 255, 0.85);
             }
           }
         }
