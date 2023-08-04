@@ -79,19 +79,19 @@
         <el-table-column prop="uptime" label="Uptime">
           <template #default="scope">
             <div>
-              {{scope.row.uptime ? `${scope.row.uptime * 100}%`:'0%' }}
+              {{unifyNumber(scope.row.uptime)}}%
             </div>
           </template>
         </el-table-column>
-<!--        <el-table-column prop="" label="5 minutes Interval Status" min-width="110">-->
-<!--          <template #default="scope">-->
-<!--            <div class="flex-row">-->
-<!--              <el-icon v-for="n in 5" :key="n">-->
-<!--                <CircleCheck />-->
-<!--              </el-icon>-->
-<!--            </div>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
+        <!--        <el-table-column prop="" label="5 minutes Interval Status" min-width="110">-->
+        <!--          <template #default="scope">-->
+        <!--            <div class="flex-row">-->
+        <!--              <el-icon v-for="n in 5" :key="n">-->
+        <!--                <CircleCheck />-->
+        <!--              </el-icon>-->
+        <!--            </div>-->
+        <!--          </template>-->
+        <!--        </el-table-column>-->
       </el-table>
       <el-pagination hide-on-single-page :page-size="pagin.pageSize" :current-page="pagin.pageNo" :pager-count="5" :small="small" :background="background" layout="total, prev, pager, next" :total="pagin.total" @size-change="handleSizeChange" @current-change="handleCurrentChange"
       />
@@ -248,6 +248,17 @@ export default defineComponent({
         ]
       })
     }
+    function unifyNumber (num) {
+      if (!num) return 0
+      const handleNum = parseFloat(num * 100)
+      const isToFixed = handleNum.toString().includes('.') && handleNum.toString().split('.')[1].length > 2
+      if (isToFixed) {
+        const handleArray = handleNum.toString().split('.')
+        const decimal = handleArray[1].substr(0, 2)
+        if (decimal === "00") return handleNum.toFixed(0)
+        else return `${handleArray[0]}.${decimal}`
+      } else return handleNum
+    }
     onMounted(() => {
       reset('init')
     })
@@ -260,7 +271,7 @@ export default defineComponent({
       pagin,
       small,
       background,
-      handleSizeChange, handleCurrentChange, searchProvider, clearProvider, expandChange
+      handleSizeChange, handleCurrentChange, searchProvider, clearProvider, expandChange, unifyNumber
     }
   }
 })
