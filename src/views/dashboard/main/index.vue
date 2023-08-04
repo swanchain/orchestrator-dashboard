@@ -116,7 +116,7 @@
                     <div class="li-body">
                       <p>Active Deployment</p>
                       <p>
-                        <strong>{{props.row.computer_provider.active_deployments}}</strong>
+                        <strong>{{props.row.computer_provider.active_deployment}}</strong>
                       </p>
                     </div>
                   </li>
