@@ -42,10 +42,10 @@
             <h6>Current GPU usage</h6>
             <div id="maychar-gpu" class="maychar"></div>
             <h6>
-              <i class="background-available"></i> {{sizeChange(providerBody.data.total_gpu)}} - Available
+              <i class="background-available"></i> {{providerBody.data.total_gpu}} - Available
             </h6>
             <h6>
-              <i class="background-active"></i> {{sizeChange(providerBody.data.total_used_gpu)}} - Active
+              <i class="background-active"></i> {{providerBody.data.total_used_gpu}} - Active
             </h6>
           </div>
         </el-col>
