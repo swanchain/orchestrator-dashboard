@@ -21,6 +21,74 @@
           <div class='chart' id='chart' v-if="false"></div>
         </el-col>
       </el-row>
+
+      <el-row :gutter="30" class="erchart-body">
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="erchart">
+            <div class="title">CPU</div>
+            <h6>Current CPU usage</h6>
+            <div id="maychar-cpu" class="maychar"></div>
+            <h6>
+              <i class="background-available"></i> {{providerBody.data.total_cpu}} vcpu - Available
+            </h6>
+            <h6>
+              <i class="background-active"></i> {{providerBody.data.total_used_cpu}} vcpu - Active
+            </h6>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="erchart">
+            <div class="title">GPU</div>
+            <h6>Current GPU usage</h6>
+            <div id="maychar-gpu" class="maychar"></div>
+            <h6>
+              <i class="background-available"></i> {{sizeChange(providerBody.data.total_gpu)}} - Available
+            </h6>
+            <h6>
+              <i class="background-active"></i> {{sizeChange(providerBody.data.total_used_gpu)}} - Active
+            </h6>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="erchart">
+            <div class="title">Memory</div>
+            <h6>Current Memory usage</h6>
+            <div id="maychar-memory" class="maychar"></div>
+            <h6>
+              <i class="background-available"></i> {{sizeChange(providerBody.data.total_memory)}} - Available
+            </h6>
+            <h6>
+              <i class="background-active"></i> {{sizeChange(providerBody.data.total_used_memory)}} - Active
+            </h6>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="erchart">
+            <div class="title">Storage</div>
+            <h6>Current Storage usage</h6>
+            <div id="maychar-storage" class="maychar"></div>
+            <h6>
+              <i class="background-available"></i> {{sizeChange(providerBody.data.total_storage)}} - Available
+            </h6>
+            <h6>
+              <i class="background-active"></i> {{sizeChange(providerBody.data.total_used_storage)}} - Active
+            </h6>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="erchart">
+            <div class="title">VCPU</div>
+            <h6>Current VCPU usage</h6>
+            <div id="maychar-vcpu" class="maychar"></div>
+            <h6>
+              <i class="background-available"></i> {{providerBody.data.total_vcpu}} vcpu - Available
+            </h6>
+            <h6>
+              <i class="background-active"></i> {{providerBody.data.total_used_vcpu}} vcpu - Active
+            </h6>
+          </div>
+        </el-col>
+      </el-row>
     </div>
 
     <div class="providers-network mt-border">
@@ -40,13 +108,27 @@
               <div class="tit">country</div>
               <el-divider />
               <div class="desc">{{ props.row.computer_provider.country}}</div>
+              <div class="tit">Deployments</div>
+              <el-divider />
+              <div class="list">
+                <ul>
+                  <li>
+                    <div class="li-body">
+                      <p>Active Deployment</p>
+                      <p>
+                        <strong>{{props.row.computer_provider.active_deployments}}</strong>
+                      </p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
               <div class="tit">Resources</div>
               <el-divider />
               <div v-for="n in props.row.computer_provider.machines" :key="n" class="list">
                 <div class="li-title">Machine ID: {{n.machine_id}}</div>
                 <ul>
                   <li v-for="(child, keys, k) in n.specs" :key="k">
-                    <div v-if="keys !== 'gpu' && keys !== 'model'" class="li-body">
+                    <div v-if="keys !== 'gpu' && keys !== 'cpu' && keys !== 'model'" class="li-body">
                       <p>{{keys}}</p>
                       <p>
                         <strong>{{child.free}}</strong>free</p>
@@ -127,6 +209,9 @@ export default defineComponent({
       pageNo: 1,
       total: 0
     })
+    const providerBody = reactive({
+      data: {}
+    })
     const networkInput = ref('')
     const small = ref(false)
     const background = ref(false)
@@ -143,13 +228,15 @@ export default defineComponent({
       const page = pagin.pageNo > 0 ? pagin.pageNo - 1 : 0
       const params = {
         limit: pagin.pageSize,
-        offset: page,
-        name: nameText
+        offset: page * pagin.pageSize,
+        search_string: nameText
       }
       const providerRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}cp/dashboard?${qs.stringify(params)}`, 'get')
       if (providerRes && providerRes.status === 'success') {
         pagin.total = providerRes.data.total_providers
+        providerBody.data = providerRes.data || {}
         providersData.value = providerRes.data.providers || []
+        changetype()
       } else {
         providersData.value = []
         if (providerRes.status) system.$commonFun.messageTip(providerRes.status, providerRes.message)
@@ -259,6 +346,96 @@ export default defineComponent({
         else return `${handleArray[0]}.${decimal}`
       } else return handleNum
     }
+
+    const changetype = () => {
+      const machart_1 = echarts.init(document.getElementById("maychar-cpu"));
+      const machart_2 = echarts.init(document.getElementById("maychar-gpu"));
+      const machart_3 = echarts.init(document.getElementById("maychar-memory"));
+      const machart_4 = echarts.init(document.getElementById("maychar-storage"));
+      const machart_5 = echarts.init(document.getElementById("maychar-vcpu"));
+      const option = {
+        tooltip: {
+          trigger: 'item',
+          triggerOn: 'none'
+        },
+        color: ['#4dd0e1', '#8bc34a'],
+        series: [
+          {
+            name: 'Total',
+            type: 'pie',
+            radius: ['50%', '70%'],
+            center: ['40%', '50%'],
+            avoidLabelOverlap: false,
+            itemStyle: {
+              borderRadius: 3,
+              borderColor: 'transparent',
+              borderWidth: 5
+            },
+            label: {
+              show: false,
+              position: 'center'
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: 11,
+                borderColor: 'transparent',
+                color: '#fff'
+              }
+            },
+            labelLine: {
+              show: false
+            },
+            data: [
+              { value: providerBody.data.total_cpu, name: `${providerBody.data.total_cpu} vcpu` },
+              { value: providerBody.data.total_used_cpu, name: `${providerBody.data.total_used_cpu} vcpu` },
+            ]
+          }
+        ]
+      }
+      const option2 = JSON.parse(JSON.stringify(option))
+      const option3 = JSON.parse(JSON.stringify(option))
+      const option4 = JSON.parse(JSON.stringify(option))
+      const option5 = JSON.parse(JSON.stringify(option))
+      option2.series[0].data = [
+        { value: providerBody.data.total_gpu, name: sizeChange(providerBody.data.total_gpu) },
+        { value: providerBody.data.total_used_gpu, name: sizeChange(providerBody.data.total_used_gpu) },
+      ]
+      option3.series[0].data = [
+        { value: providerBody.data.total_memory, name: sizeChange(providerBody.data.total_memory) },
+        { value: providerBody.data.total_used_memory, name: sizeChange(providerBody.data.total_used_memory) },
+      ]
+      option4.series[0].data = [
+        { value: providerBody.data.total_storage, name: sizeChange(providerBody.data.total_storage) },
+        { value: providerBody.data.total_used_storage, name: sizeChange(providerBody.data.total_used_storage) },
+      ]
+      option5.series[0].data = [
+        { value: providerBody.data.total_vcpu, name: `${providerBody.data.total_vcpu} vcpu` },
+        { value: providerBody.data.total_used_vcpu, name: `${providerBody.data.total_used_vcpu} vcpu` },
+      ]
+      machart_1.setOption(option);
+      machart_2.setOption(option2);
+      machart_3.setOption(option3);
+      machart_4.setOption(option4);
+      machart_5.setOption(option5);
+      window.addEventListener("resize", function () {
+        machart_1.resize();
+        machart_2.resize();
+        machart_3.resize();
+        machart_4.resize();
+        machart_5.resize();
+      })
+    }
+    function sizeChange (bytes) {
+      if (bytes === 0) return '0 B'
+      if (!bytes) return '-'
+      var k = 1024 // or 1000
+      var sizes = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+      var i = Math.floor(Math.log(bytes) / Math.log(k))
+
+      if (Math.round((bytes / Math.pow(k, i))).toString().length > 3) i += 1
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+    }
     onMounted(() => {
       reset('init')
     })
@@ -271,7 +448,8 @@ export default defineComponent({
       pagin,
       small,
       background,
-      handleSizeChange, handleCurrentChange, searchProvider, clearProvider, expandChange, unifyNumber
+      providerBody,
+      handleSizeChange, handleCurrentChange, searchProvider, clearProvider, expandChange, unifyNumber, sizeChange
     }
   }
 })
@@ -328,6 +506,54 @@ export default defineComponent({
           width: 90%;
           margin: 0 auto;
           height: 400px;
+        }
+      }
+      &.erchart-body {
+        .el-col {
+          flex: 0 0 20%;
+          max-width: 20%;
+          margin: 0.3rem 0 0;
+          @media screen and (max-width: 1024px) {
+            flex: 0 0 33%;
+            max-width: 33%;
+          }
+          @media screen and (max-width: 599px) {
+            flex: 0 0 100%;
+            max-width: 100%;
+          }
+          .erchart {
+            margin: 0.3rem 0 0;
+            .title {
+              font-size: 0.18rem;
+            }
+            h6 {
+              display: flex;
+              align-items: center;
+              margin: 0 0 0.1rem;
+              font-weight: 100;
+              i {
+                display: block;
+                width: 23px;
+                height: 8px;
+                margin: auto 0.05rem auto 0;
+                border-radius: 5px;
+                &.background-available {
+                  background-color: #4dd0e1;
+                }
+                &.background-active {
+                  background-color: #8bc34a;
+                }
+              }
+            }
+            .maychar {
+              width: 100%;
+              height: 220px;
+              @media screen and (max-width: 599px) {
+                max-width: 250px;
+                height: 150px;
+              }
+            }
+          }
         }
       }
     }
@@ -437,7 +663,7 @@ export default defineComponent({
                   // background-color: #f4f4f4;
                   border: 1px solid #e4e7ed;
                   border-radius: 5px;
-                  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
                   @media screen and (max-width: 768px) {
                     padding: 0.1rem 0.5rem;
                     margin: 0.25rem 0.25rem 0 0;
