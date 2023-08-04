@@ -23,7 +23,7 @@
       </el-row>
 
       <el-row :gutter="30" class="erchart-body">
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+        <el-col>
           <div class="erchart">
             <div class="title">CPU</div>
             <h6>Current CPU usage</h6>
@@ -36,7 +36,7 @@
             </h6>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+        <el-col>
           <div class="erchart">
             <div class="title">GPU</div>
             <h6>Current GPU usage</h6>
@@ -49,7 +49,7 @@
             </h6>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+        <el-col>
           <div class="erchart">
             <div class="title">Memory</div>
             <h6>Current Memory usage</h6>
@@ -62,7 +62,7 @@
             </h6>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+        <el-col>
           <div class="erchart">
             <div class="title">Storage</div>
             <h6>Current Storage usage</h6>
@@ -75,7 +75,7 @@
             </h6>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+        <el-col>
           <div class="erchart">
             <div class="title">VCPU</div>
             <h6>Current VCPU usage</h6>
