@@ -10,8 +10,8 @@ html,
 body {
     width: 100%;
     min-height: 100%;
-    background-color: #180e1a;
-    background-image: linear-gradient(to top left, red, transparent), linear-gradient(to top right, blue, transparent), linear-gradient(to bottom left, green, transparent), linear-gradient(to bottom right, yellow, transparent);
+    background-color: #00000094;
+    /* background-image: linear-gradient(to top left, red, transparent), linear-gradient(to top right, blue, transparent), linear-gradient(to bottom left, green, transparent), linear-gradient(to bottom right, yellow, transparent); */
     font-size: 116px;
     color: #fff;
 }
