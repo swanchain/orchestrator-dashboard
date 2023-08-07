@@ -23,33 +23,20 @@
       </el-row>
 
       <el-row :gutter="30" class="erchart-body">
-        <el-col>
+        <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
           <div class="erchart">
-            <div class="title">CPU</div>
-            <h6>Current CPU usage</h6>
-            <div id="maychar-cpu" class="maychar"></div>
+            <div class="title">VCPU</div>
+            <h6>Current VCPU usage</h6>
+            <div id="maychar-vcpu" class="maychar"></div>
             <h6>
-              <i class="background-available"></i> {{providerBody.data.total_cpu}} vcpu - Available
+              <i class="background-available"></i> {{providerBody.data.total_vcpu}} vcpu - Available
             </h6>
             <h6>
-              <i class="background-active"></i> {{providerBody.data.total_used_cpu}} vcpu - Active
+              <i class="background-active"></i> {{providerBody.data.total_used_vcpu}} vcpu - Active
             </h6>
           </div>
         </el-col>
-        <el-col>
-          <div class="erchart">
-            <div class="title">GPU</div>
-            <h6>Current GPU usage</h6>
-            <div id="maychar-gpu" class="maychar"></div>
-            <h6>
-              <i class="background-available"></i> {{providerBody.data.total_gpu}} - Available
-            </h6>
-            <h6>
-              <i class="background-active"></i> {{providerBody.data.total_used_gpu}} - Active
-            </h6>
-          </div>
-        </el-col>
-        <el-col>
+        <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
           <div class="erchart">
             <div class="title">Memory</div>
             <h6>Current Memory usage</h6>
@@ -62,7 +49,7 @@
             </h6>
           </div>
         </el-col>
-        <el-col>
+        <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
           <div class="erchart">
             <div class="title">Storage</div>
             <h6>Current Storage usage</h6>
@@ -75,16 +62,16 @@
             </h6>
           </div>
         </el-col>
-        <el-col>
+        <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
           <div class="erchart">
-            <div class="title">VCPU</div>
-            <h6>Current VCPU usage</h6>
-            <div id="maychar-vcpu" class="maychar"></div>
+            <div class="title">GPU</div>
+            <h6>Current GPU usage</h6>
+            <div id="maychar-gpu" class="maychar"></div>
             <h6>
-              <i class="background-available"></i> {{providerBody.data.total_vcpu}} vcpu - Available
+              <i class="background-available"></i> {{providerBody.data.total_gpu}} - Available
             </h6>
             <h6>
-              <i class="background-active"></i> {{providerBody.data.total_used_vcpu}} vcpu - Active
+              <i class="background-active"></i> {{providerBody.data.total_used_gpu}} - Active
             </h6>
           </div>
         </el-col>
@@ -116,7 +103,7 @@
                     <div class="li-body">
                       <p>Active Deployment</p>
                       <p>
-                        <strong>{{props.row.computer_provider.active_deployment}}</strong>
+                        <b>{{props.row.computer_provider.active_deployment}}</b>
                       </p>
                     </div>
                   </li>
@@ -127,9 +114,9 @@
               <div v-for="n in props.row.computer_provider.machines" :key="n" class="list">
                 <div class="li-title">Machine ID: {{n.machine_id}}</div>
                 <ul>
-                  <li v-for="(child, keys, k) in n.specs" :key="k">
-                    <div v-if="keys !== 'gpu' && keys !== 'cpu' && keys !== 'model'" class="li-body">
-                      <p>{{keys}}</p>
+                  <li v-for="(child, vcpuKeys, k) in n.specs" :key="k" v-show="vcpuKeys === 'vcpu'">
+                    <div class="li-body">
+                      <p :class="{'t':true, 't-capitalize': vcpuKeys === 'vcpu'}">{{vcpuKeys}}</p>
                       <p>
                         <strong>{{child.free}}</strong>free</p>
                       <p>
@@ -137,9 +124,33 @@
                       <p>
                         <strong>{{child.used}}</strong>used</p>
                     </div>
-                    <div v-else-if="keys === 'gpu'" class="flex-warp">
+                  </li>
+                  <li v-for="(child, memoryKeys, k) in n.specs" :key="k" v-show="memoryKeys === 'memory'">
+                    <div class="li-body">
+                      <p :class="{'t':true, 't-capitalize': memoryKeys === 'vcpu'}">{{memoryKeys}}</p>
+                      <p>
+                        <strong>{{child.free}}</strong>free</p>
+                      <p>
+                        <strong>{{child.total}}</strong>total</p>
+                      <p>
+                        <strong>{{child.used}}</strong>used</p>
+                    </div>
+                  </li>
+                  <li v-for="(child, storageKeys, k) in n.specs" :key="k" v-show="storageKeys === 'storage'">
+                    <div class="li-body">
+                      <p :class="{'t':true, 't-capitalize': storageKeys === 'vcpu'}">{{storageKeys}}</p>
+                      <p>
+                        <strong>{{child.free}}</strong>free</p>
+                      <p>
+                        <strong>{{child.total}}</strong>total</p>
+                      <p>
+                        <strong>{{child.used}}</strong>used</p>
+                    </div>
+                  </li>
+                  <li v-for="(child, gpuKeys, k) in n.specs" :key="k" v-show="gpuKeys === 'gpu'">
+                    <div class="flex-warp">
                       <div v-for="g in child.details" :key="g" class="li-body">
-                        <p>{{g.product_name}} ({{keys}})</p>
+                        <p :class="{'t':true, 't-capitalize': gpuKeys === 'gpu'}">{{g.product_name}} ({{gpuKeys}})</p>
                         <p>
                           <strong>{{g.fb_memory_usage.free}}</strong>free</p>
                         <p>
@@ -348,11 +359,10 @@ export default defineComponent({
     }
 
     const changetype = () => {
-      const machart_1 = echarts.init(document.getElementById("maychar-cpu"));
-      const machart_2 = echarts.init(document.getElementById("maychar-gpu"));
-      const machart_3 = echarts.init(document.getElementById("maychar-memory"));
-      const machart_4 = echarts.init(document.getElementById("maychar-storage"));
-      const machart_5 = echarts.init(document.getElementById("maychar-vcpu"));
+      const machart_gpu = echarts.init(document.getElementById("maychar-gpu"));
+      const machart_memory = echarts.init(document.getElementById("maychar-memory"));
+      const machart_storage = echarts.init(document.getElementById("maychar-storage"));
+      const machart_vcpu = echarts.init(document.getElementById("maychar-vcpu"));
       const option = {
         tooltip: {
           trigger: 'item',
@@ -385,11 +395,7 @@ export default defineComponent({
             },
             labelLine: {
               show: false
-            },
-            data: [
-              { value: providerBody.data.total_cpu, name: `${providerBody.data.total_cpu} vcpu` },
-              { value: providerBody.data.total_used_cpu, name: `${providerBody.data.total_used_cpu} vcpu` },
-            ]
+            }
           }
         ]
       }
@@ -398,32 +404,30 @@ export default defineComponent({
       const option4 = JSON.parse(JSON.stringify(option))
       const option5 = JSON.parse(JSON.stringify(option))
       option2.series[0].data = [
-        { value: providerBody.data.total_gpu, name: sizeChange(providerBody.data.total_gpu) },
-        { value: providerBody.data.total_used_gpu, name: sizeChange(providerBody.data.total_used_gpu) },
+        { value: providerBody.data.total_gpu, name: providerBody.data.total_gpu + ' ' },
+        { value: providerBody.data.total_used_gpu, name: providerBody.data.total_used_gpu },
       ]
       option3.series[0].data = [
-        { value: providerBody.data.total_memory, name: sizeChange(providerBody.data.total_memory) },
+        { value: providerBody.data.total_memory, name: sizeChange(providerBody.data.total_memory) + ' ' },
         { value: providerBody.data.total_used_memory, name: sizeChange(providerBody.data.total_used_memory) },
       ]
       option4.series[0].data = [
-        { value: providerBody.data.total_storage, name: sizeChange(providerBody.data.total_storage) },
+        { value: providerBody.data.total_storage, name: sizeChange(providerBody.data.total_storage) + ' ' },
         { value: providerBody.data.total_used_storage, name: sizeChange(providerBody.data.total_used_storage) },
       ]
       option5.series[0].data = [
-        { value: providerBody.data.total_vcpu, name: `${providerBody.data.total_vcpu} vcpu` },
+        { value: providerBody.data.total_vcpu, name: `${providerBody.data.total_vcpu} vcpu ` },
         { value: providerBody.data.total_used_vcpu, name: `${providerBody.data.total_used_vcpu} vcpu` },
       ]
-      machart_1.setOption(option);
-      machart_2.setOption(option2);
-      machart_3.setOption(option3);
-      machart_4.setOption(option4);
-      machart_5.setOption(option5);
+      machart_gpu.setOption(option2);
+      machart_memory.setOption(option3);
+      machart_storage.setOption(option4);
+      machart_vcpu.setOption(option5);
       window.addEventListener("resize", function () {
-        machart_1.resize();
-        machart_2.resize();
-        machart_3.resize();
-        machart_4.resize();
-        machart_5.resize();
+        machart_gpu.resize();
+        machart_memory.resize();
+        machart_storage.resize();
+        machart_vcpu.resize();
       })
     }
     function sizeChange (bytes) {
@@ -494,7 +498,7 @@ export default defineComponent({
           border-radius: 0.1rem;
           h6 {
             font-size: 16px;
-            @media screen and (max-width: 1600px) {
+            @media screen and (max-width: 1260px) {
               font-size: 14px;
             }
           }
@@ -510,17 +514,7 @@ export default defineComponent({
       }
       &.erchart-body {
         .el-col {
-          flex: 0 0 20%;
-          max-width: 20%;
           margin: 0.3rem 0 0;
-          @media screen and (max-width: 1024px) {
-            flex: 0 0 33%;
-            max-width: 33%;
-          }
-          @media screen and (max-width: 599px) {
-            flex: 0 0 100%;
-            max-width: 100%;
-          }
           .erchart {
             margin: 0.3rem 0 0;
             .title {
@@ -603,9 +597,10 @@ export default defineComponent({
         th {
           word-break: break-word;
           padding: 0.1rem 0;
-          background-color: #fff;
+          background-color: #a2a2a2;
+          border: 0;
           .cell {
-            color: #000;
+            color: #fff;
             word-break: break-word;
           }
         }
@@ -618,7 +613,7 @@ export default defineComponent({
             margin-right: 5px;
             color: #ffffff;
             font-size: 18px;
-            @media screen and (max-width: 1600px) {
+            @media screen and (max-width: 1260px) {
               font-size: 16px;
             }
           }
@@ -632,14 +627,14 @@ export default defineComponent({
               font-size: 16px;
               font-weight: 500;
               text-transform: capitalize;
-              @media screen and (max-width: 1600px) {
+              @media screen and (max-width: 1260px) {
                 font-size: 14px;
               }
             }
             .desc {
               padding: 0 0 0.1rem;
               font-size: 14px;
-              @media screen and (max-width: 1600px) {
+              @media screen and (max-width: 1260px) {
                 font-size: 12px;
               }
             }
@@ -672,27 +667,34 @@ export default defineComponent({
                     padding: 3px 0;
                     font-size: 14px;
                     line-height: 1.3;
-                    @media screen and (max-width: 1600px) {
+                    @media screen and (max-width: 1260px) {
                       font-size: 12px;
                     }
-                    strong {
+                    strong,
+                    b {
                       margin-right: 5px;
                       font-size: 15px;
-                      @media screen and (max-width: 1600px) {
+                      @media screen and (max-width: 1260px) {
                         font-size: 13px;
                       }
                     }
-                    &:nth-child(1) {
+                    &.t {
+                      text-transform: capitalize;
+                    }
+                    &.t-capitalize {
+                      text-transform: uppercase;
+                    }
+                    &:nth-child(2) {
                       strong {
                         color: #41b883;
                       }
                     }
-                    &:nth-child(2) {
+                    &:nth-child(3) {
                       strong {
                         color: #ff8a65;
                       }
                     }
-                    &:nth-child(3) {
+                    &:nth-child(4) {
                       strong {
                         color: #faad15;
                       }
