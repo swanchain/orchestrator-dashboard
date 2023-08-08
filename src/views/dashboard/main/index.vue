@@ -686,17 +686,17 @@ export default defineComponent({
                     }
                     &:nth-child(2) {
                       strong {
-                        color: #41b883;
+                        color: #4db470;
                       }
                     }
                     &:nth-child(3) {
                       strong {
-                        color: #ff8a65;
+                        color: #488fc3;
                       }
                     }
                     &:nth-child(4) {
                       strong {
-                        color: #faad15;
+                        color: #9266a9;
                       }
                     }
                   }
