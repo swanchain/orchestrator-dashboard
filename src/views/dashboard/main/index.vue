@@ -89,11 +89,11 @@
         <el-table-column type="expand">
           <template #default="props">
             <div class="service-body" v-if="props.row.computer_provider">
-              <div class="tit">city</div>
-              <el-divider />
-              <div class="desc">{{ props.row.computer_provider.city}}</div>
-              <div class="tit">country</div>
-              <el-divider />
+<!--              <div class="tit">city</div>-->
+<!--              <el-divider />-->
+<!--              <div class="desc">{{ props.row.computer_provider.city}}</div>-->
+<!--              <div class="tit">country</div>-->
+<!--              <el-divider />-->
               <div class="desc">{{ props.row.computer_provider.country}}</div>
               <div class="tit">Deployments</div>
               <el-divider />
@@ -167,7 +167,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="name" label="Name" min-width="180" />
-        <el-table-column prop="country" label="Country" />
+<!--        <el-table-column prop="country" label="Country" />-->
         <el-table-column prop="region" label="Region" />
         <el-table-column prop="uptime" label="Uptime">
           <template #default="scope">

@@ -28,7 +28,7 @@
             <el-input v-model="networkInput" placeholder="Search Providers" clearable />
             <el-table :data="providersData" style="width: 100%" empty-text="No Data">
                 <el-table-column prop="name" label="Name" min-width="180" />
-                <el-table-column prop="country" label="Country" />
+<!--                <el-table-column prop="country" label="Country" />-->
                 <el-table-column prop="region" label="Region" />
                 <el-table-column prop="uptime" label="Uptime">
                     <template #default="scope">
