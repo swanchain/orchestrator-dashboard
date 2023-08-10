@@ -86,7 +86,7 @@
         <el-button type="info" :disabled="!networkInput ? true:false" round @click="clearProvider">Clear</el-button>
       </div>
       <el-table :data="providersData" @expand-change="expandChange" style="width: 100%" empty-text="No Data" v-loading="providersLoad">
-        <el-table-column type="expand">
+        <el-table-column type="expand" width="40">
           <template #default="props">
             <div class="service-body" v-if="props.row.computer_provider">
               <div class="tit">city</div>
@@ -166,7 +166,14 @@
             <div class="service-body" v-else>No Data</div>
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="Name" min-width="180" />
+        <el-table-column prop="name" label="Name" min-width="180">
+          <template #default="scope">
+            <div class="badge">
+              <img v-if="scope.$index < 2" :src="badgeIcon01" alt="">
+              <img v-else :src="badgeIcon02" alt=""> {{scope.row.name}}
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column prop="country" label="Country" />
         <el-table-column prop="region" label="Region" />
         <el-table-column prop="uptime" label="Uptime">
@@ -212,6 +219,8 @@ export default defineComponent({
     const route = useRoute()
     const router = useRouter()
     const lagrangeLogo = require("@/assets/images/icons/logo.png")
+    const badgeIcon01 = require("@/assets/images/icons/badge-1.png")
+    const badgeIcon02 = require("@/assets/images/icons/badge-2.png")
     const gmtTime = new Date().toGMTString()
     const providersLoad = ref(false)
     const providersData = ref([])
@@ -453,6 +462,8 @@ export default defineComponent({
       small,
       background,
       providerBody,
+      badgeIcon01,
+      badgeIcon02,
       handleSizeChange, handleCurrentChange, searchProvider, clearProvider, expandChange, unifyNumber, sizeChange
     }
   }
@@ -705,6 +716,19 @@ export default defineComponent({
             }
             .el-divider--horizontal {
               margin: 0.1rem 0;
+            }
+          }
+          .badge {
+            display: flex;
+            align-items: center;
+            img {
+              width: 30px;
+              height: 30px;
+              margin-right: 5px;
+              @media screen and (max-width: 1260px) {
+                width: 25px;
+                height: 25px;
+              }
             }
           }
           &.el-table__expanded-cell {
