@@ -89,11 +89,11 @@
         <el-table-column type="expand" width="40">
           <template #default="props">
             <div class="service-body" v-if="props.row.computer_provider">
-<!--              <div class="tit">city</div>-->
-<!--              <el-divider />-->
-<!--              <div class="desc">{{ props.row.computer_provider.city}}</div>-->
-<!--              <div class="tit">country</div>-->
-<!--              <el-divider />-->
+              <!--              <div class="tit">city</div>-->
+              <!--              <el-divider />-->
+              <!--              <div class="desc">{{ props.row.computer_provider.city}}</div>-->
+              <!--              <div class="tit">country</div>-->
+              <!--              <el-divider />-->
               <div class="desc">{{ props.row.computer_provider.country}}</div>
               <div class="tit">Deployments</div>
               <el-divider />
@@ -169,7 +169,7 @@
         <el-table-column prop="name" label="Name" min-width="180">
           <template #default="scope">
             <div class="badge">
-              <img v-if="scope.$index < 2" :src="badgeIcon01" alt="">
+              <img v-if="scope.$index < 2 && pagin.pageNo <= 1" :src="badgeIcon01" alt="">
               <img v-else :src="badgeIcon02" alt=""> {{scope.row.name}}
             </div>
           </template>
