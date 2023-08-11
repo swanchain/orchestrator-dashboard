@@ -94,7 +94,21 @@
               <!--              <div class="desc">{{ props.row.computer_provider.city}}</div>-->
               <!--              <div class="tit">country</div>-->
               <!--              <el-divider />-->
-              <div class="desc">{{ props.row.computer_provider.country}}</div>
+<!--              <div class="desc">{{ props.row.computer_provider.country}}</div>-->
+              <div class="tit">Score</div>
+              <el-divider/>
+              <div class="list">
+                <ul>
+                  <li>
+                    <div class="li-body">
+                      <p>Provider Score</p>
+                      <p>
+                        <b>{{props.row.computer_provider.score}}</b>
+                      </p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
               <div class="tit">Deployments</div>
               <el-divider />
               <div class="list">
@@ -169,7 +183,7 @@
             <div class="service-body" v-else>No Data</div>
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="Name" min-width="180">
+        <el-table-column prop="name" label="Name" min-width="90">
           <template #default="scope">
             <div class="badge">
               <img v-if="scope.$index < 2 && pagin.pageNo <= 1" :src="badgeIcon01" alt="">
@@ -178,6 +192,8 @@
           </template>
         </el-table-column>
         <!-- <el-table-column prop="country" label="Country" /> -->
+        <el-table-column prop="computer_provider.active_deployment" label="Active deployment" />
+        <el-table-column prop="computer_provider.score" label="Score" />
         <el-table-column prop="region" label="Region" />
         <el-table-column prop="uptime" label="Uptime">
           <template #default="scope">
