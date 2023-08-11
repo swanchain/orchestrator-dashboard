@@ -147,9 +147,9 @@
                         <strong>{{child.used}}</strong>used</p>
                     </div>
                   </li>
-                  <li v-for="(child, gpuKeys, k) in n.specs" :key="k" v-show="gpuKeys === 'gpu'">
+                  <li v-for="(child, gpuKeys, k) in n.specs" :key="k" v-show="gpuKeys === 'gpu'" style="width: 100%;">
                     <div class="flex-warp">
-                      <div v-for="g in child.details" :key="g" class="li-body">
+                      <div v-for="g in child.details" :key="g" :class="{'li-body':true}">
                         <p :class="{'t':true, 't-capitalize': gpuKeys === 'gpu'}">{{g.product_name}} ({{gpuKeys}})</p>
                         <p>
                           <strong>{{g.fb_memory_usage.free}}</strong>free</p>
@@ -157,6 +157,9 @@
                           <strong>{{g.fb_memory_usage.total}}</strong>total</p>
                         <p>
                           <strong>{{g.fb_memory_usage.used}}</strong>used</p>
+                        <p>Status:
+                          <strong>{{g.status}}</strong>
+                        </p>
                       </div>
                     </div>
                   </li>
@@ -664,6 +667,7 @@ export default defineComponent({
                   align-items: stretch;
                 }
                 .li-body {
+                  position: relative;
                   padding: 0.1rem 0.3rem;
                   margin: 0.15rem 0.15rem 0 0;
                   // background-color: #f4f4f4;
@@ -709,6 +713,23 @@ export default defineComponent({
                       strong {
                         color: #9266a9;
                       }
+                    }
+                  }
+                  &.li-gpu {
+                    &::before {
+                      position: absolute;
+                      content: "";
+                      right: 0.1rem;
+                      top: 0.1rem;
+                      width: 7px;
+                      height: 7px;
+                      background-color: orange;
+                      border-radius: 7px;
+                    }
+                  }
+                  &.li-status {
+                    &::before {
+                      background-color: #8bc34a;
                     }
                   }
                 }
