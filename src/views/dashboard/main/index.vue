@@ -1,6 +1,6 @@
 <template>
   <section id="container">
-    <img :src="lagrangeLogo" class="lagrange-logo" />
+    <img :src="lagrangeLogo" @click="goLink('https://lagrangedao.org/main')" class="lagrange-logo" />
     <h1>Lagrange Provider Status</h1>
     <div class="describe">
       Use this status page to check an Lagrange Provider information and status.
@@ -29,10 +29,13 @@
             <h6>Current VCPU usage</h6>
             <div id="maychar-vcpu" class="maychar"></div>
             <h6>
-              <i class="background-available"></i> {{providerBody.data.total_vcpu}} vcpu - Available
+              <i class="background-free"></i> {{providerBody.data.total_vcpu - providerBody.data.total_used_vcpu}} vcpu - Free
             </h6>
             <h6>
-              <i class="background-active"></i> {{providerBody.data.total_used_vcpu}} vcpu - Active
+              <i class="background-used"></i> {{providerBody.data.total_used_vcpu}} vcpu - Used
+            </h6>
+            <h6>
+              <i class="background-total"></i> {{providerBody.data.total_vcpu}} - Total
             </h6>
           </div>
         </el-col>
@@ -42,10 +45,13 @@
             <h6>Current Memory usage</h6>
             <div id="maychar-memory" class="maychar"></div>
             <h6>
-              <i class="background-available"></i> {{sizeChange(providerBody.data.total_memory)}} - Available
+              <i class="background-free"></i> {{sizeChange(providerBody.data.total_memory-providerBody.data.total_used_memory)}} - Free
             </h6>
             <h6>
-              <i class="background-active"></i> {{sizeChange(providerBody.data.total_used_memory)}} - Active
+              <i class="background-used"></i> {{sizeChange(providerBody.data.total_used_memory)}} - Used
+            </h6>
+            <h6>
+              <i class="background-total"></i> {{sizeChange(providerBody.data.total_memory)}} - Total
             </h6>
           </div>
         </el-col>
@@ -55,10 +61,13 @@
             <h6>Current Storage usage</h6>
             <div id="maychar-storage" class="maychar"></div>
             <h6>
-              <i class="background-available"></i> {{sizeChange(providerBody.data.total_storage)}} - Available
+              <i class="background-free"></i> {{sizeChange(providerBody.data.total_storage-providerBody.data.total_used_storage)}} - Free
             </h6>
             <h6>
-              <i class="background-active"></i> {{sizeChange(providerBody.data.total_used_storage)}} - Active
+              <i class="background-used"></i> {{sizeChange(providerBody.data.total_used_storage)}} - Used
+            </h6>
+            <h6>
+              <i class="background-total"></i> {{sizeChange(providerBody.data.total_storage)}} - Total
             </h6>
           </div>
         </el-col>
@@ -68,10 +77,13 @@
             <h6>Current GPU usage</h6>
             <div id="maychar-gpu" class="maychar"></div>
             <h6>
-              <i class="background-available"></i> {{providerBody.data.total_gpu}} - Available
+              <i class="background-free"></i> {{providerBody.data.total_gpu-providerBody.data.total_used_gpu}} - Free
             </h6>
             <h6>
-              <i class="background-active"></i> {{providerBody.data.total_used_gpu}} - Active
+              <i class="background-used"></i> {{providerBody.data.total_used_gpu}} - Used
+            </h6>
+            <h6>
+              <i class="background-total"></i> {{providerBody.data.total_gpu}} - Total
             </h6>
           </div>
         </el-col>
@@ -94,7 +106,7 @@
               <!--              <div class="desc">{{ props.row.computer_provider.city}}</div>-->
               <!--              <div class="tit">country</div>-->
               <!--              <el-divider />-->
-<!--              <div class="desc">{{ props.row.computer_provider.country}}</div>-->
+              <!--              <div class="desc">{{ props.row.computer_provider.country}}</div>-->
               <div class="tit">Score</div>
               <el-divider/>
               <div class="list">
@@ -396,7 +408,7 @@ export default defineComponent({
           trigger: 'item',
           triggerOn: 'none'
         },
-        color: ['#4dd0e1', '#8bc34a'],
+        color: ['#4db470', '#9266a9'],
         series: [
           {
             name: 'Total',
@@ -432,19 +444,19 @@ export default defineComponent({
       const option4 = JSON.parse(JSON.stringify(option))
       const option5 = JSON.parse(JSON.stringify(option))
       option2.series[0].data = [
-        { value: providerBody.data.total_gpu, name: providerBody.data.total_gpu + ' ' },
+        { value: providerBody.data.total_gpu - providerBody.data.total_used_gpu, name: providerBody.data.total_gpu - providerBody.data.total_used_gpu },
         { value: providerBody.data.total_used_gpu, name: providerBody.data.total_used_gpu },
       ]
       option3.series[0].data = [
-        { value: providerBody.data.total_memory, name: sizeChange(providerBody.data.total_memory) + ' ' },
+        { value: providerBody.data.total_memory - providerBody.data.total_used_memory, name: sizeChange(providerBody.data.total_memory - providerBody.data.total_used_memory) + ' ' },
         { value: providerBody.data.total_used_memory, name: sizeChange(providerBody.data.total_used_memory) },
       ]
       option4.series[0].data = [
-        { value: providerBody.data.total_storage, name: sizeChange(providerBody.data.total_storage) + ' ' },
+        { value: providerBody.data.total_storage - providerBody.data.total_used_storage, name: sizeChange(providerBody.data.total_storage - providerBody.data.total_used_storage) + ' ' },
         { value: providerBody.data.total_used_storage, name: sizeChange(providerBody.data.total_used_storage) },
       ]
       option5.series[0].data = [
-        { value: providerBody.data.total_vcpu, name: `${providerBody.data.total_vcpu} vcpu ` },
+        { value: providerBody.data.total_vcpu - providerBody.data.total_used_vcpu, name: `${providerBody.data.total_vcpu - providerBody.data.total_used_vcpu} vcpu ` },
         { value: providerBody.data.total_used_vcpu, name: `${providerBody.data.total_used_vcpu} vcpu` },
       ]
       machart_gpu.setOption(option2);
@@ -468,6 +480,9 @@ export default defineComponent({
       if (Math.round((bytes / Math.pow(k, i))).toString().length > 3) i += 1
       return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
     }
+    function goLink (link) {
+      window.open(link)
+    }
     onMounted(() => {
       reset('init')
     })
@@ -483,7 +498,7 @@ export default defineComponent({
       providerBody,
       badgeIcon01,
       badgeIcon02,
-      handleSizeChange, handleCurrentChange, searchProvider, clearProvider, expandChange, unifyNumber, sizeChange
+      handleSizeChange, handleCurrentChange, searchProvider, clearProvider, expandChange, unifyNumber, sizeChange, goLink
     }
   }
 })
@@ -505,6 +520,7 @@ export default defineComponent({
     display: block;
     width: 200px;
     margin: 0 0 0.3rem;
+    cursor: pointer;
   }
   h1 {
     margin: 0 0 0.2rem;
@@ -561,11 +577,16 @@ export default defineComponent({
                 height: 8px;
                 margin: auto 0.05rem auto 0;
                 border-radius: 5px;
-                &.background-available {
-                  background-color: #4dd0e1;
+                &.background-free {
+                  background-color: #4db470;
                 }
-                &.background-active {
-                  background-color: #8bc34a;
+                &.background-used {
+                  background-color: #9266a9;
+                }
+                &.background-total {
+                  background-color: transparent;
+                  background-color: #488fc3;
+                  opacity: 0.1;
                 }
               }
             }
