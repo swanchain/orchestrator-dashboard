@@ -17,6 +17,12 @@
             <b v-loading="providersLoad">{{pagin.total}}</b>
           </div>
         </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6>Total Deployments</h6>
+            <b v-loading="providersLoad">{{pagin.total_deployments}}</b>
+          </div>
+        </el-col>
         <el-col :xs="24" :sm="24" :md="18" :lg="18" :xl="18">
           <div class='chart' id='chart' v-if="false"></div>
         </el-col>
@@ -258,7 +264,8 @@ export default defineComponent({
     const pagin = reactive({
       pageSize: 10,
       pageNo: 1,
-      total: 0
+      total: 0,
+      total_deployments: 0
     })
     const providerBody = reactive({
       data: {}
@@ -285,6 +292,7 @@ export default defineComponent({
       const providerRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}cp/dashboard?${qs.stringify(params)}`, 'get')
       if (providerRes && providerRes.status === 'success') {
         pagin.total = providerRes.data.total_providers
+        pagin.total_deployments = providerRes.data.total_deployments
         providerBody.data = providerRes.data || {}
         providersData.value = providerRes.data.providers || []
         changetype()
@@ -308,6 +316,7 @@ export default defineComponent({
     }
     function reset (type) {
       pagin.total = 0
+      pagin.total_deployments = 0
       pagin.pageSize = 10
       pagin.pageNo = 1
       providersData.value = []
@@ -408,7 +417,7 @@ export default defineComponent({
           trigger: 'item',
           triggerOn: 'none'
         },
-        color: ['#4db470', '#9266a9'],
+        color: ['#4db470', '#00b4ff'],
         series: [
           {
             name: 'Total',
@@ -581,12 +590,10 @@ export default defineComponent({
                   background-color: #4db470;
                 }
                 &.background-used {
-                  background-color: #9266a9;
+                  background-color: #00b4ff;
                 }
                 &.background-total {
-                  background-color: transparent;
-                  background-color: #488fc3;
-                  opacity: 0.1;
+                  background-color: #9266a9;
                 }
               }
             }
