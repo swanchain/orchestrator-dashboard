@@ -16,15 +16,14 @@
             <h6>Network Providers</h6>
             <b v-loading="providersLoad">{{pagin.total}}</b>
           </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+
           <div class="grid-content">
             <h6>Total Deployments</h6>
             <b v-loading="providersLoad">{{pagin.total_deployments}}</b>
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="18" :lg="18" :xl="18">
-          <div class='chart' id='chart' v-if="false"></div>
+          <div class='chart' id='chart'></div>
         </el-col>
       </el-row>
 
@@ -274,6 +273,7 @@ export default defineComponent({
     const small = ref(false)
     const background = ref(false)
     const searchJudge = ref(false)
+    const dataArr = ref([])
 
     function handleSizeChange (val) { }
     async function handleCurrentChange (currentPage) {
@@ -295,6 +295,8 @@ export default defineComponent({
         pagin.total_deployments = providerRes.data.total_deployments
         providerBody.data = providerRes.data || {}
         providersData.value = providerRes.data.providers || []
+        dataArr.value = providerRes.data.map_info
+        drawChart(dataArr.value)
         changetype()
       } else {
         providersData.value = []
@@ -338,42 +340,37 @@ export default defineComponent({
           containLabel: true
         },
         tooltip: {
-          trigger: 'item',
-          // formatter: function (val) {
-          //     if (val.data == null) return;
-          //     return val.data.name + ': ' + val.data.value
-          // }
-          // triggerOn: 'none'
+          trigger: "item",
+          formatter: function (val) {
+            return val.name
+          },
+          // show: false,
+          padding: 5,
+          textStyle: {
+            fontSize: 8,
+            lineHeight: 10,
+            align: "left"
+          }
         },
-        // tooltip: {
-        //     trigger: "item",
-        //     show: true,
-        //     formatter: function (params) {
-        //         let city = params.name + "市";
-        //         let res = "";
-        //         sswlist.map(item => {
-        //             if (item.properties.name == city) {
-        //                 res = item.properties.info;
-        //             }
-        //         });
-        //         return res;
-        //     },
-        //     padding: 2,
-        //     textStyle: {
-        //         fontSize: 8,
-        //         lineHeight: 10,
-        //         align: "left"
-        //     }
-        // },
         geo: {
+          show: true,
           map: 'world',
+          label: {
+            normal: {
+              show: false
+            },
+            emphasis: {
+              show: false
+            }
+          },
+          roam: false,
           itemStyle: {
             normal: {
               areaColor: '#fff',
               borderColor: '#eee'
             },
             emphasis: {
-              areaColor: '#c37af9',
+              areaColor: '#a467d1',
               label: {
                 show: false
               }
@@ -390,7 +387,9 @@ export default defineComponent({
               shadowBlur: 2,
               shadowColor: '#000'
             },
-            data: dataArr
+            data: dataArr,
+            symbolSize: 10,
+            zlevel: 1
           }
         ]
       })
@@ -562,7 +561,7 @@ export default defineComponent({
           }
         }
         .chart {
-          width: 90%;
+          width: 100%;
           margin: 0 auto;
           height: 400px;
         }
