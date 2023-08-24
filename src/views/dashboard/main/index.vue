@@ -23,7 +23,7 @@
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="18" :lg="18" :xl="18">
-          <div class='chart' id='chart'></div>
+          <div class='chart' id='chart' v-loading="providersLoad" element-loading-background="rgba(0, 0, 0, 0)"></div>
         </el-col>
       </el-row>
 
@@ -363,6 +363,7 @@ export default defineComponent({
               show: false
             }
           },
+          // aspectScale: 0.75,
           roam: false,
           itemStyle: {
             normal: {
@@ -375,7 +376,13 @@ export default defineComponent({
                 show: false
               }
             }
-          }
+          },
+          emphasis: {
+            focus: 'none'
+          },
+          silent: true
+          // left: '5%',
+          // right: '5%'
         },
         series: [
           {
