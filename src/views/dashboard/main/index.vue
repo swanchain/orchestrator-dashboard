@@ -304,6 +304,17 @@ export default defineComponent({
       }
       providersLoad.value = false
     }
+    async function reverseList (list) {
+      try {
+        if (!list) return []
+        list.forEach(element => {
+          element.value = element.value.reverse()
+        })
+        return list
+      } catch (err) {
+        return []
+      }
+    }
     async function searchProvider () {
       pagin.pageSize = 10
       pagin.pageNo = 1
@@ -342,7 +353,8 @@ export default defineComponent({
         tooltip: {
           trigger: "item",
           formatter: function (val) {
-            return val.name
+            if (val.data && val.data.city) return val.data.city
+            else return val.name
           },
           // show: false,
           padding: 5,
@@ -370,12 +382,12 @@ export default defineComponent({
               areaColor: '#fff',
               borderColor: '#eee'
             },
-            emphasis: {
-              areaColor: '#a467d1',
-              label: {
-                show: false
-              }
-            }
+            // emphasis: {
+            //   areaColor: '#a467d1',
+            //   label: {
+            //     show: false
+            //   }
+            // }
           },
           emphasis: {
             focus: 'none'
@@ -390,6 +402,8 @@ export default defineComponent({
             type: 'scatter',
             coordinateSystem: 'geo',
             itemStyle: {
+              // borderWidth: 1,
+              // borderColor: '#a467d1',
               color: '#c37af9',
               shadowBlur: 2,
               shadowColor: '#000'
