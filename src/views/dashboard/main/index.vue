@@ -403,8 +403,9 @@ export default defineComponent({
             coordinateSystem: 'geo',
             itemStyle: {
               // borderWidth: 1,
-              // borderColor: '#a467d1',
-              color: '#c37af9',
+              // borderColor: '#fff',
+              // color: 'rgba(89, 152, 14, 1)',
+              color: '#4db470',
               shadowBlur: 2,
               shadowColor: '#000'
             },
