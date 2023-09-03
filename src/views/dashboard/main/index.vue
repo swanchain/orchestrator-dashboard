@@ -16,7 +16,10 @@
             <h6>Network Providers</h6>
             <b v-loading="providersLoad">{{pagin.total}}</b>
           </div>
-
+          <div class="grid-content">
+            <h6>Active Applications</h6>
+            <b v-loading="providersLoad">{{pagin.active_applications}}</b>
+          </div>
           <div class="grid-content">
             <h6>Total Deployments</h6>
             <b v-loading="providersLoad">{{pagin.total_deployments}}</b>
@@ -264,7 +267,8 @@ export default defineComponent({
       pageSize: 10,
       pageNo: 1,
       total: 0,
-      total_deployments: 0
+      total_deployments: 0,
+      active_applications: 0
     })
     const providerBody = reactive({
       data: {}
@@ -293,6 +297,7 @@ export default defineComponent({
       if (providerRes && providerRes.status === 'success') {
         pagin.total = providerRes.data.total_providers
         pagin.total_deployments = providerRes.data.total_deployments
+        pagin.active_applications = providerRes.data.active_applications
         providerBody.data = providerRes.data || {}
         providersData.value = providerRes.data.providers || []
         dataArr.value = providerRes.data.map_info
@@ -330,6 +335,7 @@ export default defineComponent({
     function reset (type) {
       pagin.total = 0
       pagin.total_deployments = 0
+      pagin.active_applications = 0
       pagin.pageSize = 10
       pagin.pageNo = 1
       providersData.value = []
