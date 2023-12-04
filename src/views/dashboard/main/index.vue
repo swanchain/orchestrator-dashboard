@@ -1,9 +1,13 @@
 <template>
   <section id="container">
-    <img :src="lagrangeLogo" @click="goLink('https://lagrangedao.org/main')" class="lagrange-logo" />
-    <h1>Lagrange Provider Status</h1>
+    <div class="swan-logo">
+      <img :src="swanLogo" @click="goLink('https://www.swanchain.io/')" />
+      <el-button type="primary" @click="loginMethod" v-if="getnetID === 8598668088">Login</el-button>
+      <el-button type="primary" v-else>Show API-Key</el-button>
+    </div>
+    <h1>Swan Provider Status</h1>
     <div class="describe">
-      Use this status page to check an Lagrange Provider information and status.
+      Use this status page to check an Swan Provider information and status.
       <br> This list is refreshed every 5 minutes. Below snapshot taken at
       <strong>{{gmtTime}}</strong>
     </div>
@@ -99,7 +103,7 @@
     </div>
 
     <div class="providers-network mt-border">
-      <div class="title">Lagrange Network Providers</div>
+      <div class="title">Swan Network Providers</div>
       <div class="search-body flex">
         <el-input v-model="networkInput" placeholder="Search Providers" />
         <el-button type="primary" :disabled="!networkInput ? true:false" round @click="searchProvider">Search</el-button>
@@ -253,11 +257,12 @@ export default defineComponent({
   },
   setup () {
     const store = useStore()
+    const accessToken = computed(() => (store.state.accessToken))
     const bodyWidth = ref(document.body.clientWidth < 992)
     const system = getCurrentInstance().appContext.config.globalProperties
     const route = useRoute()
     const router = useRouter()
-    const lagrangeLogo = require("@/assets/images/icons/logo.png")
+    const swanLogo = require("@/assets/images/icons/logo.png")
     const badgeIcon01 = require("@/assets/images/icons/badge-1.png")
     const badgeIcon02 = require("@/assets/images/icons/badge-2.png")
     const gmtTime = new Date().toGMTString()
@@ -433,7 +438,48 @@ export default defineComponent({
         else return `${handleArray[0]}.${decimal}`
       } else return handleNum
     }
+    let lastTime = 0
+    async function throttle () {
+      // Prevent multiple signatures
+      let now = new Date().valueOf();
+      if (lastTime > 0 && (now - lastTime) <= 2000) return false
+      lastTime = now
+      return true
+    }
 
+    async function loginMethod () {
+      const time = await throttle()
+      if (!time) return false
+      system.$commonFun.Init(async (addr, chain) => {
+        providersLoad.value = true
+        getnetID = await system.$commonFun.web3Init.eth.net.getId()
+        await system.$commonFun.timeout(500)
+        if (accessToken.value) providersLoad.value = false
+        else await signIn()
+      })
+    }
+
+    async function signIn () {
+      if (getnetID !== 8598668088) system.$commonFun.walletChain(8598668088)
+      else providersLoad.value = false
+      // const [lStatus, signErr] = await system.$commonFun.login()
+      // if (lStatus) providersLoad.value = false
+      // else if (signErr !== '4001') signSetIn()
+      // else spookyLoad.value = false
+      // return false
+    }
+
+    async function signSetIn (t) {
+      let time = t || 0
+      let timer = null
+      timer = setInterval(() => {
+        if (time > 3) {
+          clearInterval(timer)
+          if (accessToken.value) providersLoad.value = false
+          else signIn()
+        } else time += 1
+      }, 1000)
+    }
     const changetype = () => {
       const machart_gpu = echarts.init(document.getElementById("maychar-gpu"));
       const machart_memory = echarts.init(document.getElementById("maychar-memory"));
@@ -519,11 +565,13 @@ export default defineComponent({
     function goLink (link) {
       window.open(link)
     }
-    onMounted(() => {
+    let getnetID = NaN
+    onMounted(async () => {
+      getnetID = await system.$commonFun.web3Init.eth.net.getId()
       reset('init')
     })
     return {
-      lagrangeLogo,
+      swanLogo,
       gmtTime,
       providersLoad,
       providersData,
@@ -534,7 +582,9 @@ export default defineComponent({
       providerBody,
       badgeIcon01,
       badgeIcon02,
-      handleSizeChange, handleCurrentChange, searchProvider, clearProvider, expandChange, unifyNumber, sizeChange, goLink
+      getnetID,
+      handleSizeChange, handleCurrentChange, searchProvider, clearProvider, expandChange, unifyNumber, sizeChange, goLink,
+      loginMethod
     }
   }
 })
@@ -552,11 +602,20 @@ export default defineComponent({
     display: flex;
     align-items: center;
   }
-  .lagrange-logo {
-    display: block;
-    width: 200px;
+  .swan-logo {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
     margin: 0 0 0.3rem;
     cursor: pointer;
+    img {
+      width: 200px;
+    }
+    :deep(.el-button) {
+      background-color: #447dff;
+      border-color: #447dff;
+      font-family: inherit;
+    }
   }
   h1 {
     margin: 0 0 0.2rem;

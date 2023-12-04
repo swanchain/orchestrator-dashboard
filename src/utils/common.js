@@ -110,11 +110,144 @@ function copyContent(text, tipCont) {
   }
   return false
 }
+async function Init(callback) {
+  if (typeof window.ethereum === 'undefined') {
+    window.open('https://metamask.io/download.html')
+    alert("Consider installing MetaMask!");
+  } else {
+    const ethereum = window.ethereum;
+    ethereum
+      .request({
+        method: 'eth_requestAccounts'
+      })
+      .then((accounts) => {
+        if (!accounts) {
+          return false
+        }
+        web3Init.eth.getAccounts().then(async webAccounts => {
+            store.dispatch('setMetaAddress', webAccounts[0])
+            // const chainId = await ethereum.request({ method: 'eth_chainId' })
+            // console.log(parseInt(chainId, 16))
+            callback(webAccounts[0])
+          })
+          .catch(async (error) => {
+            store.dispatch('setMetaAddress', accounts[0])
+            callback(accounts[0])
+          })
+      })
+      .catch((error) => {
+        if (error === "User rejected provider access") {} else {
+          alert("Please unlock MetaMask and switch to the correct network.");
+          return false
+        }
+        console.error(
+          `Error fetching accounts: ${error.message}.
+        Code: ${error.code}. Data: ${error.data}`
+        );
+      });
+  }
+}
+
+let web3Init
+if (typeof window.ethereum === 'undefined') {
+  // window.open('https://metamask.io/download.html')
+  // alert("Consider installing MetaMask!");
+} else {
+  if (window.ethereum) {
+    web3 = new Web3(ethereum);
+    web3.setProvider(ethereum);
+  } else if (window.web3) {
+    web3 = window.web3;
+    console.log("Injected web3 detected.");
+  } else {
+    var currentProvider = web3.currentProvider;
+    web3 = new Web3(currentProvider);
+    web3.setProvider(currentProvider);
+    console.log("No web3 instance injected, using Local web3.");
+  }
+  web3Init = web3
+}
+
+async function walletChain(chainId) {
+  let text = {}
+  switch (chainId) {
+    case 8598668088:
+      text = {
+        chainId: web3Init.utils.numberToHex(8598668088),
+        chainName: 'OpSwan',
+        // nativeCurrency: {
+        //   name: 'SwanETH',
+        //   symbol: 'SwanETH', // 2-6 characters long
+        //   decimals: 18
+        // },
+        rpcUrls: [process.env.VUE_APP_OPSWANRPCURL],
+        blockExplorerUrls: [process.env.VUE_APP_OPSWANURL]
+      }
+      break
+    case 80001:
+      text = {
+        chainId: web3Init.utils.numberToHex(80001),
+        chainName: 'Mumbai Testnet',
+        nativeCurrency: {
+          name: 'MATIC',
+          symbol: 'MATIC', // 2-6 characters long
+          decimals: 18
+        },
+        rpcUrls: [process.env.VUE_APP_MUMBAIRPCURL],
+        blockExplorerUrls: [process.env.VUE_APP_MUMBAIPAYMENTURL]
+      }
+      break
+    case 97:
+      text = {
+        chainId: web3Init.utils.numberToHex(97),
+        chainName: 'BSC TestNet',
+        nativeCurrency: {
+          name: 'tBNB',
+          symbol: 'tBNB', // 2-6 characters long
+          decimals: 18
+        },
+        rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545'],
+        blockExplorerUrls: [process.env.VUE_APP_BSCTESTNETBLOCKURL]
+      }
+      break
+    case 137:
+      text = {
+        chainId: web3Init.utils.numberToHex(137),
+        chainName: 'Polygon Mainnet',
+        nativeCurrency: {
+          name: 'MATIC',
+          symbol: 'MATIC', // 2-6 characters long
+          decimals: 18
+        },
+        rpcUrls: ['https://polygon-rpc.com'],
+        blockExplorerUrls: [process.env.VUE_APP_POLYGONBLOCKURL]
+      }
+      break
+  }
+  try {
+    await ethereum.request({
+      method: 'wallet_addEthereumChain',
+      params: [
+        text
+      ]
+    })
+    await timeout(500)
+    // showLoading()
+    const [lStatus, signErr] = await login()
+    // hideLoading()
+  } catch (err) {
+    if (err.message) messageTip('error', err.message)
+    // hideLoading()
+  }
+}
 
 export default {
   sendRequest,
   timeout,
   messageTip,
   momentFun,
-  copyContent
+  copyContent,
+  Init,
+  web3Init,
+  walletChain
 }
