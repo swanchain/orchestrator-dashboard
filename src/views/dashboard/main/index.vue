@@ -263,35 +263,12 @@
     <el-dialog v-model="centerDialogVisible" title="API Keys" custom-class="apikey_body">
       <div class="cont">
         <el-button type="primary" class="add-button" @click="addVisible=true">New API Key</el-button>
-
         <el-table :data="toolData" v-loading="tokenShow" style="width: 100%" empty-text="No Data" class="table_cell">
-          <el-table-column prop="name" label="NAME"></el-table-column>
-          <el-table-column prop="key" label="KEY" width="120">
+          <el-table-column prop="key" label="KEY" width="530">
             <template #default="scope">
               <div class="flex-row" style="justify-content: center;">
-                {{system.$commonFun.hiddAddress(scope.row.key)}}
+                {{scope.row.token}}
                 <i class="icon icon_copy" @click="system.$commonFun.copyContent(scope.row.key, 'Copied')"></i>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="expired_at" label="Expiration date" width="120">
-            <template #default="scope">
-              <div style="">
-                {{system.$commonFun.expiredTime(scope.row.expired_at)}}
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="status" label="STATUS" width="100">
-            <template #default="scope">
-              <div>
-                {{scope.row.status ? 'Valid': 'Invalid'}}
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="" width="100" label="">
-            <template #default="scope">
-              <div class="revoke">
-                <el-button type="danger" @click="deleteApiKey(scope.row.id)">Delete</el-button>
               </div>
             </template>
           </el-table-column>
@@ -376,7 +353,7 @@ export default defineComponent({
       const params = {
         "name": ruleForm.name
       }
-      const listRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_RPCAPI}v1/keys`, 'post', params)
+      const listRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_RPCAPI}v1/keys/`, 'post', params)
       if (listRes && String(listRes.code) === '0') paginKey.pageNo = 1
       ruleForm.name = ''
       getdataList()
@@ -389,22 +366,34 @@ export default defineComponent({
       getdataList()
       tokenShow.value = false
     }
-    async function getdataList () {
+    async function getdataList() {
       centerDialogVisible.value = true
       tokenShow.value = true
       toolData.value = []
-      const page = paginKey.pageNo > 0 ? paginKey.pageNo - 1 : 0
-      const params = {
-        page_size: paginKey.pageSize,
-        page_no: page * paginKey.pageSize,
+
+      try {
+        const keysRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}/api_token`, 'get')
+
+        if (keysRes && keysRes.status === 'success') {
+          // Assuming the 'data' field in response contains the required token
+          if (keysRes.data){
+            toolData.value = keysRes.data.token ? [keysRes.data.token] : []  // Assigning the token data to toolData
+            // If there are multiple tokens, and they are in a list, replace the above line with:
+            // toolData.value = keysRes.data.list || []
+          } else {
+            system.$commonFun.messageTip('error', 'No token found, please generate a new token')
+          }
+
+        } else if (keysRes.message) {
+          system.$commonFun.messageTip('error', keysRes.message)
+        }
+      } catch (error) {
+        system.$commonFun.messageTip('error', error.message || 'Error fetching data')
       }
-      const keysRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_RPCAPI}v1/keys?${qs.stringify(params)}`, 'get')
-      if (keysRes && String(keysRes.code) === '0') {
-        toolData.value = keysRes.data.list || []
-        paginKey.total = keysRes.data.total || 0
-      } else if (keysRes.msg) system.$commonFun.messageTip('error', keysRes.msg)
+
       tokenShow.value = false
     }
+
     function handleSizeChange (val) { }
     async function handleCurrentChange (currentPage) {
       pagin.pageNo = currentPage
