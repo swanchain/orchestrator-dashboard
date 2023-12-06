@@ -1,9 +1,13 @@
 <template>
   <section id="container">
-    <img :src="lagrangeLogo" @click="goLink('https://lagrangedao.org/main')" class="lagrange-logo" />
-    <h1>Lagrange Provider Status</h1>
+    <div class="swan-logo">
+      <img :src="swanLogo" @click="goLink('https://www.swanchain.io/')" />
+      <el-button type="primary" v-if="getnetID === 8598668088 && accessToken !== ''" @click="getdataList">Show API-Key</el-button>
+      <el-button type="primary" @click="loginMethod" v-else>Login</el-button>
+    </div>
+    <h1>Swan Provider Status</h1>
     <div class="describe">
-      Use this status page to check an Lagrange Provider information and status.
+      Use this status page to check an Swan Provider information and status.
       <br> This list is refreshed every 5 minutes. Below snapshot taken at
       <strong>{{gmtTime}}</strong>
     </div>
@@ -99,7 +103,7 @@
     </div>
 
     <div class="providers-network mt-border">
-      <div class="title">Lagrange Network Providers</div>
+      <div class="title">Swan Network Providers</div>
       <div class="search-body flex">
         <el-input v-model="networkInput" placeholder="Search Providers" />
         <el-button type="primary" :disabled="!networkInput ? true:false" round @click="searchProvider">Search</el-button>
@@ -235,6 +239,72 @@
       <el-pagination hide-on-single-page :page-size="pagin.pageSize" :current-page="pagin.pageNo" :pager-count="5" :small="small" :background="background" layout="total, prev, pager, next" :total="pagin.total" @size-change="handleSizeChange" @current-change="handleCurrentChange"
       />
     </div>
+
+    <el-dialog v-model="addVisible" title="Create A Key" :show-close="false" custom-class="add_body">
+      <el-form ref="ruleFormRefDelete" status-icon v-loading="listLoad">
+        <el-form-item prop="name" style="width:100%">
+          <label class="label" for="name">
+            Name
+          </label>
+          <div class="flex flex-row">
+            <el-input v-model="ruleForm.name" placeholder=" " />
+          </div>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button type="primary" :disabled="!ruleForm.name" @click="createCom">
+            Create
+          </el-button>
+          <el-button @click="addVisible = false">Cancel</el-button>
+        </span>
+      </template>
+    </el-dialog>
+    <el-dialog v-model="centerDialogVisible" title="API Keys" custom-class="apikey_body">
+      <div class="cont">
+        <el-button type="primary" class="add-button" @click="addVisible=true">New API Key</el-button>
+
+        <el-table :data="toolData" v-loading="tokenShow" style="width: 100%" empty-text="No Data" class="table_cell">
+          <el-table-column prop="name" label="NAME"></el-table-column>
+          <el-table-column prop="key" label="KEY" width="120">
+            <template #default="scope">
+              <div class="flex-row" style="justify-content: center;">
+                {{system.$commonFun.hiddAddress(scope.row.key)}}
+                <i class="icon icon_copy" @click="system.$commonFun.copyContent(scope.row.key, 'Copied')"></i>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="expired_at" label="Expiration date" width="120">
+            <template #default="scope">
+              <div style="">
+                {{system.$commonFun.expiredTime(scope.row.expired_at)}}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="status" label="STATUS" width="100">
+            <template #default="scope">
+              <div>
+                {{scope.row.status ? 'Valid': 'Invalid'}}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="" width="100" label="">
+            <template #default="scope">
+              <div class="revoke">
+                <el-button type="danger" @click="deleteApiKey(scope.row.id)">Delete</el-button>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-pagination class="flex-row" hide-on-single-page :page-size="paginKey.pageSize" :current-page="paginKey.pageNo" :pager-count="5" layout="total, prev, pager, next" :total="paginKey.total" @size-change="handleSizeChange" @current-change="handleKeyChange"
+        />
+      </div>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="centerDialogVisible = false">OK</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </section>
 </template>
 
@@ -253,11 +323,12 @@ export default defineComponent({
   },
   setup () {
     const store = useStore()
+    const accessToken = computed(() => (store.state.accessToken))
     const bodyWidth = ref(document.body.clientWidth < 992)
     const system = getCurrentInstance().appContext.config.globalProperties
     const route = useRoute()
     const router = useRouter()
-    const lagrangeLogo = require("@/assets/images/icons/logo.png")
+    const swanLogo = require("@/assets/images/icons/logo.png")
     const badgeIcon01 = require("@/assets/images/icons/badge-1.png")
     const badgeIcon02 = require("@/assets/images/icons/badge-2.png")
     const gmtTime = new Date().toGMTString()
@@ -278,7 +349,62 @@ export default defineComponent({
     const background = ref(false)
     const searchJudge = ref(false)
     const dataArr = ref([])
+    const getnetID = ref(NaN)
+    const prevType = ref(true)
+    const centerDialogVisible = ref(false)
+    const tokenShow = ref(false)
+    const toolData = ref([])
+    const paginKey = reactive({
+      pageSize: 12,
+      pageNo: 1,
+      total: 0,
+      sort: 'updated'
+    })
+    const addVisible = ref(false)
+    const listLoad = ref(false)
+    const ruleForm = reactive({
+      name: ''
+    })
 
+    async function handleKeyChange (currentPage) {
+      // console.log('handleCurrentChange:', currentPage)
+      paginKey.pageNo = currentPage
+      getdataList()
+    }
+    async function createCom () {
+      listLoad.value = true
+      const params = {
+        "name": ruleForm.name
+      }
+      const listRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_RPCAPI}v1/keys`, 'post', params)
+      if (listRes && String(listRes.code) === '0') paginKey.pageNo = 1
+      ruleForm.name = ''
+      getdataList()
+      listLoad.value = false
+      addVisible.value = false
+    }
+    async function deleteApiKey (id) {
+      tokenShow.value = true
+      const deleteRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_RPCAPI}v1/keys/${id}`, 'delete')
+      getdataList()
+      tokenShow.value = false
+    }
+    async function getdataList () {
+      centerDialogVisible.value = true
+      tokenShow.value = true
+      toolData.value = []
+      const page = paginKey.pageNo > 0 ? paginKey.pageNo - 1 : 0
+      const params = {
+        page_size: paginKey.pageSize,
+        page_no: page * paginKey.pageSize,
+      }
+      const keysRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_RPCAPI}v1/keys?${qs.stringify(params)}`, 'get')
+      if (keysRes && String(keysRes.code) === '0') {
+        toolData.value = keysRes.data.list || []
+        paginKey.total = keysRes.data.total || 0
+      } else if (keysRes.msg) system.$commonFun.messageTip('error', keysRes.msg)
+      tokenShow.value = false
+    }
     function handleSizeChange (val) { }
     async function handleCurrentChange (currentPage) {
       pagin.pageNo = currentPage
@@ -433,7 +559,43 @@ export default defineComponent({
         else return `${handleArray[0]}.${decimal}`
       } else return handleNum
     }
+    let lastTime = 0
+    async function throttle () {
+      // Prevent multiple signatures
+      let now = new Date().valueOf();
+      if (lastTime > 0 && (now - lastTime) <= 2000) return false
+      lastTime = now
+      return true
+    }
 
+    async function loginMethod () {
+      const time = await throttle()
+      if (!time) return false
+      system.$commonFun.Init(async (addr, chain) => {
+        providersLoad.value = true
+        getnetID.value = await system.$commonFun.web3Init.eth.net.getId()
+        await system.$commonFun.timeout(500)
+        if (accessToken.value !== '' && getnetID.value === 8598668088) providersLoad.value = false
+        else await signIn()
+      })
+    }
+
+    async function signIn () {
+      if (getnetID.value !== 8598668088) system.$commonFun.walletChain(8598668088)
+      else system.$commonFun.login()
+    }
+
+    async function signSetIn (t) {
+      let time = t || 0
+      let timer = null
+      timer = setInterval(() => {
+        if (time > 3) {
+          clearInterval(timer)
+          if (accessToken.value !== '' && getnetID.value === 8598668088) providersLoad.value = false
+          else signIn()
+        } else time += 1
+      }, 1000)
+    }
     const changetype = () => {
       const machart_gpu = echarts.init(document.getElementById("maychar-gpu"));
       const machart_memory = echarts.init(document.getElementById("maychar-memory"));
@@ -519,11 +681,25 @@ export default defineComponent({
     function goLink (link) {
       window.open(link)
     }
-    onMounted(() => {
+    function fn () {
+      document.addEventListener('visibilitychange', function () {
+        prevType.value = !document.hidden
+      })
+      if (typeof window.ethereum === 'undefined') return
+      ethereum.on('chainChanged', async function (accounts) {
+        if (!prevType.value) return false
+        getnetID.value = await system.$commonFun.web3Init.eth.net.getId()
+        system.$commonFun.signOutFun()
+      })
+    }
+    onMounted(async () => {
+      getnetID.value = await system.$commonFun.web3Init.eth.net.getId()
       reset('init')
+      fn()
     })
     return {
-      lagrangeLogo,
+      system,
+      swanLogo,
       gmtTime,
       providersLoad,
       providersData,
@@ -534,7 +710,15 @@ export default defineComponent({
       providerBody,
       badgeIcon01,
       badgeIcon02,
-      handleSizeChange, handleCurrentChange, searchProvider, clearProvider, expandChange, unifyNumber, sizeChange, goLink
+      getnetID,
+      accessToken,
+      centerDialogVisible,
+      toolData,
+      tokenShow,
+      paginKey,
+      listLoad, addVisible, ruleForm,
+      getdataList, createCom, deleteApiKey, handleKeyChange, handleSizeChange, handleCurrentChange, searchProvider, clearProvider, expandChange, unifyNumber, sizeChange, goLink,
+      loginMethod
     }
   }
 })
@@ -552,11 +736,20 @@ export default defineComponent({
     display: flex;
     align-items: center;
   }
-  .lagrange-logo {
-    display: block;
-    width: 200px;
+  .swan-logo {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
     margin: 0 0 0.3rem;
     cursor: pointer;
+    img {
+      width: 200px;
+    }
+    :deep(.el-button) {
+      background-color: #447dff;
+      border-color: #447dff;
+      font-family: inherit;
+    }
   }
   h1 {
     margin: 0 0 0.2rem;
@@ -878,6 +1071,260 @@ export default defineComponent({
         }
         &:not(.disabled):hover {
         }
+      }
+    }
+  }
+}
+
+:deep(.apikey_body) {
+  width: 570px;
+  border-radius: 0.23rem;
+  text-align: left;
+  color: #000;
+  word-break: break-word;
+  @media screen and (max-width: 600px) {
+    width: 94%;
+  }
+  .el-dialog__body {
+    .add-button {
+      height: auto;
+      margin: 0 0 0.2rem;
+      padding: 0.1rem 0.15rem;
+      background-color: #447dff;
+      border-color: #447dff;
+      border-radius: 4px;
+      font-size: 14px;
+      @media screen and (max-width: 768px) {
+        font-size: 13px;
+      }
+    }
+    .el-table {
+      border-top: 1px solid #f1f1f1;
+      border-bottom: 1px solid #cacaca;
+      .el-table__header-wrapper {
+        .has-gutter {
+          tr {
+            background-color: #f2f2f2;
+          }
+        }
+      }
+      tr {
+        font-size: 12px;
+        line-height: 1.2;
+        border-radius: 0.08rem;
+        th {
+          height: 0.5rem;
+          padding: 0;
+          text-align: center;
+          border-bottom: 1px solid #f1f1f1;
+          .cell {
+            word-break: break-word;
+            font-weight: 500;
+            color: #565656;
+            text-transform: uppercase;
+            line-height: 1.2;
+          }
+        }
+        th:first-child {
+          border-top-left-radius: 0.08rem;
+          border-bottom-left-radius: 0.08rem;
+        }
+        th:last-child {
+          border-top-right-radius: 0.08rem;
+          border-bottom-right-radius: 0.08rem;
+        }
+        td {
+          border-top: 1px solid #f1f1f1;
+          .cell {
+            padding: 0;
+            word-break: break-word;
+            color: #000;
+            text-align: center;
+            line-height: 1.4;
+            .el-rate__icon {
+              font-size: 0.16rem;
+              margin-right: 0;
+              @media screen and (max-width: 768px) {
+                font-size: 14px;
+              }
+            }
+            .revoke {
+              .el-button {
+                width: auto;
+                height: auto;
+                min-width: 0.5rem;
+                padding: 5px 0;
+                background: #447dff;
+                border-color: #447dff;
+                font-family: inherit;
+                font-size: inherit;
+                border: 0;
+                color: #fff;
+                line-height: 1.2;
+                cursor: pointer;
+              }
+            }
+            .el-button.el-icon-upload {
+              padding: 0 0.1rem;
+              line-height: 0.25rem;
+              font-size: 0.1372rem;
+            }
+            .bot {
+              justify-content: center;
+              p {
+                font-size: 0.1372rem;
+                padding: 0 0.08rem;
+                margin: 0 0.05rem;
+                border: 1px solid #0b318f;
+                border-radius: 0.05rem;
+                cursor: pointer;
+              }
+              p.color {
+                background: #0b318f;
+                color: #fff;
+              }
+              .el-radio {
+                margin: 0;
+                .el-radio__input {
+                  display: none;
+                }
+                .el-radio__label {
+                  display: block;
+                  font-size: 0.1372rem;
+                  padding: 0 0.04rem;
+                  margin: 0 0.01rem;
+                  border: 1px solid #0b318f;
+                  border-radius: 0.05rem;
+                  cursor: pointer;
+                  line-height: 1.8;
+                }
+                .el-radio__input.is-checked + .el-radio__label {
+                  background: #0b318f;
+                  color: #fff;
+                }
+              }
+            }
+          }
+        }
+        td.el-table_1_column_1 {
+          .cell {
+            // color:#0c3090
+          }
+        }
+      }
+    }
+  }
+}
+:deep(.add_body) {
+  width: 40%;
+  max-width: 770px;
+  min-width: 310px;
+  border-radius: 0.13rem;
+  text-align: left;
+  @media screen and (max-width: 768px) {
+    width: 60%;
+  }
+  @media screen and (max-width: 441px) {
+    width: 90%;
+  }
+  .el-dialog__header {
+    padding: 0.17rem 0.25rem 0.1rem;
+    font-size: 17px;
+    color: #000;
+    @media screen and (max-width: 768px) {
+      font-size: 15px;
+    }
+    @media screen and (min-width: 1800px) {
+      font-size: 18px;
+    }
+  }
+  .el-dialog__body {
+    padding: 0;
+    .tip,
+    .tip_black {
+      padding: 0.1rem 0.25rem;
+      background-color: #f3f1ff;
+      color: #562683;
+      font-size: 15px;
+      word-break: break-word;
+      line-height: 1.3;
+      @media screen and (max-width: 768px) {
+        font-size: 14px;
+      }
+      @media screen and (min-width: 1800px) {
+        font-size: 17px;
+      }
+    }
+    .tip_black {
+      background-color: transparent;
+      color: #000;
+      a {
+        text-decoration: underline;
+      }
+    }
+    .el-form {
+      padding: 0.15rem 0.25rem 0;
+      .el-form-item {
+        .el-form-item__content {
+          .label {
+            color: #000;
+            font-size: 15px;
+            @media screen and (max-width: 768px) {
+              font-size: 14px;
+            }
+            @media screen and (min-width: 1800px) {
+              font-size: 17px;
+            }
+          }
+          .flex-row {
+            width: 100%;
+          }
+          .el-input {
+            .el-input__inner {
+              // background: linear-gradient(180deg, #fefefe, #f0f0f0);
+            }
+          }
+        }
+      }
+    }
+    .apiTipCont {
+      padding: 0.15rem 0.25rem;
+      p {
+        margin-bottom: 0.15rem;
+        line-height: 1.5;
+        word-break: break-word;
+        @media screen and (min-width: 1800px) {
+          font-size: 16px;
+        }
+      }
+    }
+  }
+  .el-dialog__footer {
+    padding: 0 0.25rem 0.25rem;
+    text-align: left;
+    .el-button {
+      width: auto;
+      height: auto;
+      padding: 0.07rem 0.15rem;
+      margin: 0 0.15rem 0 0;
+      background: linear-gradient(180deg, #fefefe, #f0f0f0);
+      font-family: inherit;
+      font-size: 16px;
+      line-height: 1;
+      color: #000;
+      border-radius: 0.07rem;
+      @media screen and (max-width: 1600px) {
+        font-size: 14px;
+      }
+      &:hover {
+        opacity: 0.9;
+        span {
+          cursor: pointer;
+        }
+      }
+      &.is-disabled {
+        opacity: 0.5;
+        border-color: #e3e6eb;
       }
     }
   }

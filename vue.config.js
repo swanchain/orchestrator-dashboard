@@ -13,6 +13,13 @@ const resolve = dir => path.join(__dirname, dir)
 const addOptions = {
   preserveWhitespace: true
 }
+const externals = {
+  // "axios": "axios",
+  // 'moment': 'moment',
+  // 'qs': 'Qs',
+  'web3': 'Web3',
+  // 'echarts': 'echarts'
+}
 
 module.exports = {
   publicPath: '/',
@@ -58,6 +65,9 @@ module.exports = {
         deleteOriginalAssets: false
       })
     ];
+    Object.assign(config, {
+      externals,
+    })
     if (NOT_DEV) {
       config.mode = 'production';
       config.plugins = [...config.plugins, ...plugins];
