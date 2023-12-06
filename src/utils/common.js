@@ -30,8 +30,10 @@ async function sendRequest(apilink, type, jsonObject, api_token) {
     }
   } catch (err) {
     console.error(err, err.response)
-    messageTip('error', err.response ? err.response.statusText : 'Request failed. Please try again later!')
-    if (err.response.status === 401) {
+    const time = await throttle()
+    const text = err.response ? err.response.data.msg || err.response.data.message || '' : ''
+    if (time) messageTip('error', err.response ? text || err.response.statusText : 'Request failed. Please try again later!')
+    if (err.response && err.response.status === 401) {
       signOutFun()
     } else if (err.response) {
       // The request has been sent, but the status code of the server response is not within the range of 2xx
@@ -59,7 +61,7 @@ async function messageTip(type, text) {
   })
 }
 
-async function momentFun(dateItem) {
+function momentFun(dateItem) {
   let dateNew = dateItem * 1000
   let dataUnit = ''
   let dataTime = new Date(dateNew) + ''
@@ -186,45 +188,45 @@ async function walletChain(chainId) {
         blockExplorerUrls: [process.env.VUE_APP_OPSWANURL]
       }
       break
-    case 80001:
-      text = {
-        chainId: web3Init.utils.numberToHex(80001),
-        chainName: 'Mumbai Testnet',
-        nativeCurrency: {
-          name: 'MATIC',
-          symbol: 'MATIC', // 2-6 characters long
-          decimals: 18
-        },
-        rpcUrls: [process.env.VUE_APP_MUMBAIRPCURL],
-        blockExplorerUrls: [process.env.VUE_APP_MUMBAIPAYMENTURL]
-      }
-      break
-    case 97:
-      text = {
-        chainId: web3Init.utils.numberToHex(97),
-        chainName: 'BSC TestNet',
-        nativeCurrency: {
-          name: 'tBNB',
-          symbol: 'tBNB', // 2-6 characters long
-          decimals: 18
-        },
-        rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545'],
-        blockExplorerUrls: [process.env.VUE_APP_BSCTESTNETBLOCKURL]
-      }
-      break
-    case 137:
-      text = {
-        chainId: web3Init.utils.numberToHex(137),
-        chainName: 'Polygon Mainnet',
-        nativeCurrency: {
-          name: 'MATIC',
-          symbol: 'MATIC', // 2-6 characters long
-          decimals: 18
-        },
-        rpcUrls: ['https://polygon-rpc.com'],
-        blockExplorerUrls: [process.env.VUE_APP_POLYGONBLOCKURL]
-      }
-      break
+      // case 80001:
+      //   text = {
+      //     chainId: web3Init.utils.numberToHex(80001),
+      //     chainName: 'Mumbai Testnet',
+      //     nativeCurrency: {
+      //       name: 'MATIC',
+      //       symbol: 'MATIC', // 2-6 characters long
+      //       decimals: 18
+      //     },
+      //     rpcUrls: [process.env.VUE_APP_MUMBAIRPCURL],
+      //     blockExplorerUrls: [process.env.VUE_APP_MUMBAIPAYMENTURL]
+      //   }
+      //   break
+      // case 97:
+      //   text = {
+      //     chainId: web3Init.utils.numberToHex(97),
+      //     chainName: 'BSC TestNet',
+      //     nativeCurrency: {
+      //       name: 'tBNB',
+      //       symbol: 'tBNB', // 2-6 characters long
+      //       decimals: 18
+      //     },
+      //     rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545'],
+      //     blockExplorerUrls: [process.env.VUE_APP_BSCTESTNETBLOCKURL]
+      //   }
+      //   break
+      // case 137:
+      //   text = {
+      //     chainId: web3Init.utils.numberToHex(137),
+      //     chainName: 'Polygon Mainnet',
+      //     nativeCurrency: {
+      //       name: 'MATIC',
+      //       symbol: 'MATIC', // 2-6 characters long
+      //       decimals: 18
+      //     },
+      //     rpcUrls: ['https://polygon-rpc.com'],
+      //     blockExplorerUrls: [process.env.VUE_APP_POLYGONBLOCKURL]
+      //   }
+      //   break
   }
   try {
     await ethereum.request({
@@ -309,6 +311,17 @@ async function signOutFun() {
   // store.dispatch('setMetaAddress', '')
 }
 
+function hiddAddress(val) {
+  if (val) return `${val.substring(0, 5)}...${val.substring(val.length - 5)}`
+  else return '-'
+}
+
+function expiredTime(validDays) {
+  if (String(validDays) === '0') return 'Forever'
+  else if (validDays === undefined) return '-'
+  else return momentFun(validDays)
+}
+
 export default {
   sendRequest,
   timeout,
@@ -319,5 +332,7 @@ export default {
   web3Init,
   walletChain,
   login,
-  signOutFun
+  signOutFun,
+  hiddAddress,
+  expiredTime
 }
