@@ -2,8 +2,8 @@
   <section id="container">
     <div class="swan-logo">
       <img :src="swanLogo" @click="goLink('https://www.swanchain.io/')" />
-      <el-button type="primary" @click="loginMethod" v-if="getnetID === 8598668088">Login</el-button>
-      <el-button type="primary" v-else>Show API-Key</el-button>
+      <el-button type="primary" v-if="getnetID === 8598668088 && accessToken !== ''" @click="centerDialogVisible = true">Show API-Key</el-button>
+      <el-button type="primary" @click="loginMethod" v-else>Login</el-button>
     </div>
     <h1>Swan Provider Status</h1>
     <div class="describe">
@@ -239,6 +239,15 @@
       <el-pagination hide-on-single-page :page-size="pagin.pageSize" :current-page="pagin.pageNo" :pager-count="5" :small="small" :background="background" layout="total, prev, pager, next" :total="pagin.total" @size-change="handleSizeChange" @current-change="handleCurrentChange"
       />
     </div>
+
+    <el-dialog v-model="centerDialogVisible" title="API-Key" width="30%" align-center>
+      <span>API-Key</span>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="centerDialogVisible = false">OK</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </section>
 </template>
 
@@ -283,6 +292,9 @@ export default defineComponent({
     const background = ref(false)
     const searchJudge = ref(false)
     const dataArr = ref([])
+    const getnetID = ref(NaN)
+    const prevType = ref(true)
+    const centerDialogVisible = ref(false)
 
     function handleSizeChange (val) { }
     async function handleCurrentChange (currentPage) {
@@ -452,21 +464,16 @@ export default defineComponent({
       if (!time) return false
       system.$commonFun.Init(async (addr, chain) => {
         providersLoad.value = true
-        getnetID = await system.$commonFun.web3Init.eth.net.getId()
+        getnetID.value = await system.$commonFun.web3Init.eth.net.getId()
         await system.$commonFun.timeout(500)
-        if (accessToken.value) providersLoad.value = false
+        if (accessToken.value !== '' && getnetID.value === 8598668088) providersLoad.value = false
         else await signIn()
       })
     }
 
     async function signIn () {
-      if (getnetID !== 8598668088) system.$commonFun.walletChain(8598668088)
-      else providersLoad.value = false
-      // const [lStatus, signErr] = await system.$commonFun.login()
-      // if (lStatus) providersLoad.value = false
-      // else if (signErr !== '4001') signSetIn()
-      // else spookyLoad.value = false
-      // return false
+      if (getnetID.value !== 8598668088) system.$commonFun.walletChain(8598668088)
+      else system.$commonFun.login()
     }
 
     async function signSetIn (t) {
@@ -475,7 +482,7 @@ export default defineComponent({
       timer = setInterval(() => {
         if (time > 3) {
           clearInterval(timer)
-          if (accessToken.value) providersLoad.value = false
+          if (accessToken.value !== '' && getnetID.value === 8598668088) providersLoad.value = false
           else signIn()
         } else time += 1
       }, 1000)
@@ -565,10 +572,21 @@ export default defineComponent({
     function goLink (link) {
       window.open(link)
     }
-    let getnetID = NaN
+    function fn () {
+      document.addEventListener('visibilitychange', function () {
+        prevType.value = !document.hidden
+      })
+      if (typeof window.ethereum === 'undefined') return
+      ethereum.on('chainChanged', async function (accounts) {
+        if (!prevType.value) return false
+        getnetID.value = await system.$commonFun.web3Init.eth.net.getId()
+        system.$commonFun.signOutFun()
+      })
+    }
     onMounted(async () => {
-      getnetID = await system.$commonFun.web3Init.eth.net.getId()
+      getnetID.value = await system.$commonFun.web3Init.eth.net.getId()
       reset('init')
+      fn()
     })
     return {
       swanLogo,
@@ -583,6 +601,8 @@ export default defineComponent({
       badgeIcon01,
       badgeIcon02,
       getnetID,
+      accessToken,
+      centerDialogVisible,
       handleSizeChange, handleCurrentChange, searchProvider, clearProvider, expandChange, unifyNumber, sizeChange, goLink,
       loginMethod
     }

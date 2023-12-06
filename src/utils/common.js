@@ -4,6 +4,7 @@ import moment from 'moment'
 import {
   ElMessage
 } from 'element-plus'
+let lastTime = 0
 
 async function sendRequest(apilink, type, jsonObject, api_token) {
   // signOutFun()
@@ -146,6 +147,7 @@ async function Init(callback) {
         );
       });
   }
+  // else console.log('MetaMask installed:', window.ethereum.isMetaMask)
 }
 
 let web3Init
@@ -232,13 +234,79 @@ async function walletChain(chainId) {
       ]
     })
     await timeout(500)
-    // showLoading()
-    const [lStatus, signErr] = await login()
-    // hideLoading()
+    await login()
   } catch (err) {
     if (err.message) messageTip('error', err.message)
-    // hideLoading()
   }
+}
+
+async function login() {
+  const chain_id = await web3Init.eth.net.getId()
+  if (chain_id !== 8598668088) return
+  if (!store.state.metaAddress || store.state.metaAddress === undefined) {
+    const accounts = await ethereum.request({
+      method: 'eth_requestAccounts'
+    })
+    store.dispatch('setMetaAddress', accounts[0])
+  }
+  const time = await throttle()
+  if (!time) return [false, '']
+  const [signature, signErr] = await sign()
+  if (!signature) return [false, signErr]
+  const token = await performSignin(signature)
+  return [!!token, '']
+}
+
+async function throttle() {
+  // Prevent multiple signatures
+  let now = new Date().valueOf();
+  if (lastTime > 0 && (now - lastTime) <= 2000) return false
+  lastTime = now
+  return true
+}
+
+async function sign(nonce) {
+  const rightnow = (Date.now() / 1000).toFixed(0)
+  const sortanow = rightnow - (rightnow % 600)
+  const local = process.env.VUE_APP_DOMAINNAME
+  const buff = Buffer.from("Signing in to " + local + " at " + sortanow, 'utf-8')
+  let signature = null
+  let signErr = ''
+  await ethereum.request({
+    method: 'personal_sign',
+    params: [buff.toString('hex'), store.state.metaAddress]
+  }).then(sig => {
+    signErr = ''
+    signature = sig
+  }).catch(err => {
+    console.log(err)
+    signature = ''
+    signErr = err && err.code ? String(err.code) : err
+    signOutFun()
+  })
+  return [signature, signErr]
+}
+
+async function performSignin(sig) {
+  try {
+    const reqOpts = [store.state.metaAddress, sig]
+    const response = await sendRequest(`${process.env.VUE_APP_BASEAPI}login`, 'post', reqOpts)
+    if (response) {
+      store.dispatch('setAccessToken', response.access_token)
+      return true
+    }
+    messageTip('error', response ? response.message : 'Fail')
+    return null
+  } catch (err) {
+    console.log('login err:', err)
+    messageTip('error', 'Fail')
+    return null
+  }
+}
+
+async function signOutFun() {
+  store.dispatch('setAccessToken', '')
+  // store.dispatch('setMetaAddress', '')
 }
 
 export default {
@@ -249,5 +317,7 @@ export default {
   copyContent,
   Init,
   web3Init,
-  walletChain
+  walletChain,
+  login,
+  signOutFun
 }
