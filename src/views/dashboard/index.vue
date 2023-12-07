@@ -18,7 +18,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
 .dashboard {
   box-sizing: border-box;
   padding: 0;
