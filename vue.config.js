@@ -34,6 +34,18 @@ module.exports = {
     loaderOptions: {
       less: {
         javascriptEnabled: true,
+        modifyVars: {
+          'bg-color': 'rgb(13, 14, 18, 1)',
+          'text-color': 'rgb(99, 102, 116)',
+          'white-color': '#fff',
+          'white-color-opacity': 'rgba(255, 255, 255, 0.4)',
+          'white-color-opacity1': 'rgba(255, 255, 255, 0.2)',
+          'white-color-opacity2': 'rgba(255, 255, 255, 0.1)',
+          'primary-color': 'rgba(21,23,28,1)',
+          'primary-color-opacity': 'rgba(21,23,28,0.87)',
+          'primary-color-opacity1': 'rgba(0,0,0,0.6)',
+          'theme-color': 'rgba(68, 125, 255,1)'
+        }
       }
     }
   },

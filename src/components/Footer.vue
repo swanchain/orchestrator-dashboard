@@ -30,7 +30,7 @@ export default defineComponent({
   components: {}
 })
 </script>
-<style  lang="scss" scoped>
+<style  lang="less" scoped>
 .footer {
   position: relative;
   padding: 0.24rem 0 0;

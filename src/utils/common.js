@@ -322,6 +322,50 @@ function expiredTime(validDays) {
   else return momentFun(validDays)
 }
 
+function sizeChange(bytes) {
+  if (bytes === 0) return '0 B'
+  if (!bytes) return '-'
+  var k = 1024 // or 1000
+  var sizes = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+  var i = Math.floor(Math.log(bytes) / Math.log(k))
+
+  if (Math.round((bytes / Math.pow(k, i))).toString().length > 3) i += 1
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+}
+
+async function getUnit(id) {
+  let unit = 'ETH'
+  let name = ''
+  let url = ''
+  let url_tx = ''
+  switch (id) {
+    case 1:
+      unit = 'ETH'
+      name = 'Ethereum Mainnet '
+      break
+    case 8598668088:
+      unit = 'SwanETH'
+      name = 'OpSwan '
+      url = `${process.env.VUE_APP_OPSWANURL}/address/`
+      url_tx = `${process.env.VUE_APP_OPSWANURL}/tx/`
+      break
+    default:
+      unit = '-'
+      name = `Chain ${id}`
+      break
+  }
+  return ({
+    unit,
+    name,
+    url,
+    url_tx
+  })
+}
+
+function goLink(link) {
+  window.open(link)
+}
+
 export default {
   sendRequest,
   timeout,
@@ -334,5 +378,8 @@ export default {
   login,
   signOutFun,
   hiddAddress,
-  expiredTime
+  expiredTime,
+  sizeChange,
+  getUnit,
+  goLink
 }

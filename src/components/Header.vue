@@ -1,238 +1,40 @@
 <template>
   <section id="container">
-    <h1>Swan Provider Status</h1>
-    <div class="describe">
-      Use this status page to check an Swan Provider information and status.
-      <br> This list is refreshed every 5 minutes. Below snapshot taken at
-      <strong>{{gmtTime}}</strong>
-    </div>
-
-    <div class="providers-overview mt-border">
-      <div class="title">Providers Overview</div>
-      <el-row :gutter="30">
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6>Network Providers</h6>
-            <b v-loading="providersLoad">{{pagin.total}}</b>
-          </div>
-          <div class="grid-content">
-            <h6>Active Applications</h6>
-            <b v-loading="providersLoad">{{pagin.active_applications}}</b>
-          </div>
-          <div class="grid-content">
-            <h6>Total Deployments</h6>
-            <b v-loading="providersLoad">{{pagin.total_deployments}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="18" :lg="18" :xl="18" class="flex-row">
-          <div class='chart' id='chart' v-loading="providersLoad" element-loading-background="rgba(0, 0, 0, 0)"></div>
-        </el-col>
-      </el-row>
-
-      <el-row :gutter="30" class="erchart-body">
-        <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
-          <div class="erchart">
-            <div class="title">VCPU</div>
-            <h6>Current VCPU usage</h6>
-            <div id="maychar-vcpu" class="maychar"></div>
-            <h6>
-              <i class="background-free"></i> {{providerBody.data.total_vcpu - providerBody.data.total_used_vcpu}} vcpu - Free
-            </h6>
-            <h6>
-              <i class="background-used"></i> {{providerBody.data.total_used_vcpu}} vcpu - Used
-            </h6>
-            <h6>
-              <i class="background-total"></i> {{providerBody.data.total_vcpu}} - Total
-            </h6>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
-          <div class="erchart">
-            <div class="title">Memory</div>
-            <h6>Current Memory usage</h6>
-            <div id="maychar-memory" class="maychar"></div>
-            <h6>
-              <i class="background-free"></i> {{system.$commonFun.sizeChange(providerBody.data.total_memory-providerBody.data.total_used_memory)}} - Free
-            </h6>
-            <h6>
-              <i class="background-used"></i> {{system.$commonFun.sizeChange(providerBody.data.total_used_memory)}} - Used
-            </h6>
-            <h6>
-              <i class="background-total"></i> {{system.$commonFun.sizeChange(providerBody.data.total_memory)}} - Total
-            </h6>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
-          <div class="erchart">
-            <div class="title">Storage</div>
-            <h6>Current Storage usage</h6>
-            <div id="maychar-storage" class="maychar"></div>
-            <h6>
-              <i class="background-free"></i> {{system.$commonFun.sizeChange(providerBody.data.total_storage-providerBody.data.total_used_storage)}} - Free
-            </h6>
-            <h6>
-              <i class="background-used"></i> {{system.$commonFun.sizeChange(providerBody.data.total_used_storage)}} - Used
-            </h6>
-            <h6>
-              <i class="background-total"></i> {{system.$commonFun.sizeChange(providerBody.data.total_storage)}} - Total
-            </h6>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
-          <div class="erchart">
-            <div class="title">GPU</div>
-            <h6>Current GPU usage</h6>
-            <div id="maychar-gpu" class="maychar"></div>
-            <h6>
-              <i class="background-free"></i> {{providerBody.data.total_gpu-providerBody.data.total_used_gpu}} - Free
-            </h6>
-            <h6>
-              <i class="background-used"></i> {{providerBody.data.total_used_gpu}} - Used
-            </h6>
-            <h6>
-              <i class="background-total"></i> {{providerBody.data.total_gpu}} - Total
-            </h6>
-          </div>
-        </el-col>
-      </el-row>
-    </div>
-
-    <div class="providers-network mt-border">
-      <div class="title">Swan Network Providers</div>
-      <div class="search-body flex">
-        <el-input v-model="networkInput" placeholder="Search Providers" />
-        <el-button type="primary" :disabled="!networkInput ? true:false" round @click="searchProvider">Search</el-button>
-        <el-button type="info" :disabled="!networkInput ? true:false" round @click="clearProvider">Clear</el-button>
+    <div class="swan-logo flex-row nowrap">
+      <img :src="swanLogo" @click="system.$commonFun.goLink('https://www.swanchain.io/')" />
+      <div class="nav">
+        <router-link :to="{name: 'dashboard'}" :class="{'active': route.name === 'dashboard'}">Dashboard</router-link>
+        <router-link :to="{ name: 'paymentHistory', query: { type: 'user' }}" :class="{'active': route.name === 'paymentHistory'}">Reword History</router-link>
       </div>
-      <el-table :data="providersData" @expand-change="expandChange" style="width: 100%" empty-text="No Data" v-loading="providersLoad">
-        <el-table-column type="expand" width="40">
-          <template #default="props">
-            <div class="service-body" v-if="props.row.computer_provider">
-              <!--              <div class="tit">city</div>-->
-              <!--              <el-divider />-->
-              <!--              <div class="desc">{{ props.row.computer_provider.city}}</div>-->
-              <!--              <div class="tit">country</div>-->
-              <!--              <el-divider />-->
-              <!--              <div class="desc">{{ props.row.computer_provider.country}}</div>-->
-              <div class="tit">Score</div>
-              <el-divider/>
-              <div class="list">
-                <ul>
-                  <li>
-                    <div class="li-body">
-                      <p>Provider Score</p>
-                      <p>
-                        <b>{{props.row.computer_provider.score}}</b>
-                      </p>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-              <div class="tit">Deployments</div>
-              <el-divider />
-              <div class="list">
-                <ul>
-                  <li>
-                    <div class="li-body">
-                      <p>Active Deployment</p>
-                      <p>
-                        <b>{{props.row.computer_provider.active_deployment}}</b>
-                      </p>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-              <div class="tit">Resources</div>
-              <el-divider />
-              <div v-for="n in props.row.computer_provider.machines" :key="n" class="list">
-                <div class="li-title">Machine ID: {{n.machine_id}}</div>
-                <ul>
-                  <li v-for="(child, vcpuKeys, k) in n.specs" :key="k" v-show="vcpuKeys === 'vcpu'">
-                    <div class="li-body">
-                      <p :class="{'t':true, 't-capitalize': vcpuKeys === 'vcpu'}">{{vcpuKeys}}</p>
-                      <p>
-                        <strong>{{child.free}}</strong>free</p>
-                      <p>
-                        <strong>{{child.total}}</strong>total</p>
-                      <p>
-                        <strong>{{child.used}}</strong>used</p>
-                    </div>
-                  </li>
-                  <li v-for="(child, memoryKeys, k) in n.specs" :key="k" v-show="memoryKeys === 'memory'">
-                    <div class="li-body">
-                      <p :class="{'t':true, 't-capitalize': memoryKeys === 'vcpu'}">{{memoryKeys}}</p>
-                      <p>
-                        <strong>{{child.free}}</strong>free</p>
-                      <p>
-                        <strong>{{child.total}}</strong>total</p>
-                      <p>
-                        <strong>{{child.used}}</strong>used</p>
-                    </div>
-                  </li>
-                  <li v-for="(child, storageKeys, k) in n.specs" :key="k" v-show="storageKeys === 'storage'">
-                    <div class="li-body">
-                      <p :class="{'t':true, 't-capitalize': storageKeys === 'vcpu'}">{{storageKeys}}</p>
-                      <p>
-                        <strong>{{child.free}}</strong>free</p>
-                      <p>
-                        <strong>{{child.total}}</strong>total</p>
-                      <p>
-                        <strong>{{child.used}}</strong>used</p>
-                    </div>
-                  </li>
-                  <li v-for="(child, gpuKeys, k) in n.specs" :key="k" v-show="gpuKeys === 'gpu'" style="width: 100%;">
-                    <div class="flex-warp">
-                      <div v-for="g in child.details" :key="g" :class="{'li-body':true}">
-                        <p :class="{'t':true, 't-capitalize': gpuKeys === 'gpu'}">{{g.product_name}} ({{gpuKeys}})</p>
-                        <p>
-                          <strong>{{g.fb_memory_usage.free}}</strong>free</p>
-                        <p>
-                          <strong>{{g.fb_memory_usage.total}}</strong>total</p>
-                        <p>
-                          <strong>{{g.fb_memory_usage.used}}</strong>used</p>
-                        <p>Status:
-                          <strong>{{g.status}}</strong>
-                        </p>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
+      <div class="header-right flex-row nowrap" v-if="getnetID === 8598668088 && accessToken !== ''">
+        <div class="set ">
+          <div class="info-style flex-row">
+            <div class="address" @click="wrongMethod">
+              {{system.$commonFun.hiddAddress(metaAddress)}}
             </div>
-            <div class="service-body" v-else>No Data</div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="name" label="Name" min-width="90">
-          <template #default="scope">
-            <div class="badge">
-              <img v-if="scope.$index < 2 && pagin.pageNo <= 1" :src="badgeIcon01" alt="">
-              <img v-else :src="badgeIcon02" alt=""> {{scope.row.name}}
-            </div>
-          </template>
-        </el-table-column>
-        <!-- <el-table-column prop="country" label="Country" /> -->
-        <el-table-column prop="computer_provider.active_deployment" label="Active deployment" />
-        <el-table-column prop="computer_provider.score" label="Score" />
-        <el-table-column prop="region" label="Region" />
-        <el-table-column prop="uptime" label="Uptime">
-          <template #default="scope">
-            <div>
-              {{unifyNumber(scope.row.uptime)}}%
-            </div>
-          </template>
-        </el-table-column>
-        <!--        <el-table-column prop="" label="5 minutes Interval Status" min-width="110">-->
-        <!--          <template #default="scope">-->
-        <!--            <div class="flex-row">-->
-        <!--              <el-icon v-for="n in 5" :key="n">-->
-        <!--                <CircleCheck />-->
-        <!--              </el-icon>-->
-        <!--            </div>-->
-        <!--          </template>-->
-        <!--        </el-table-column>-->
-      </el-table>
-      <el-pagination hide-on-single-page :page-size="pagin.pageSize" :current-page="pagin.pageNo" :pager-count="5" :small="small" :background="background" layout="total, prev, pager, next" :total="pagin.total" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-      />
+          </div>
+        </div>
+        <div class="set">
+          <el-dropdown popper-class="menu-style" @command="handleSelect" placement="bottom-end" :hide-on-click="false">
+            <router-link to="/personal_center" class="el-dropdown-link setting-style loginImg flex-row">
+              <el-icon>
+                <Avatar />
+              </el-icon>
+            </router-link>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item command="apiKey">
+                  <div class="profile router-link b">Show API-Key</div>
+                </el-dropdown-item>
+                <el-dropdown-item command="sign_out">
+                  <span class="link">Sign Out</span>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </div>
+      </div>
+      <el-button type="primary" @click="loginMethod" v-else>Login</el-button>
     </div>
 
     <el-dialog v-model="centerDialogVisible" title="API Keys" custom-class="apikey_body">
@@ -426,156 +228,7 @@ export default defineComponent({
     function handleSizeChange (val) { }
     async function handleCurrentChange (currentPage) {
       pagin.pageNo = currentPage
-      init()
-    }
-    async function init (nameText) {
-      if (searchJudge.value) return
-      providersLoad.value = true
-      const page = pagin.pageNo > 0 ? pagin.pageNo - 1 : 0
-      const params = {
-        limit: pagin.pageSize,
-        offset: page * pagin.pageSize,
-        search_string: nameText
-      }
-      const providerRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}cp/dashboard?${qs.stringify(params)}`, 'get')
-      if (providerRes && providerRes.status === 'success') {
-        pagin.total = providerRes.data.total_providers
-        pagin.total_deployments = providerRes.data.total_deployments
-        pagin.active_applications = providerRes.data.active_applications
-        providerBody.data = providerRes.data || {}
-        providersData.value = providerRes.data.providers || []
-        dataArr.value = providerRes.data.map_info
-        drawChart(dataArr.value)
-        changetype()
-      } else {
-        providersData.value = []
-        if (providerRes.status) system.$commonFun.messageTip(providerRes.status, providerRes.message)
-      }
-      providersLoad.value = false
-    }
-    async function reverseList (list) {
-      try {
-        if (!list) return []
-        list.forEach(element => {
-          element.value = element.value.reverse()
-        })
-        return list
-      } catch (err) {
-        return []
-      }
-    }
-    async function searchProvider () {
-      pagin.pageSize = 10
-      pagin.pageNo = 1
-      init(networkInput.value)
-    }
-    function clearProvider () {
-      searchJudge.value = false
-      reset('init')
-    }
-    function expandChange (row, expand) {
-      // console.log(row, expand)
-    }
-    function reset (type) {
-      pagin.total = 0
-      pagin.total_deployments = 0
-      pagin.active_applications = 0
-      pagin.pageSize = 10
-      pagin.pageNo = 1
-      providersData.value = []
-      providersLoad.value = false
-      networkInput.value = ''
-      if (type) init()
-    }
-    function drawChart (dataArr) {
-      let chart = echarts.init(document.getElementById('chart'))
-      window.addEventListener('resize', function () {
-        chart.resize()
-      })
-      chart.setOption({
-        grid: {
-          top: '2%',
-          left: '2%',
-          right: '2%',
-          bottom: '2%',
-          containLabel: true
-        },
-        tooltip: {
-          trigger: "item",
-          formatter: function (val) {
-            if (val.data && val.data.city) return val.data.city
-            else return val.name
-          },
-          // show: false,
-          padding: 5,
-          textStyle: {
-            fontSize: 8,
-            lineHeight: 10,
-            align: "left"
-          }
-        },
-        geo: {
-          show: true,
-          map: 'world',
-          label: {
-            normal: {
-              show: false
-            },
-            emphasis: {
-              show: false
-            }
-          },
-          // aspectScale: 0.75,
-          roam: false,
-          itemStyle: {
-            normal: {
-              areaColor: '#fff',
-              borderColor: '#eee'
-            },
-            // emphasis: {
-            //   areaColor: '#a467d1',
-            //   label: {
-            //     show: false
-            //   }
-            // }
-          },
-          emphasis: {
-            focus: 'none'
-          },
-          silent: true
-          // left: '5%',
-          // right: '5%'
-        },
-        series: [
-          {
-            name: 'world',
-            type: 'scatter',
-            coordinateSystem: 'geo',
-            itemStyle: {
-              // borderWidth: 1,
-              // borderColor: '#fff',
-              // color: 'rgba(89, 152, 14, 1)',
-              color: '#4db470',
-              shadowBlur: 2,
-              shadowColor: '#000'
-            },
-            data: dataArr,
-            symbolSize: 10,
-            zlevel: 1
-          }
-        ]
-      })
-    }
-    function unifyNumber (num) {
-      if (!num) return 0
-      const handleNum = parseFloat(num * 100)
-      const isToFixed = handleNum.toString().includes('.') && handleNum.toString().split('.')[1].length > 2
-      if (isToFixed) {
-        const handleArray = handleNum.toString().split('.')
-        const decimal = handleArray[1].substr(0, 2)
-        if (decimal === "00") return handleNum.toFixed(0)
-        else return `${handleArray[0]}.${decimal}`
-      } else return handleNum
+      getdataList()
     }
     let lastTime = 0
     async function throttle () {
@@ -611,81 +264,6 @@ export default defineComponent({
         } else time += 1
       }, 1000)
     }
-    const changetype = () => {
-      const machart_gpu = echarts.init(document.getElementById("maychar-gpu"));
-      const machart_memory = echarts.init(document.getElementById("maychar-memory"));
-      const machart_storage = echarts.init(document.getElementById("maychar-storage"));
-      const machart_vcpu = echarts.init(document.getElementById("maychar-vcpu"));
-      const option = {
-        tooltip: {
-          trigger: 'item',
-          triggerOn: 'none'
-        },
-        color: ['#4db470', '#00b4ff'],
-        series: [
-          {
-            name: 'Total',
-            type: 'pie',
-            radius: ['50%', '70%'],
-            center: ['40%', '50%'],
-            avoidLabelOverlap: false,
-            itemStyle: {
-              borderRadius: 3,
-              borderColor: 'transparent',
-              borderWidth: 5
-            },
-            label: {
-              show: false,
-              position: 'center'
-            },
-            emphasis: {
-              label: {
-                show: true,
-                fontSize: 11,
-                borderColor: 'transparent',
-                color: '#fff'
-              }
-            },
-            labelLine: {
-              show: false
-            }
-          }
-        ]
-      }
-      const option2 = JSON.parse(JSON.stringify(option))
-      const option3 = JSON.parse(JSON.stringify(option))
-      const option4 = JSON.parse(JSON.stringify(option))
-      const option5 = JSON.parse(JSON.stringify(option))
-      option2.series[0].data = [
-        { value: providerBody.data.total_gpu - providerBody.data.total_used_gpu, name: providerBody.data.total_gpu - providerBody.data.total_used_gpu },
-        { value: providerBody.data.total_used_gpu, name: providerBody.data.total_used_gpu },
-      ]
-      option3.series[0].data = [
-        { value: providerBody.data.total_memory - providerBody.data.total_used_memory, name: system.$commonFun.sizeChange(providerBody.data.total_memory - providerBody.data.total_used_memory) + ' ' },
-        { value: providerBody.data.total_used_memory, name: system.$commonFun.sizeChange(providerBody.data.total_used_memory) },
-      ]
-      option4.series[0].data = [
-        { value: providerBody.data.total_storage - providerBody.data.total_used_storage, name: system.$commonFun.sizeChange(providerBody.data.total_storage - providerBody.data.total_used_storage) + ' ' },
-        { value: providerBody.data.total_used_storage, name: system.$commonFun.sizeChange(providerBody.data.total_used_storage) },
-      ]
-      option5.series[0].data = [
-        { value: providerBody.data.total_vcpu - providerBody.data.total_used_vcpu, name: `${providerBody.data.total_vcpu - providerBody.data.total_used_vcpu} vcpu ` },
-        { value: providerBody.data.total_used_vcpu, name: `${providerBody.data.total_used_vcpu} vcpu` },
-      ]
-      machart_gpu.setOption(option2);
-      machart_memory.setOption(option3);
-      machart_storage.setOption(option4);
-      machart_vcpu.setOption(option5);
-      window.addEventListener("resize", function () {
-        machart_gpu.resize();
-        machart_memory.resize();
-        machart_storage.resize();
-        machart_vcpu.resize();
-      })
-    }
-    function goLink (link) {
-      window.open(link)
-    }
     function fn () {
       document.addEventListener('visibilitychange', function () {
         prevType.value = !document.hidden
@@ -701,7 +279,7 @@ export default defineComponent({
       // console.log(key, keyPath) //  
       if (key === 'apiKey') getdataList()
       // else if (key === 'asProvider') router.push({ name: 'paymentHistory', query: { type: 'provider' } })
-      else if (key === 'asUser') router.push({ name: 'paymentHistory', query: { type: 'user' } })
+      // else if (key === 'asUser') router.push({ name: 'paymentHistory', query: { type: 'user' } })
       else if (key === 'sign_out') {
         await system.$commonFun.signOutFun()
         // await system.$commonFun.timeout(50)
@@ -732,7 +310,6 @@ export default defineComponent({
     }
     onMounted(async () => {
       getnetID.value = await system.$commonFun.web3Init.eth.net.getId()
-      reset('init')
       fn()
       activeMenu()
       balanceMethod()
@@ -767,7 +344,7 @@ export default defineComponent({
       paginKey,
       ruleForm,
       info, wrongVisible, bodyWidth,
-      getdataList, createCom, deleteToken, handleKeyChange, handleSizeChange, handleCurrentChange, searchProvider, clearProvider, expandChange, unifyNumber, goLink,
+      getdataList, createCom, deleteToken, handleKeyChange, handleSizeChange, handleCurrentChange,
       loginMethod, handleSelect, wrongMethod
     }
   }
