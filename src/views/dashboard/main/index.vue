@@ -240,35 +240,24 @@
       />
     </div>
 
-    <el-dialog v-model="addVisible" title="Create A Key" :show-close="false" custom-class="add_body">
-      <el-form ref="ruleFormRefDelete" status-icon v-loading="listLoad">
-        <el-form-item prop="name" style="width:100%">
-          <label class="label" for="name">
-            Name
-          </label>
-          <div class="flex flex-row">
-            <el-input v-model="ruleForm.name" placeholder=" " />
-          </div>
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button type="primary" :disabled="!ruleForm.name" @click="createCom">
-            Create
-          </el-button>
-          <el-button @click="addVisible = false">Cancel</el-button>
-        </span>
-      </template>
-    </el-dialog>
     <el-dialog v-model="centerDialogVisible" title="API Keys" custom-class="apikey_body">
       <div class="cont">
-        <el-button type="primary" class="add-button" @click="addVisible=true">New API Key</el-button>
+        <el-button type="primary" class="add-button" @click="createCom">New API Key</el-button>
         <el-table :data="toolData" v-loading="tokenShow" style="width: 100%" empty-text="No Data" class="table_cell">
-          <el-table-column prop="key" label="KEY" width="530">
+          <el-table-column prop="key" label="KEY">
             <template #default="scope">
               <div class="flex-row" style="justify-content: center;">
                 {{scope.row.token}}
-                <i class="icon icon_copy" @click="system.$commonFun.copyContent(scope.row.key, 'Copied')"></i>
+                <i class="icon icon_copy" @click="system.$commonFun.copyContent(scope.row.token, 'Copied')">
+                  <DocumentCopy />
+                </i>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="" width="100" label="">
+            <template #default="scope">
+              <div class="revoke">
+                <el-button type="danger" @click="deleteToken(scope.row.token)">Delete</el-button>
               </div>
             </template>
           </el-table-column>
@@ -291,12 +280,12 @@ import { useStore } from "vuex"
 import { useRouter, useRoute } from 'vue-router'
 import qs from 'qs'
 import {
-  CircleCheck
+  CircleCheck, DocumentCopy
 } from '@element-plus/icons-vue'
 import * as echarts from "echarts"
 export default defineComponent({
   components: {
-    CircleCheck
+    CircleCheck, DocumentCopy
   },
   setup () {
     const store = useStore()
@@ -337,8 +326,6 @@ export default defineComponent({
       total: 0,
       sort: 'updated'
     })
-    const addVisible = ref(false)
-    const listLoad = ref(false)
     const ruleForm = reactive({
       name: ''
     })
@@ -349,24 +336,26 @@ export default defineComponent({
       getdataList()
     }
     async function createCom () {
-      listLoad.value = true
-      const params = {
-        "name": ruleForm.name
-      }
-      const listRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_RPCAPI}v1/keys/`, 'post', params)
-      if (listRes && String(listRes.code) === '0') paginKey.pageNo = 1
-      ruleForm.name = ''
-      getdataList()
-      listLoad.value = false
-      addVisible.value = false
-    }
-    async function deleteApiKey (id) {
       tokenShow.value = true
-      const deleteRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_RPCAPI}v1/keys/${id}`, 'delete')
-      getdataList()
+      const listRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}api_token`, 'post')
+      if (listRes && listRes.status === 'success') {
+        system.$commonFun.messageTip('success', listRes.message ? listRes.message : 'Success!')
+        getdataList()
+        return
+      } else system.$commonFun.messageTip('error', listRes.message ? listRes.message : 'Failed!')
+      // await system.$commonFun.timeout(500)
       tokenShow.value = false
     }
-    async function getdataList() {
+    async function deleteToken (tokenName) {
+      tokenShow.value = true
+      let formData = new FormData()
+      formData.append('api_token', tokenName)
+      const listRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}api_token/delete`, 'post', formData)
+      if (listRes && listRes.status === 'success') system.$commonFun.messageTip('success', listRes.message ? listRes.message : 'Delete successfully!')
+      else system.$commonFun.messageTip('error', listRes.message ? listRes.message : 'Delete failed!')
+      getdataList()
+    }
+    async function getdataList () {
       centerDialogVisible.value = true
       tokenShow.value = true
       toolData.value = []
@@ -376,7 +365,7 @@ export default defineComponent({
 
         if (keysRes && keysRes.status === 'success') {
           // Assuming the 'data' field in response contains the required token
-          if (keysRes.data){
+          if (keysRes.data) {
             toolData.value = keysRes.data.token ? [keysRes.data.token] : []  // Assigning the token data to toolData
             // If there are multiple tokens, and they are in a list, replace the above line with:
             // toolData.value = keysRes.data.list || []
@@ -705,8 +694,8 @@ export default defineComponent({
       toolData,
       tokenShow,
       paginKey,
-      listLoad, addVisible, ruleForm,
-      getdataList, createCom, deleteApiKey, handleKeyChange, handleSizeChange, handleCurrentChange, searchProvider, clearProvider, expandChange, unifyNumber, sizeChange, goLink,
+      ruleForm,
+      getdataList, createCom, deleteToken, handleKeyChange, handleSizeChange, handleCurrentChange, searchProvider, clearProvider, expandChange, unifyNumber, sizeChange, goLink,
       loginMethod
     }
   }
@@ -1102,7 +1091,7 @@ export default defineComponent({
         line-height: 1.2;
         border-radius: 0.08rem;
         th {
-          height: 0.5rem;
+          height: 0.4rem;
           padding: 0;
           text-align: center;
           border-bottom: 1px solid #f1f1f1;
@@ -1191,6 +1180,24 @@ export default defineComponent({
                   background: #0b318f;
                   color: #fff;
                 }
+              }
+            }
+            .icon_copy {
+              width: 16px;
+              height: 16px;
+              margin: -1px 0 0 0.07rem;
+              cursor: pointer;
+              @media screen and (min-width: 1800px) {
+                width: 18px;
+                height: 18px;
+              }
+              svg,
+              path {
+                width: 100%;
+                height: 100%;
+              }
+              &:hover {
+                opacity: 0.7;
               }
             }
           }
