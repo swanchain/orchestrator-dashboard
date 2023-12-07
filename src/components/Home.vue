@@ -1,6 +1,9 @@
 <template>
   <div class="wrapper" id="wrapper" ref="area">
     <el-container>
+      <el-header>
+        <v-head></v-head>
+      </el-header>
       <el-main>
         <div class="content">
           <router-view v-slot="{ Component }">
@@ -21,6 +24,7 @@
 </template>
 
 <script>
+import vHead from './Header.vue';
 import vFoot from './Footer.vue';
 import { defineComponent, computed, onMounted, watch, ref, reactive, getCurrentInstance } from 'vue'
 import { useStore } from "vuex"
@@ -37,7 +41,7 @@ export default defineComponent({
     return {}
   },
   components: {
-    vFoot
+    vHead, vFoot
   }
 })
 </script>
@@ -58,6 +62,7 @@ export default defineComponent({
       height: auto;
       padding: 0;
     }
+    .el-header,
     .el-main,
     .el-footer {
       width: calc(100% - 0.9rem);

@@ -174,7 +174,8 @@ export default defineComponent({
           paymentsRes.data.payments[p].url_tx = url_tx
         }
         paymentData.value = paymentsRes.data.payments || []
-      } else if (paymentsRes.message) system.$commonFun.messageTip('error', paymentsRes.message)
+      }
+      // else if (paymentsRes.message) system.$commonFun.messageTip('error', paymentsRes.message)
       paymentLoad.value = false
     }
     async function paymentEnv () {
@@ -221,7 +222,6 @@ export default defineComponent({
 <style  lang="less" scoped>
 #payment {
   width: 100%;
-  border-top: 1px solid rgba(229, 231, 235, 0.7);
   .payment-history {
     height: calc(100% - 1.2rem);
     padding-top: 0.4rem;
@@ -230,24 +230,27 @@ export default defineComponent({
     box-sizing: border-box;
     word-break: break-word;
     text-transform: capitalize;
-    color: #606060;
+    color: @white-color;
     font-size: 14px;
     text-align: left;
     .title {
       margin: 0 0 0.4rem;
       font-weight: bold;
       font-size: 0.24rem;
-      color: rgb(55, 65, 81);
+      color: @white-color;
     }
     :deep(.el-table) {
-      border: 1px solid #e4e4e4;
-      border-radius: 0.1rem;
+      background-color: transparent;
+      // border-radius: 0.1rem;
+      border: 1px solid rgb(30, 32, 39);
       tr {
         th,
         td {
           padding: 0.1rem 0;
+          background-color: @primary-color;
           font-size: 15px;
-          color: #878c93;
+          color: rgb(181, 183, 200);
+          border-color: rgb(38, 39, 47);
           @media screen and (max-width: 1600px) {
             font-size: 13px;
           }
@@ -292,9 +295,9 @@ export default defineComponent({
         th {
           font-size: 16px;
           font-weight: normal;
-          background: linear-gradient(180deg, #fefefe, #f0f0f0);
+          background-color: @primary-color;
           text-transform: uppercase;
-          color: #606060;
+          color: @text-color;
           @media screen and (max-width: 1600px) {
             font-size: 14px;
           }
@@ -302,6 +305,9 @@ export default defineComponent({
             font-size: 13px;
           }
         }
+      }
+      .el-table__inner-wrapper::before {
+        height: 0;
       }
     }
   }
