@@ -44,7 +44,10 @@ module.exports = {
           'primary-color': 'rgba(21,23,28,1)',
           'primary-color-opacity': 'rgba(21,23,28,0.87)',
           'primary-color-opacity1': 'rgba(0,0,0,0.6)',
-          'theme-color': 'rgba(68, 125, 255,1)'
+          'theme-color': 'rgba(68, 125, 255,1)',
+          'theme-color-opacity': 'rgba(68, 125, 255,0.6)',
+          'theme-color-opacity1': 'rgba(68, 125, 255,0.4)',
+          'theme-color-opacity2': 'rgba(68, 125, 255,0.1)'
         }
       }
     }
