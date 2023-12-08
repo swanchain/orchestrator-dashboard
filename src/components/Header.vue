@@ -131,26 +131,10 @@ export default defineComponent({
     const route = useRoute()
     const router = useRouter()
     const swanLogo = require("@/assets/images/icons/logo.png")
-    const badgeIcon01 = require("@/assets/images/icons/badge-1.png")
-    const badgeIcon02 = require("@/assets/images/icons/badge-2.png")
-    const gmtTime = new Date().toGMTString()
     const providersLoad = ref(false)
     const providersData = ref([])
-    const pagin = reactive({
-      pageSize: 10,
-      pageNo: 1,
-      total: 0,
-      total_deployments: 0,
-      active_applications: 0
-    })
-    const providerBody = reactive({
-      data: {}
-    })
-    const networkInput = ref('')
     const small = ref(false)
     const background = ref(false)
-    const searchJudge = ref(false)
-    const dataArr = ref([])
     const getnetID = ref(NaN)
     const prevType = ref(true)
     const centerDialogVisible = ref(false)
@@ -174,7 +158,6 @@ export default defineComponent({
     const wrongVisible = ref(false)
 
     async function handleKeyChange (currentPage) {
-      // console.log('handleCurrentChange:', currentPage)
       paginKey.pageNo = currentPage
       getdataList()
     }
@@ -226,10 +209,6 @@ export default defineComponent({
       tokenShow.value = false
     }
     function handleSizeChange (val) { }
-    async function handleCurrentChange (currentPage) {
-      pagin.pageNo = currentPage
-      getdataList()
-    }
     let lastTime = 0
     async function throttle () {
       // Prevent multiple signatures
@@ -326,16 +305,10 @@ export default defineComponent({
       route,
       swanLogo,
       metaAddress,
-      gmtTime,
       providersLoad,
       providersData,
-      networkInput,
-      pagin,
       small,
       background,
-      providerBody,
-      badgeIcon01,
-      badgeIcon02,
       getnetID,
       accessToken,
       centerDialogVisible,
@@ -344,7 +317,7 @@ export default defineComponent({
       paginKey,
       ruleForm,
       info, wrongVisible, bodyWidth,
-      getdataList, createCom, deleteToken, handleKeyChange, handleSizeChange, handleCurrentChange,
+      getdataList, createCom, deleteToken, handleKeyChange, handleSizeChange,
       loginMethod, handleSelect, wrongMethod
     }
   }
@@ -474,331 +447,6 @@ export default defineComponent({
               cursor: pointer;
             }
           }
-        }
-      }
-    }
-  }
-  h1 {
-    margin: 0 0 0.2rem;
-    font-size: 0.35rem;
-    font-weight: 600;
-  }
-  :deep(.providers-overview),
-  :deep(.providers-network) {
-    padding: 0.4rem 0;
-    .title {
-      margin: 0;
-      font-size: 0.21rem;
-      font-weight: 600;
-    }
-    .el-row {
-      .el-col {
-        &.flex-row {
-          display: flex;
-        }
-        .grid-content {
-          padding: 0.15rem;
-          margin: 0.45rem 0 0.55rem;
-          background: rgba(255, 255, 255, 0.1);
-          backdrop-filter: blur(5px);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          border-radius: 0.1rem;
-          animation: glow 1s ease-in-out infinite alternate;
-          h6 {
-            font-size: 16px;
-            @media screen and (max-width: 1260px) {
-              font-size: 14px;
-            }
-          }
-          b {
-            font-size: 0.3rem;
-          }
-        }
-        .chart {
-          width: 100%;
-          margin: 0 auto;
-          height: 400px;
-        }
-      }
-      &.erchart-body {
-        .el-col {
-          margin: 0.3rem 0 0;
-          .erchart {
-            margin: 0.3rem 0 0;
-            .title {
-              font-size: 0.18rem;
-            }
-            h6 {
-              display: flex;
-              align-items: center;
-              margin: 0 0 0.1rem;
-              font-weight: 100;
-              i {
-                display: block;
-                width: 23px;
-                height: 8px;
-                margin: auto 0.05rem auto 0;
-                border-radius: 5px;
-                &.background-free {
-                  background-color: #4db470;
-                }
-                &.background-used {
-                  background-color: #00b4ff;
-                }
-                &.background-total {
-                  background-color: #9266a9;
-                }
-              }
-            }
-            .maychar {
-              width: 100%;
-              height: 220px;
-              @media screen and (max-width: 599px) {
-                max-width: 250px;
-                height: 150px;
-              }
-            }
-          }
-        }
-      }
-    }
-    .search-body {
-      justify-content: flex-start;
-      flex-wrap: wrap;
-      margin: 0.24rem 0 0;
-      .el-input {
-        width: 50%;
-        margin: 0 0.2rem 0 0;
-        .el-input__inner {
-          width: 100%;
-          height: 40px;
-          background-color: rgb(21, 23, 28);
-          line-height: 40px;
-          border-color: rgb(38, 39, 47);
-          border-radius: 0.1rem;
-          color: rgb(154, 156, 174);
-          @media screen and (max-width: 768px) {
-            width: 100%;
-          }
-          &:hover,
-          &:active,
-          &:focus {
-            border-color: #c37af9;
-          }
-        }
-      }
-      .el-button {
-        font-family: inherit;
-        &.el-button--primary {
-          background-color: #7405ff;
-          border-color: #7405ff;
-        }
-        &:hover,
-        &.is-disabled {
-          opacity: 0.7;
-        }
-      }
-    }
-    .el-table {
-      margin: 0.24rem auto;
-      background-color: transparent;
-      border-radius: 0.1rem;
-      border: 1px solid rgb(30, 32, 39);
-      tr {
-        background-color: transparent;
-        th {
-          word-break: break-word;
-          padding: 0.1rem 0;
-          background-color: @primary-color;
-          border: 0;
-          .cell {
-            color: @text-color;
-            word-break: break-word;
-          }
-        }
-        td {
-          padding: 0.16rem 0;
-          background-color: @primary-color;
-          color: rgb(181, 183, 200);
-          border-color: rgb(38, 39, 47);
-          i {
-            margin-right: 5px;
-            color: @text-color;
-            font-size: 18px;
-            @media screen and (max-width: 1260px) {
-              font-size: 16px;
-            }
-          }
-          .service-body {
-            padding: 0 0.25rem 0.45rem;
-            // color: #333;
-            // border-top: rgb(220, 223, 230) 1px solid;
-            // border-bottom: rgb(220, 223, 230) 1px solid;
-            .tit {
-              margin: 0.2rem 0 0;
-              font-size: 16px;
-              font-weight: 500;
-              text-transform: capitalize;
-              @media screen and (max-width: 1260px) {
-                font-size: 14px;
-              }
-            }
-            .desc {
-              padding: 0 0 0.1rem;
-              font-size: 14px;
-              @media screen and (max-width: 1260px) {
-                font-size: 12px;
-              }
-            }
-            .list {
-              padding: 0.1rem 0 0.15rem;
-              .li-title {
-                width: 100%;
-              }
-              ul {
-                display: flex;
-                align-items: center;
-                flex-wrap: wrap;
-                .flex-warp {
-                  display: flex;
-                  flex-wrap: wrap;
-                  align-items: stretch;
-                }
-                .li-body {
-                  position: relative;
-                  padding: 0.1rem 0.3rem;
-                  margin: 0.15rem 0.15rem 0 0;
-                  // background-color: #f4f4f4;
-                  border: 1px solid #e4e7ed;
-                  border-radius: 5px;
-                  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-                  @media screen and (max-width: 768px) {
-                    padding: 0.1rem 0.5rem;
-                    margin: 0.25rem 0.25rem 0 0;
-                  }
-                  p {
-                    padding: 3px 0;
-                    font-size: 14px;
-                    line-height: 1.3;
-                    @media screen and (max-width: 1260px) {
-                      font-size: 12px;
-                    }
-                    strong,
-                    b {
-                      margin-right: 5px;
-                      font-size: 15px;
-                      @media screen and (max-width: 1260px) {
-                        font-size: 13px;
-                      }
-                    }
-                    &.t {
-                      text-transform: capitalize;
-                    }
-                    &.t-capitalize {
-                      text-transform: uppercase;
-                    }
-                    &:nth-child(2) {
-                      strong {
-                        color: #4db470;
-                      }
-                    }
-                    &:nth-child(3) {
-                      strong {
-                        color: #488fc3;
-                      }
-                    }
-                    &:nth-child(4) {
-                      strong {
-                        color: #9266a9;
-                      }
-                    }
-                  }
-                  &.li-gpu {
-                    &::before {
-                      position: absolute;
-                      content: "";
-                      right: 0.1rem;
-                      top: 0.1rem;
-                      width: 7px;
-                      height: 7px;
-                      background-color: orange;
-                      border-radius: 7px;
-                    }
-                  }
-                  &.li-status {
-                    &::before {
-                      background-color: #8bc34a;
-                    }
-                  }
-                }
-              }
-            }
-            .el-divider--horizontal {
-              margin: 0.1rem 0;
-            }
-          }
-          .badge {
-            display: flex;
-            align-items: center;
-            img {
-              width: 30px;
-              height: 30px;
-              margin-right: 5px;
-              @media screen and (max-width: 1260px) {
-                width: 25px;
-                height: 25px;
-              }
-            }
-          }
-          &.el-table__expanded-cell {
-            border: 1px solid @white-color;
-          }
-        }
-        // &.expanded,
-        // &:hover {
-        //   td {
-        //     background-color: rgba(255, 255, 255, 0.85);
-        //     color: #000;
-        //     i {
-        //       color: #000;
-        //     }
-        //   }
-        // }
-        &.expanded {
-          border: 1px solid @white-color;
-          border-collapse: collapse;
-        }
-      }
-    }
-    .el-table--border .el-table__inner-wrapper::after,
-    .el-table--border::after,
-    .el-table--border::before,
-    .el-table__inner-wrapper::before {
-      background-color: rgb(38, 39, 47);
-      height: 0;
-    }
-    .el-pagination {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      .el-pagination__total {
-        color: @white-color;
-      }
-      .btn-next,
-      .btn-prev,
-      .el-pager li {
-        min-width: 32px;
-        margin: 0 4px;
-        background-color: transparent;
-        color: @white-color;
-        border: 1px solid #f4f4f5;
-        border-radius: 5px;
-        &:not(.disabled).active,
-        &:not(.disabled):hover {
-          background-color: #c37af9;
-          border-color: #c37af9;
-        }
-        &:not(.disabled):hover {
         }
       }
     }

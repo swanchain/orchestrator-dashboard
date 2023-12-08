@@ -64,10 +64,9 @@ import { defineComponent, computed, onMounted, onActivated, watch, ref, reactive
 import { useStore } from "vuex"
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
-import SpaceHardwareABI from '@/utils/abi/SpacePaymentV6.json'
 import SpaceTokenABI from '@/utils/abi/SpacePaymentV6.json'
 export default defineComponent({
-  name: 'footer_page',
+  name: 'Payment History',
   setup () {
     const store = useStore()
     const system = getCurrentInstance().appContext.config.globalProperties
@@ -78,7 +77,7 @@ export default defineComponent({
     const paymentType = ref(route.query.type || 'user')
     const prevType = ref(true)
     let paymentContractAddress = process.env.VUE_APP_HARDWARE_ADDRESS
-    let paymentContract = new system.$commonFun.web3Init.eth.Contract(SpaceHardwareABI, paymentContractAddress)
+    let paymentContract = new system.$commonFun.web3Init.eth.Contract(SpaceTokenABI, paymentContractAddress)
 
     async function reviewFun (row) {
       paymentLoad.value = true
@@ -184,21 +183,8 @@ export default defineComponent({
         paymentContract = new system.$commonFun.web3Init.eth.Contract(SpaceTokenABI, paymentContractAddress)
       }
     }
-    function fn () {
-      document.addEventListener('visibilitychange', function () {
-        prevType.value = !document.hidden
-      })
-      if (typeof window.ethereum === 'undefined') return
-      ethereum.on('chainChanged', async function (accounts) {
-        if (!prevType.value) return false
-        console.log('payment')
-        system.$commonFun.signOutFun()
-      })
-    }
     let getnetID = NaN
-    onMounted(async () => {
-      fn()
-    })
+    onMounted(async () => { })
     onActivated(async () => {
       getnetID = await system.$commonFun.web3Init.eth.net.getId()
       paymentEnv()
@@ -281,13 +267,13 @@ export default defineComponent({
               background-color: transparent;
               font-family: inherit;
               font-size: inherit;
-              border-color: #c37af9;
+              border-color: @theme-color;
               border-radius: 1rem;
               line-height: 1;
-              color: #c37af9;
+              color: @theme-color;
               &:hover {
-                background-color: #c37af9;
-                color: #fff;
+                background-color: @theme-color;
+                color: @white-color;
               }
             }
           }

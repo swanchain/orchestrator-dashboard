@@ -56,7 +56,7 @@ export default defineComponent({
     }
   }
   .el-container {
-    padding: 0.5rem 0 1rem;
+    padding: 0.1rem 0 1rem;
     .el-header,
     .el-footer {
       height: auto;
@@ -104,7 +104,7 @@ export default defineComponent({
     font-size: 14px;
   }
   a {
-    color: #c37af9;
+    color: @theme-color;
     &:hover {
       text-decoration: underline;
     }
