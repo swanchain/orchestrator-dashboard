@@ -29,7 +29,7 @@
         </el-col>
       </el-row>
 
-      <el-row :gutter="30" class="erchart-body">
+      <el-row :gutter="40" class="erchart-body">
         <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
           <div class="erchart">
             <div class="drain-time"></div>
@@ -39,14 +39,17 @@
             <div class="title">VCPU</div>
             <h6>Current VCPU usage</h6>
             <div id="maychar-vcpu" class="maychar"></div>
-            <h6>
-              <i class="background-free"></i> {{providerBody.data.total_vcpu - providerBody.data.total_used_vcpu}} vcpu - Free
+            <h6 class="background-free">
+              <i></i>
+              <b>{{providerBody.data.total_vcpu - providerBody.data.total_used_vcpu}}</b> vcpu Free
             </h6>
-            <h6>
-              <i class="background-used"></i> {{providerBody.data.total_used_vcpu}} vcpu - Used
+            <h6 class="background-used">
+              <i></i>
+              <b>{{providerBody.data.total_used_vcpu}}</b> vcpu Used
             </h6>
-            <h6>
-              <i class="background-total"></i> {{providerBody.data.total_vcpu}} - Total
+            <h6 class="background-total">
+              <i></i>
+              <b>{{providerBody.data.total_vcpu}}</b> Total
             </h6>
           </div>
         </el-col>
@@ -59,14 +62,17 @@
             <div class="title">Memory</div>
             <h6>Current Memory usage</h6>
             <div id="maychar-memory" class="maychar"></div>
-            <h6>
-              <i class="background-free"></i> {{system.$commonFun.sizeChange(providerBody.data.total_memory-providerBody.data.total_used_memory)}} - Free
+            <h6 class="background-free">
+              <i></i>
+              <b>{{system.$commonFun.sizeChange(providerBody.data.total_memory-providerBody.data.total_used_memory)}}</b> Free
             </h6>
-            <h6>
-              <i class="background-used"></i> {{system.$commonFun.sizeChange(providerBody.data.total_used_memory)}} - Used
+            <h6 class="background-used">
+              <i></i>
+              <b>{{system.$commonFun.sizeChange(providerBody.data.total_used_memory)}}</b> Used
             </h6>
-            <h6>
-              <i class="background-total"></i> {{system.$commonFun.sizeChange(providerBody.data.total_memory)}} - Total
+            <h6 class="background-total">
+              <i></i>
+              <b>{{system.$commonFun.sizeChange(providerBody.data.total_memory)}}</b> Total
             </h6>
           </div>
         </el-col>
@@ -79,14 +85,17 @@
             <div class="title">Storage</div>
             <h6>Current Storage usage</h6>
             <div id="maychar-storage" class="maychar"></div>
-            <h6>
-              <i class="background-free"></i> {{system.$commonFun.sizeChange(providerBody.data.total_storage-providerBody.data.total_used_storage)}} - Free
+            <h6 class="background-free">
+              <i></i>
+              <b>{{system.$commonFun.sizeChange(providerBody.data.total_storage-providerBody.data.total_used_storage)}}</b> Free
             </h6>
-            <h6>
-              <i class="background-used"></i> {{system.$commonFun.sizeChange(providerBody.data.total_used_storage)}} - Used
+            <h6 class="background-used">
+              <i></i>
+              <b>{{system.$commonFun.sizeChange(providerBody.data.total_used_storage)}}</b> Used
             </h6>
-            <h6>
-              <i class="background-total"></i> {{system.$commonFun.sizeChange(providerBody.data.total_storage)}} - Total
+            <h6 class="background-total">
+              <i></i>
+              <b>{{system.$commonFun.sizeChange(providerBody.data.total_storage)}}</b> Total
             </h6>
           </div>
         </el-col>
@@ -99,14 +108,17 @@
             <div class="title">GPU</div>
             <h6>Current GPU usage</h6>
             <div id="maychar-gpu" class="maychar"></div>
-            <h6>
-              <i class="background-free"></i> {{providerBody.data.total_gpu-providerBody.data.total_used_gpu}} - Free
+            <h6 class="background-free">
+              <i></i>
+              <b>{{providerBody.data.total_gpu-providerBody.data.total_used_gpu}}</b> Free
             </h6>
-            <h6>
-              <i class="background-used"></i> {{providerBody.data.total_used_gpu}} - Used
+            <h6 class="background-used">
+              <i></i>
+              <b>{{providerBody.data.total_used_gpu}}</b> Used
             </h6>
-            <h6>
-              <i class="background-total"></i> {{providerBody.data.total_gpu}} - Total
+            <h6 class="background-total">
+              <i></i>
+              <b>{{providerBody.data.total_gpu}}</b> Total
             </h6>
           </div>
         </el-col>
@@ -160,18 +172,23 @@
                         <strong>{{child.used}}</strong>used</p>
                     </div>
                   </li>
-                  <li v-for="(child, gpuKeys, k) in n.specs" :key="k" v-show="gpuKeys === 'gpu'">
-                    <div v-for="g in child.details" :key="g" :class="{'li-body':true}">
-                      <p :class="{'t':true, 't-capitalize': gpuKeys === 'gpu'}">{{g.product_name}} ({{gpuKeys}})</p>
-                      <p>
-                        <strong>{{g.fb_memory_usage.free}}</strong>free</p>
-                      <p>
-                        <strong>{{g.fb_memory_usage.total}}</strong>total</p>
-                      <p>
-                        <strong>{{g.fb_memory_usage.used}}</strong>used</p>
-                      <p>Status:
-                        <strong>{{g.status}}</strong>
-                      </p>
+                </ul>
+                <div class="li-title">GPU Source</div>
+                <ul>
+                  <li v-for="(child, gpuKeys, k) in n.specs" :key="k" v-show="gpuKeys === 'gpu'" style="width:100%;">
+                    <div class="flex-row">
+                      <div v-for="g in child.details" :key="g" :class="{'li-body':true}">
+                        <p :class="{'t':true, 't-capitalize': gpuKeys === 'gpu'}">{{g.product_name}} ({{gpuKeys}})</p>
+                        <p>
+                          <strong>{{g.fb_memory_usage.free}}</strong>free</p>
+                        <p>
+                          <strong>{{g.fb_memory_usage.total}}</strong>total</p>
+                        <p>
+                          <strong>{{g.fb_memory_usage.used}}</strong>used</p>
+                        <p>Status:
+                          <strong>{{g.status}}</strong>
+                        </p>
+                      </div>
                     </div>
                   </li>
                 </ul>
@@ -270,7 +287,7 @@ export default defineComponent({
         offset: page * pagin.pageSize,
         search_string: nameText
       }
-      const providerRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}cp/dashboard?${qs.stringify(params)}`, 'get')
+      const providerRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_LAG_BASEAPI}cp/dashboard?${qs.stringify(params)}`, 'get')
       if (providerRes && providerRes.status === 'success') {
         pagin.total = providerRes.data.total_providers
         pagin.total_deployments = providerRes.data.total_deployments
@@ -570,7 +587,24 @@ export default defineComponent({
             overflow: hidden;
             text-align: center;
             box-shadow: 0 0 15px #447dff;
+
+            border: 2px solid red;
+            animation: glowing 2s linear infinite;
+
+            @keyframes glowing {
+              0% {
+                border-color: red;
+              }
+              50% {
+                border-color: green;
+              }
+              100% {
+                border-color: red;
+              }
+            }
+
             .drain-time {
+              display: none;
               position: absolute;
               z-index: 6;
               &:nth-child(1) {
@@ -578,8 +612,7 @@ export default defineComponent({
                 left: 0;
                 width: 100%;
                 height: 2px;
-                animation: run1 1s linear infinite;
-                // animation-delay: 0s;
+                animation: run1 1s linear infinite; // animation-delay: 0s;
                 background: linear-gradient(
                   to right,
                   @theme-color-opacity2,
@@ -587,7 +620,6 @@ export default defineComponent({
                   @theme-color-opacity
                 );
               }
-
               &:nth-child(2) {
                 top: 0;
                 right: 0;
@@ -602,7 +634,6 @@ export default defineComponent({
                   @theme-color-opacity
                 );
               }
-
               &:nth-child(3) {
                 bottom: 0;
                 left: 0;
@@ -617,7 +648,6 @@ export default defineComponent({
                   @theme-color-opacity
                 );
               }
-
               &:nth-child(4) {
                 top: 0;
                 left: -1px;
@@ -642,21 +672,40 @@ export default defineComponent({
               justify-content: center;
               margin: 0 0 0.1rem;
               font-weight: 100;
+              &.background-free {
+                i {
+                  background-color: #4db470;
+                }
+                b {
+                  color: #4db470;
+                }
+              }
+              &.background-used {
+                i {
+                  background-color: #00b4ff;
+                }
+                b {
+                  color: #00b4ff;
+                }
+              }
+              &.background-total {
+                i {
+                  background-color: #9266a9;
+                }
+                b {
+                  color: #9266a9;
+                }
+              }
               i {
                 display: block;
                 width: 23px;
                 height: 8px;
                 margin: auto 0.05rem auto 0;
                 border-radius: 5px;
-                &.background-free {
-                  background-color: #4db470;
-                }
-                &.background-used {
-                  background-color: #00b4ff;
-                }
-                &.background-total {
-                  background-color: #9266a9;
-                }
+              }
+              b {
+                padding: 0 5px 0 0;
+                font-size: 0.15rem;
               }
             }
             .maychar {
@@ -739,7 +788,7 @@ export default defineComponent({
             }
           }
           .service-body {
-            padding: 0 0.25rem 0.45rem;
+            padding: 0 0.25rem 0.1rem;
             // color: #333;
             // border-top: rgb(220, 223, 230) 1px solid;
             // border-bottom: rgb(220, 223, 230) 1px solid;
@@ -760,84 +809,94 @@ export default defineComponent({
               }
             }
             .list {
-              padding: 0.1rem 0 0.15rem;
+              padding: 0.1rem 0 0;
               .li-title {
                 width: 100%;
+                padding: 0 0 0.1rem;
+                border-bottom: 1px solid #26272f;
               }
               ul {
                 display: flex;
                 align-items: stretch;
+                justify-content: space-between;
                 flex-wrap: wrap;
-                .flex-warp {
-                  display: flex;
-                  flex-wrap: wrap;
-                  align-items: stretch;
-                }
-                .li-body {
-                  position: relative;
-                  height: calc(100% - 2px - 0.2rem);
-                  padding: 0.1rem 0.3rem;
-                  margin: 0.15rem 0.15rem 0 0;
-                  background-color: #333333;
-                  border-radius: 5px;
-                  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-                  @media screen and (max-width: 768px) {
-                    padding: 0.1rem 0.5rem;
-                    margin: 0.25rem 0.25rem 0 0;
-                  }
-                  p {
-                    padding: 3px 0;
-                    font-size: 14px;
-                    line-height: 1.3;
-                    @media screen and (max-width: 1260px) {
-                      font-size: 12px;
+                margin: 0 auto 0.25rem;
+                li {
+                  width: 27%;
+                  .flex-row {
+                    .li-body {
+                      width: 27%;
+                      margin-right: 0.7rem;
                     }
-                    strong,
-                    b {
-                      margin-right: 5px;
-                      font-size: 15px;
+                  }
+                  .li-body {
+                    position: relative;
+                    padding: 0.15rem;
+                    margin: 0.3rem 0;
+                    background-color: #0d0e12;
+                    border-radius: 5px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+                    -webkit-backdrop-filter: blur(5px);
+                    backdrop-filter: blur(5px);
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    border-radius: 0.1rem;
+                    animation: glow 1s ease-in-out infinite alternate;
+                    @media screen and (max-width: 768px) {
+                    }
+                    p {
+                      padding: 3px 0;
+                      font-size: 14px;
+                      line-height: 1.3;
+                      text-align: center;
                       @media screen and (max-width: 1260px) {
-                        font-size: 13px;
+                        font-size: 12px;
+                      }
+                      strong,
+                      b {
+                        margin-right: 5px;
+                        font-size: 17px;
+                        @media screen and (max-width: 1260px) {
+                          font-size: 15px;
+                        }
+                      }
+                      &.t {
+                        text-transform: capitalize; // color: #808290;
+                      }
+                      &.t-capitalize {
+                        text-transform: uppercase;
+                      }
+                      &:nth-child(2) {
+                        strong {
+                          color: #4db470;
+                        }
+                      }
+                      &:nth-child(3) {
+                        strong {
+                          color: #488fc3;
+                        }
+                      }
+                      &:nth-child(4) {
+                        strong {
+                          color: #9266a9;
+                        }
                       }
                     }
-                    &.t {
-                      text-transform: capitalize;
-                      // color: #808290;
-                    }
-                    &.t-capitalize {
-                      text-transform: uppercase;
-                    }
-                    &:nth-child(2) {
-                      strong {
-                        color: #4db470;
+                    &.li-gpu {
+                      &::before {
+                        position: absolute;
+                        content: "";
+                        right: 0.1rem;
+                        top: 0.1rem;
+                        width: 7px;
+                        height: 7px;
+                        background-color: orange;
+                        border-radius: 7px;
                       }
                     }
-                    &:nth-child(3) {
-                      strong {
-                        color: #488fc3;
+                    &.li-status {
+                      &::before {
+                        background-color: #8bc34a;
                       }
-                    }
-                    &:nth-child(4) {
-                      strong {
-                        color: #9266a9;
-                      }
-                    }
-                  }
-                  &.li-gpu {
-                    &::before {
-                      position: absolute;
-                      content: "";
-                      right: 0.1rem;
-                      top: 0.1rem;
-                      width: 7px;
-                      height: 7px;
-                      background-color: orange;
-                      border-radius: 7px;
-                    }
-                  }
-                  &.li-status {
-                    &::before {
-                      background-color: #8bc34a;
                     }
                   }
                 }
@@ -863,6 +922,9 @@ export default defineComponent({
           &.el-table__expanded-cell {
             padding: 0.32rem 0.64rem;
             // border: 1px solid @white-color;
+            &:hover {
+              background-color: @primary-color !important;
+            }
           }
         }
         // &.expanded,

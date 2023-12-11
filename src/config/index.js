@@ -1,3 +1,3 @@
 module.exports = {
-  baseTitle: 'Lagrange | Computing Provider'
+  baseTitle: 'Swan Hub'
 }

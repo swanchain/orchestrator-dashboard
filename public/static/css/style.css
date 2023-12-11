@@ -120,6 +120,11 @@ a:focus {
     display: none;
 }
 
+.el-message {
+    max-width: 95%;
+    word-break: break-word;
+}
+
 .el-message .el-icon {
     font-size: 35px;
 }
