@@ -138,7 +138,7 @@
       <div class="area flex-row" v-loading="cpCheckCont.show">
         <div class="fast width">
           <label>Balance</label>
-          <div class="address">{{cpCheckCont.balance}}</div>
+          <div class="address">{{cpCheckCont.balance}} SWAN</div>
         </div>
       </div>
     </el-dialog>
@@ -393,7 +393,7 @@ export default defineComponent({
       if (cpRes) {
         system.$commonFun.messageTip(cpRes.status, cpRes.message)
         cpCheckCont.tip = cpRes.message
-        cpCheckCont.balance = cpRes.data.balance
+        cpCheckCont.balance = cpRes.data.balance ? system.$commonFun.web3Init.utils.fromWei(String(cpRes.data.balance), 'ether') : 0
         cpCheckCont.status = cpRes.status
       }
       cpCheckCont.show = false
