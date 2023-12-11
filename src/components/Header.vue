@@ -26,6 +26,12 @@
                 <el-dropdown-item command="apiKey">
                   <div class="profile router-link b">Show API-Key</div>
                 </el-dropdown-item>
+                <el-dropdown-item command="cpCollateral">
+                  <div class="profile router-link b">CP Collateral</div>
+                </el-dropdown-item>
+                <el-dropdown-item command="cpCollateralCheck">
+                  <div class="profile router-link b">CP Collateral Check</div>
+                </el-dropdown-item>
                 <el-dropdown-item command="sign_out">
                   <span class="link">Sign Out</span>
                 </el-dropdown-item>
@@ -38,29 +44,23 @@
     </div>
 
     <el-dialog v-model="centerDialogVisible" title="API Keys" custom-class="apikey_body">
-      <div class="cont">
+      <div class="cont" v-loading="tokenShow">
         <el-button type="primary" class="add-button" @click="createCom">New API Key</el-button>
-        <el-table :data="toolData" v-loading="tokenShow" style="width: 100%" empty-text="No Data" class="table_cell">
-          <el-table-column prop="key" label="KEY">
-            <template #default="scope">
-              <div class="flex-row" style="justify-content: center;">
-                {{scope.row.token}}
-                <i class="icon icon_copy" @click="system.$commonFun.copyContent(scope.row.token, 'Copied')">
-                  <DocumentCopy />
-                </i>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="" width="100" label="">
-            <template #default="scope">
-              <div class="revoke">
-                <el-button type="danger" @click="deleteToken(scope.row.token)">Delete</el-button>
-              </div>
-            </template>
-          </el-table-column>
-        </el-table>
-        <el-pagination class="flex-row" hide-on-single-page :page-size="paginKey.pageSize" :current-page="paginKey.pageNo" :pager-count="5" layout="total, prev, pager, next" :total="paginKey.total" @size-change="handleSizeChange" @current-change="handleKeyChange"
-        />
+        <el-input v-show="toolData !== ''" v-model="toolData" type="text" readonly placeholder=" ">
+          <template #append>
+            <div class="action flex-row">
+              <!-- <i class="icon" @click="tokenShow=!tokenShow">
+                <View />
+              </i> -->
+              <i class="icon" @click="system.$commonFun.copyContent(toolData, 'Copied')">
+                <DocumentCopy />
+              </i>
+              <i class="icon" @click="deleteToken(toolData)">
+                <Delete />
+              </i>
+            </div>
+          </template>
+        </el-input>
       </div>
       <template #footer>
         <span class="dialog-footer">
@@ -106,6 +106,42 @@
         </el-button>
       </div>
     </el-dialog>
+
+    <el-dialog title="CP Collateral" v-model="cpCollateralCont.diagle" :append-to-body="false" :width="bodyWidth" custom-class="wrongNet">
+      <div v-loading="cpCollateralCont.show">
+        <label v-if="cpCollateralCont.tx_hash !== ''">TransactionHash:
+          <b @click="system.$commonFun.goLink(`${txLink}/tx/${cpCollateralCont.tx_hash}`)">{{cpCollateralCont.tx_hash}}</b>
+        </label>
+        <div v-else>
+          <div class="area flex-row">
+            <div class="fast width">
+              <label>CP Address</label>
+              <!-- <div class="address">{{cpCollateralCont.address}}</div> -->
+              <el-input v-model="cpCollateralCont.address" type="text" placeholder=" " />
+              <p class="error" v-show="cpCollateralCont.tip">Please enter a valid Ethereum address</p>
+            </div>
+          </div>
+          <br />
+          <div class="area flex-row">
+            <div class="fast width">
+              <label>Amount</label>
+              <el-input v-model="cpCollateralCont.amount" type="text" placeholder=" " />
+            </div>
+          </div>
+          <br />
+          <el-button type="primary" class="add-button" @click="cpCollateral">OK</el-button>
+        </div>
+      </div>
+    </el-dialog>
+
+    <el-dialog title="CP Collateral Check" v-model="cpCheckCont.diagle" :append-to-body="false" :width="bodyWidth" custom-class="wrongNet">
+      <div class="area flex-row" v-loading="cpCheckCont.show">
+        <div class="fast width">
+          <label>Balance</label>
+          <div class="address">{{cpCheckCont.balance}}</div>
+        </div>
+      </div>
+    </el-dialog>
   </section>
 </template>
 
@@ -115,12 +151,15 @@ import { useStore } from "vuex"
 import { useRouter, useRoute } from 'vue-router'
 import qs from 'qs'
 import {
-  CircleCheck, DocumentCopy, Avatar
+  CircleCheck, DocumentCopy, Avatar, Delete, View
 } from '@element-plus/icons-vue'
+import { ElMessageBox } from 'element-plus'
 import * as echarts from "echarts"
+import SpaceTokenABI from '@/utils/abi/SwanToken.json'
+import CollateralABI from '@/utils/abi/CollateralContract.json'
 export default defineComponent({
   components: {
-    CircleCheck, DocumentCopy, Avatar
+    CircleCheck, DocumentCopy, Avatar, Delete, View
   },
   setup () {
     const store = useStore()
@@ -139,7 +178,7 @@ export default defineComponent({
     const prevType = ref(true)
     const centerDialogVisible = ref(false)
     const tokenShow = ref(false)
-    const toolData = ref([])
+    const toolData = ref('')
     const paginKey = reactive({
       pageSize: 12,
       pageNo: 1,
@@ -156,6 +195,27 @@ export default defineComponent({
       unit: ''
     })
     const wrongVisible = ref(false)
+    const cpCheckCont = reactive({
+      diagle: false,
+      show: true,
+      tip: '',
+      status: 'success',
+      balance: 0
+    })
+    const cpCollateralCont = reactive({
+      diagle: false,
+      show: false,
+      tip: false,
+      address: '',
+      amount: '50',
+      tx_hash: ''
+    })
+    const txLink = process.env.VUE_APP_OPSWANURL
+    const tokenAddress = process.env.VUE_APP_OPSWAN_SWANTOKEN_ADDRESS
+    const tokenContract = new system.$commonFun.web3Init.eth.Contract(SpaceTokenABI, tokenAddress)
+    const collateralAddress = process.env.VUE_APP_COLLATERAL_CONTACT
+    const collateralContract = new system.$commonFun.web3Init.eth.Contract(CollateralABI, collateralAddress)
+
 
     async function handleKeyChange (currentPage) {
       paginKey.pageNo = currentPage
@@ -184,21 +244,15 @@ export default defineComponent({
     async function getdataList () {
       centerDialogVisible.value = true
       tokenShow.value = true
-      toolData.value = []
+      toolData.value = ''
 
       try {
         const keysRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}/api_token`, 'get')
 
         if (keysRes && keysRes.status === 'success') {
           // Assuming the 'data' field in response contains the required token
-          if (keysRes.data) {
-            toolData.value = keysRes.data.token ? [keysRes.data.token] : []  // Assigning the token data to toolData
-            // If there are multiple tokens, and they are in a list, replace the above line with:
-            // toolData.value = keysRes.data.list || []
-          } else {
-            system.$commonFun.messageTip('error', 'No token found, please generate a new token')
-          }
-
+          if (keysRes.data) toolData.value = keysRes.data.token.token || ''
+          else system.$commonFun.messageTip('error', 'No token found, please generate a new token')
         } else if (keysRes.message) {
           system.$commonFun.messageTip('error', keysRes.message)
         }
@@ -248,6 +302,11 @@ export default defineComponent({
         prevType.value = !document.hidden
       })
       if (typeof window.ethereum === 'undefined') return
+      ethereum.on('accountsChanged', async function (accounts) {
+        if (!prevType.value) return false
+        getnetID.value = await system.$commonFun.web3Init.eth.net.getId()
+        system.$commonFun.signOutFun()
+      })
       ethereum.on('chainChanged', async function (accounts) {
         if (!prevType.value) return false
         getnetID.value = await system.$commonFun.web3Init.eth.net.getId()
@@ -257,13 +316,87 @@ export default defineComponent({
     async function handleSelect (key, keyPath) {
       // console.log(key, keyPath) //  
       if (key === 'apiKey') getdataList()
-      // else if (key === 'asProvider') router.push({ name: 'paymentHistory', query: { type: 'provider' } })
-      // else if (key === 'asUser') router.push({ name: 'paymentHistory', query: { type: 'user' } })
+      else if (key === 'cpCollateral') {
+        cpCollateralCont.tip = false
+        cpCollateralCont.tx_hash = ''
+        cpCollateralCont.diagle = true
+      } else if (key === 'cpCollateralCheck') cpCheck()
       else if (key === 'sign_out') {
         await system.$commonFun.signOutFun()
         // await system.$commonFun.timeout(50)
         window.location.reload()
       }
+    }
+    async function cpCollateral () {
+      cpCollateralCont.show = true
+      try {
+        const isAddress = system.$commonFun.web3Init.utils.isAddress(cpCollateralCont.address)
+        if (!isAddress) {
+          cpCollateralCont.tip = true
+          cpCollateralCont.show = false
+          return
+        } else cpCollateralCont.tip = false
+
+        if (cpCollateralCont.address !== metaAddress.value) {
+          ElMessageBox.confirm(
+            'Detected that the currently filled wallet address does not match the login wallet address, continue？',
+            'Warning',
+            {
+              confirmButtonText: 'OK',
+              cancelButtonText: 'Cancel',
+              type: 'warning',
+            }
+          )
+            .then(async () => {
+              cpDeposit()
+            })
+            .catch(() => {
+              cpCollateralCont.show = false
+            })
+        } else cpDeposit()
+      } catch (err) {
+        console.log('err', err)
+        if (err && err.message) system.$commonFun.messageTip('error', err.message)
+        cpCollateralCont.show = false
+      }
+      // cpCollateralCont.diagle = false
+    }
+    async function cpDeposit () {
+      try {
+        const amount = system.$commonFun.web3Init.utils.toWei(String(cpCollateralCont.amount), 'ether')
+
+        let approveMethod = tokenContract.methods.approve(collateralAddress, amount)
+        let approveGasLimit = await approveMethod.estimateGas({ from: metaAddress.value })
+        const approve_tx = await approveMethod.send({
+          from: metaAddress.value, gasLimit: approveGasLimit
+        })
+
+        let payMethod = collateralContract.methods.deposit(cpCollateralCont.address, amount)
+        let payGasLimit = await payMethod.estimateGas({ from: metaAddress.value })
+        const tx = await payMethod.send({ from: metaAddress.value, gasLimit: payGasLimit })
+          .on('transactionHash', async (transactionHash) => {
+            console.log('transactionHash:', transactionHash)
+            cpCollateralCont.tx_hash = transactionHash
+            cpCollateralCont.show = false
+          })
+          .on('error', () => cpCollateralCont.show = false)
+      } catch (err) {
+        console.log('err', err)
+        if (err && err.message) system.$commonFun.messageTip('error', err.message)
+        cpCollateralCont.show = false
+      }
+    }
+    async function cpCheck () {
+      cpCheckCont.diagle = true
+      cpCheckCont.show = true
+      const cpRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}cp/collateral/${metaAddress.value}`, 'get')
+      if (cpRes) {
+        system.$commonFun.messageTip(cpRes.status, cpRes.message)
+        cpCheckCont.tip = cpRes.message
+        cpCheckCont.balance = cpRes.data.balance
+        cpCheckCont.status = cpRes.status
+      }
+      cpCheckCont.show = false
     }
     async function activeMenu (row) {
       const chainId = await system.$commonFun.web3Init.eth.net.getId()
@@ -316,9 +449,9 @@ export default defineComponent({
       tokenShow,
       paginKey,
       ruleForm,
-      info, wrongVisible, bodyWidth,
+      info, wrongVisible, bodyWidth, cpCheckCont, cpCollateralCont, txLink,
       getdataList, createCom, deleteToken, handleKeyChange, handleSizeChange,
-      loginMethod, handleSelect, wrongMethod
+      loginMethod, handleSelect, wrongMethod, cpCollateral
     }
   }
 })
@@ -501,6 +634,11 @@ export default defineComponent({
       @media screen and (max-width: 540px) {
         padding: 0.2rem;
       }
+      .cp-show {
+        min-height: 50px;
+        label {
+        }
+      }
       label {
         word-break: break-word;
         line-height: 1;
@@ -581,10 +719,17 @@ export default defineComponent({
         justify-content: space-between;
         .fast {
           width: 48%;
+          &.width {
+            width: 100%;
+          }
           .address {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+          }
+          .error {
+            font-size: 12px;
+            color: firebrick;
           }
         }
       }
@@ -679,6 +824,51 @@ export default defineComponent({
       font-size: 14px;
       @media screen and (max-width: 768px) {
         font-size: 13px;
+      }
+    }
+    .el-input {
+      border-color: #ececed;
+      .el-input__inner {
+        height: auto;
+        padding: 0.12rem 0.15rem;
+        background-color: #fff !important;
+        border-right: 0;
+        border-color: inherit;
+        line-height: 1;
+      }
+      .el-input-group__append {
+        padding: 0 0.15rem;
+        background-color: #fff;
+        border-left: 0;
+        border-color: inherit;
+      }
+      .action {
+        height: 100%;
+      }
+      .icon {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        margin: 0 3px;
+        cursor: pointer;
+        @media screen and (min-width: 1800px) {
+          width: 18px;
+          height: 18px;
+        }
+        &:hover {
+          opacity: 0.7;
+        }
+      }
+      .el-input__suffix {
+        right: 0;
+        .el-icon {
+          font-size: 0.2rem;
+          cursor: pointer;
+          svg,
+          path {
+            cursor: pointer;
+          }
+        }
       }
     }
     .el-table {
