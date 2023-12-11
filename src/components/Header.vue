@@ -117,7 +117,7 @@
             <div class="fast width">
               <label>CP Address</label>
               <!-- <div class="address">{{cpCollateralCont.address}}</div> -->
-              <el-input v-model="cpCollateralCont.address" type="text" placeholder=" " />
+              <el-input v-model="metaAddress" class="is-disabled" type="text" placeholder=" " readonly />
               <p class="error" v-show="cpCollateralCont.tip">Please enter a valid Ethereum address</p>
             </div>
           </div>
@@ -125,7 +125,8 @@
           <div class="area flex-row">
             <div class="fast width">
               <label>Amount</label>
-              <el-input v-model="cpCollateralCont.amount" type="text" placeholder=" " />
+              <el-input-number v-model="cpCollateralCont.amount" :precision="0" :step="1" :min="1" controls-position="right" @change="cpCollateralCont.tip_amount=false" />
+              <p class="error" v-show="cpCollateralCont.tip_amount">The minimum amount is 1</p>
             </div>
           </div>
           <br />
@@ -206,8 +207,9 @@ export default defineComponent({
       diagle: false,
       show: false,
       tip: false,
+      tip_amount: false,
       address: '',
-      amount: '50',
+      amount: NaN,
       tx_hash: ''
     })
     const txLink = process.env.VUE_APP_OPSWANURL
@@ -330,30 +332,36 @@ export default defineComponent({
     async function cpCollateral () {
       cpCollateralCont.show = true
       try {
-        const isAddress = system.$commonFun.web3Init.utils.isAddress(cpCollateralCont.address)
-        if (!isAddress) {
-          cpCollateralCont.tip = true
+        if (Number(cpCollateralCont.amount) >= 1) cpDeposit()
+        else {
+          cpCollateralCont.tip_amount = true
           cpCollateralCont.show = false
-          return
-        } else cpCollateralCont.tip = false
+        }
 
-        if (cpCollateralCont.address !== metaAddress.value) {
-          ElMessageBox.confirm(
-            'Detected that the currently filled wallet address does not match the login wallet address, continue？',
-            'Warning',
-            {
-              confirmButtonText: 'OK',
-              cancelButtonText: 'Cancel',
-              type: 'warning',
-            }
-          )
-            .then(async () => {
-              cpDeposit()
-            })
-            .catch(() => {
-              cpCollateralCont.show = false
-            })
-        } else cpDeposit()
+        // const isAddress = system.$commonFun.web3Init.utils.isAddress(cpCollateralCont.address)
+        // if (!isAddress) {
+        //   cpCollateralCont.tip = true
+        //   cpCollateralCont.show = false
+        //   return
+        // } else cpCollateralCont.tip = false
+
+        // if (cpCollateralCont.address !== metaAddress.value) {
+        //   ElMessageBox.confirm(
+        //     'Detected that the currently filled wallet address does not match the login wallet address, continue？',
+        //     'Warning',
+        //     {
+        //       confirmButtonText: 'OK',
+        //       cancelButtonText: 'Cancel',
+        //       type: 'warning',
+        //     }
+        //   )
+        //     .then(async () => {
+        //       cpDeposit()
+        //     })
+        //     .catch(() => {
+        //       cpCollateralCont.show = false
+        //     })
+        // } else cpDeposit()
       } catch (err) {
         console.log('err', err)
         if (err && err.message) system.$commonFun.messageTip('error', err.message)
@@ -730,6 +738,16 @@ export default defineComponent({
           .error {
             font-size: 12px;
             color: firebrick;
+          }
+          .el-input-number {
+            width: 100%;
+            .el-input-number__decrease,
+            .el-input-number__increase {
+              display: none;
+            }
+            .el-input__inner {
+              text-align: left;
+            }
           }
         }
       }
