@@ -287,7 +287,7 @@ export default defineComponent({
         offset: page * pagin.pageSize,
         search_string: nameText
       }
-      const providerRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_LAG_BASEAPI}cp/dashboard?${qs.stringify(params)}`, 'get')
+      const providerRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}cp/dashboard?${qs.stringify(params)}`, 'get')
       if (providerRes && providerRes.status === 'success') {
         pagin.total = providerRes.data.total_providers
         pagin.total_deployments = providerRes.data.total_deployments

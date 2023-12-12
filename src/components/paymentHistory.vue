@@ -166,7 +166,7 @@ export default defineComponent({
       paymentLoad.value = true
       paymentType.value = route.query.type || 'user'
       const requestURL = paymentType.value.toLowerCase() === 'provider' ? `${process.env.VUE_APP_BASEAPI}user/provider/payments` : `${process.env.VUE_APP_BASEAPI}user/space/payments`
-      const paymentsRes = await system.$commonFun.sendRequest(requestURL, 'get')
+      const paymentsRes = await system.$commonFun.sendRequest(`${requestURL}?public_address=${store.state.metaAddress}`, 'get')
       if (paymentsRes && paymentsRes.status === 'success') {
         for (let p = 0; p < paymentsRes.data.payments.length; p++) {
           let { url_tx } = await system.$commonFun.getUnit(parseInt(paymentsRes.data.payments[p].chain_id), 16)
