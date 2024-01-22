@@ -165,7 +165,7 @@ export default defineComponent({
     async function init (params) {
       paymentLoad.value = true
       paymentType.value = route.query.type || 'user'
-      const requestURL = paymentType.value.toLowerCase() === 'provider' ? `${process.env.VUE_APP_BASEAPI}user/provider/payments` : `${process.env.VUE_APP_BASEAPI}user/space/payments`
+      const requestURL = `${process.env.VUE_APP_BASEAPI}user/provider/payments`
       const paymentsRes = await system.$commonFun.sendRequest(`${requestURL}?public_address=${store.state.metaAddress}`, 'get')
       if (paymentsRes && paymentsRes.status === 'success') {
         for (let p = 0; p < paymentsRes.data.payments.length; p++) {

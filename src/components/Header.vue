@@ -249,7 +249,7 @@ export default defineComponent({
       toolData.value = ''
 
       try {
-        const keysRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}/api_token`, 'get')
+        const keysRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}api_token`, 'get')
 
         if (keysRes && keysRes.status === 'success') {
           // Assuming the 'data' field in response contains the required token

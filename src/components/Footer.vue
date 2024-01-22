@@ -2,7 +2,7 @@
   <div class="footer mt-border">
     <div class="powered">
       Powered By
-      <img :src="lagrangeLogo" class="lagrange-logo" />
+      <img :src="swanLogo" class="swan-logo" />
     </div>
     <div class="describe">
       Total CPU, Memory and Storage calculated by using active providers on the Network.
@@ -20,11 +20,11 @@ export default defineComponent({
     const system = getCurrentInstance().appContext.config.globalProperties
     const route = useRoute()
     const router = useRouter()
-    const lagrangeLogo = require("@/assets/images/icons/logo.png")
+    const swanLogo = require("@/assets/images/icons/logo.png")
 
     onMounted(() => { })
     return {
-      lagrangeLogo
+      swanLogo
     }
   },
   components: {}
