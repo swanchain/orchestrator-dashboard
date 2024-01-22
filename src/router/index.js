@@ -9,6 +9,8 @@ const dashboard = () =>
     import ("@/views/dashboard/index");
 const main = () =>
     import ("@/views/dashboard/main/index");
+const paymentHistory = () =>
+    import ("@/components/paymentHistory");
 
 const routes = [{
         path: '/',
@@ -18,14 +20,24 @@ const routes = [{
         path: '/',
         component: home,
         children: [{
-            path: '/provider-status',
-            name: 'dashboard',
-            component: main,
-            meta: {
-                keepAlive: true,
-                title: ''
-            }
-        }]
+                path: '/provider-status',
+                name: 'dashboard',
+                component: main,
+                meta: {
+                    keepAlive: true,
+                    title: ''
+                }
+            },
+            {
+                path: '/payment_history',
+                name: 'paymentHistory',
+                component: paymentHistory,
+                meta: {
+                    keepAlive: true,
+                    title: ''
+                }
+            },
+        ]
     },
     {
         path: '/:pathMatch(.*)*',

@@ -1,10 +1,5 @@
 <template>
   <section id="container">
-    <div class="swan-logo">
-      <img :src="swanLogo" @click="goLink('https://www.swanchain.io/')" />
-      <el-button type="primary" v-if="getnetID === 8598668088 && accessToken !== ''" @click="getdataList">Show API-Key</el-button>
-      <el-button type="primary" @click="loginMethod" v-else>Login</el-button>
-    </div>
     <h1>Swan Provider Status</h1>
     <div class="describe">
       Use this status page to check an Swan Provider information and status.
@@ -29,73 +24,101 @@
             <b v-loading="providersLoad">{{pagin.total_deployments}}</b>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="24" :md="18" :lg="18" :xl="18">
+        <el-col :xs="24" :sm="24" :md="18" :lg="18" :xl="18" class="flex-row">
           <div class='chart' id='chart' v-loading="providersLoad" element-loading-background="rgba(0, 0, 0, 0)"></div>
         </el-col>
       </el-row>
 
-      <el-row :gutter="30" class="erchart-body">
+      <el-row :gutter="40" class="erchart-body">
         <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
           <div class="erchart">
+            <div class="drain-time"></div>
+            <div class="drain-time"></div>
+            <div class="drain-time"></div>
+            <div class="drain-time"></div>
             <div class="title">VCPU</div>
             <h6>Current VCPU usage</h6>
             <div id="maychar-vcpu" class="maychar"></div>
-            <h6>
-              <i class="background-free"></i> {{providerBody.data.total_vcpu - providerBody.data.total_used_vcpu}} vcpu - Free
+            <h6 class="background-free">
+              <i></i>
+              <b>{{providerBody.data.total_vcpu - providerBody.data.total_used_vcpu}}</b> vcpu Free
             </h6>
-            <h6>
-              <i class="background-used"></i> {{providerBody.data.total_used_vcpu}} vcpu - Used
+            <h6 class="background-used">
+              <i></i>
+              <b>{{providerBody.data.total_used_vcpu}}</b> vcpu Used
             </h6>
-            <h6>
-              <i class="background-total"></i> {{providerBody.data.total_vcpu}} - Total
+            <h6 class="background-total">
+              <i></i>
+              <b>{{providerBody.data.total_vcpu}}</b> Total
             </h6>
           </div>
         </el-col>
         <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
           <div class="erchart">
+            <div class="drain-time"></div>
+            <div class="drain-time"></div>
+            <div class="drain-time"></div>
+            <div class="drain-time"></div>
             <div class="title">Memory</div>
             <h6>Current Memory usage</h6>
             <div id="maychar-memory" class="maychar"></div>
-            <h6>
-              <i class="background-free"></i> {{sizeChange(providerBody.data.total_memory-providerBody.data.total_used_memory)}} - Free
+            <h6 class="background-free">
+              <i></i>
+              <b>{{system.$commonFun.sizeChange(providerBody.data.total_memory-providerBody.data.total_used_memory)}}</b> Free
             </h6>
-            <h6>
-              <i class="background-used"></i> {{sizeChange(providerBody.data.total_used_memory)}} - Used
+            <h6 class="background-used">
+              <i></i>
+              <b>{{system.$commonFun.sizeChange(providerBody.data.total_used_memory)}}</b> Used
             </h6>
-            <h6>
-              <i class="background-total"></i> {{sizeChange(providerBody.data.total_memory)}} - Total
+            <h6 class="background-total">
+              <i></i>
+              <b>{{system.$commonFun.sizeChange(providerBody.data.total_memory)}}</b> Total
             </h6>
           </div>
         </el-col>
         <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
           <div class="erchart">
+            <div class="drain-time"></div>
+            <div class="drain-time"></div>
+            <div class="drain-time"></div>
+            <div class="drain-time"></div>
             <div class="title">Storage</div>
             <h6>Current Storage usage</h6>
             <div id="maychar-storage" class="maychar"></div>
-            <h6>
-              <i class="background-free"></i> {{sizeChange(providerBody.data.total_storage-providerBody.data.total_used_storage)}} - Free
+            <h6 class="background-free">
+              <i></i>
+              <b>{{system.$commonFun.sizeChange(providerBody.data.total_storage-providerBody.data.total_used_storage)}}</b> Free
             </h6>
-            <h6>
-              <i class="background-used"></i> {{sizeChange(providerBody.data.total_used_storage)}} - Used
+            <h6 class="background-used">
+              <i></i>
+              <b>{{system.$commonFun.sizeChange(providerBody.data.total_used_storage)}}</b> Used
             </h6>
-            <h6>
-              <i class="background-total"></i> {{sizeChange(providerBody.data.total_storage)}} - Total
+            <h6 class="background-total">
+              <i></i>
+              <b>{{system.$commonFun.sizeChange(providerBody.data.total_storage)}}</b> Total
             </h6>
           </div>
         </el-col>
         <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
           <div class="erchart">
+            <div class="drain-time"></div>
+            <div class="drain-time"></div>
+            <div class="drain-time"></div>
+            <div class="drain-time"></div>
             <div class="title">GPU</div>
             <h6>Current GPU usage</h6>
             <div id="maychar-gpu" class="maychar"></div>
-            <h6>
-              <i class="background-free"></i> {{providerBody.data.total_gpu-providerBody.data.total_used_gpu}} - Free
+            <h6 class="background-free">
+              <i></i>
+              <b>{{providerBody.data.total_gpu-providerBody.data.total_used_gpu}}</b> Free
             </h6>
-            <h6>
-              <i class="background-used"></i> {{providerBody.data.total_used_gpu}} - Used
+            <h6 class="background-used">
+              <i></i>
+              <b>{{providerBody.data.total_used_gpu}}</b> Used
             </h6>
-            <h6>
-              <i class="background-total"></i> {{providerBody.data.total_gpu}} - Total
+            <h6 class="background-total">
+              <i></i>
+              <b>{{providerBody.data.total_gpu}}</b> Total
             </h6>
           </div>
         </el-col>
@@ -113,42 +136,6 @@
         <el-table-column type="expand" width="40">
           <template #default="props">
             <div class="service-body" v-if="props.row.computer_provider">
-              <!--              <div class="tit">city</div>-->
-              <!--              <el-divider />-->
-              <!--              <div class="desc">{{ props.row.computer_provider.city}}</div>-->
-              <!--              <div class="tit">country</div>-->
-              <!--              <el-divider />-->
-              <!--              <div class="desc">{{ props.row.computer_provider.country}}</div>-->
-              <div class="tit">Score</div>
-              <el-divider/>
-              <div class="list">
-                <ul>
-                  <li>
-                    <div class="li-body">
-                      <p>Provider Score</p>
-                      <p>
-                        <b>{{props.row.computer_provider.score}}</b>
-                      </p>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-              <div class="tit">Deployments</div>
-              <el-divider />
-              <div class="list">
-                <ul>
-                  <li>
-                    <div class="li-body">
-                      <p>Active Deployment</p>
-                      <p>
-                        <b>{{props.row.computer_provider.active_deployment}}</b>
-                      </p>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-              <div class="tit">Resources</div>
-              <el-divider />
               <div v-for="n in props.row.computer_provider.machines" :key="n" class="list">
                 <div class="li-title">Machine ID: {{n.machine_id}}</div>
                 <ul>
@@ -185,8 +172,11 @@
                         <strong>{{child.used}}</strong>used</p>
                     </div>
                   </li>
-                  <li v-for="(child, gpuKeys, k) in n.specs" :key="k" v-show="gpuKeys === 'gpu'" style="width: 100%;">
-                    <div class="flex-warp">
+                </ul>
+                <div class="li-title">GPU Source</div>
+                <ul>
+                  <li v-for="(child, gpuKeys, k) in n.specs" :key="k" v-show="gpuKeys === 'gpu'" style="width:100%;">
+                    <div class="flex-row">
                       <div v-for="g in child.details" :key="g" :class="{'li-body':true}">
                         <p :class="{'t':true, 't-capitalize': gpuKeys === 'gpu'}">{{g.product_name}} ({{gpuKeys}})</p>
                         <p>
@@ -239,49 +229,6 @@
       <el-pagination hide-on-single-page :page-size="pagin.pageSize" :current-page="pagin.pageNo" :pager-count="5" :small="small" :background="background" layout="total, prev, pager, next" :total="pagin.total" @size-change="handleSizeChange" @current-change="handleCurrentChange"
       />
     </div>
-
-    <el-dialog v-model="addVisible" title="Create A Key" :show-close="false" custom-class="add_body">
-      <el-form ref="ruleFormRefDelete" status-icon v-loading="listLoad">
-        <el-form-item prop="name" style="width:100%">
-          <label class="label" for="name">
-            Name
-          </label>
-          <div class="flex flex-row">
-            <el-input v-model="ruleForm.name" placeholder=" " />
-          </div>
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button type="primary" :disabled="!ruleForm.name" @click="createCom">
-            Create
-          </el-button>
-          <el-button @click="addVisible = false">Cancel</el-button>
-        </span>
-      </template>
-    </el-dialog>
-    <el-dialog v-model="centerDialogVisible" title="API Keys" custom-class="apikey_body">
-      <div class="cont">
-        <el-button type="primary" class="add-button" @click="addVisible=true">New API Key</el-button>
-        <el-table :data="toolData" v-loading="tokenShow" style="width: 100%" empty-text="No Data" class="table_cell">
-          <el-table-column prop="key" label="KEY" width="530">
-            <template #default="scope">
-              <div class="flex-row" style="justify-content: center;">
-                {{scope.row.token}}
-                <i class="icon icon_copy" @click="system.$commonFun.copyContent(scope.row.key, 'Copied')"></i>
-              </div>
-            </template>
-          </el-table-column>
-        </el-table>
-        <el-pagination class="flex-row" hide-on-single-page :page-size="paginKey.pageSize" :current-page="paginKey.pageNo" :pager-count="5" layout="total, prev, pager, next" :total="paginKey.total" @size-change="handleSizeChange" @current-change="handleKeyChange"
-        />
-      </div>
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="centerDialogVisible = false">OK</el-button>
-        </span>
-      </template>
-    </el-dialog>
   </section>
 </template>
 
@@ -291,21 +238,20 @@ import { useStore } from "vuex"
 import { useRouter, useRoute } from 'vue-router'
 import qs from 'qs'
 import {
-  CircleCheck
+  CircleCheck, DocumentCopy, Avatar
 } from '@element-plus/icons-vue'
 import * as echarts from "echarts"
 export default defineComponent({
   components: {
-    CircleCheck
+    CircleCheck, DocumentCopy, Avatar
   },
   setup () {
     const store = useStore()
+    const metaAddress = computed(() => (store.state.metaAddress))
     const accessToken = computed(() => (store.state.accessToken))
-    const bodyWidth = ref(document.body.clientWidth < 992)
     const system = getCurrentInstance().appContext.config.globalProperties
     const route = useRoute()
     const router = useRouter()
-    const swanLogo = require("@/assets/images/icons/logo.png")
     const badgeIcon01 = require("@/assets/images/icons/badge-1.png")
     const badgeIcon02 = require("@/assets/images/icons/badge-2.png")
     const gmtTime = new Date().toGMTString()
@@ -326,73 +272,6 @@ export default defineComponent({
     const background = ref(false)
     const searchJudge = ref(false)
     const dataArr = ref([])
-    const getnetID = ref(NaN)
-    const prevType = ref(true)
-    const centerDialogVisible = ref(false)
-    const tokenShow = ref(false)
-    const toolData = ref([])
-    const paginKey = reactive({
-      pageSize: 12,
-      pageNo: 1,
-      total: 0,
-      sort: 'updated'
-    })
-    const addVisible = ref(false)
-    const listLoad = ref(false)
-    const ruleForm = reactive({
-      name: ''
-    })
-
-    async function handleKeyChange (currentPage) {
-      // console.log('handleCurrentChange:', currentPage)
-      paginKey.pageNo = currentPage
-      getdataList()
-    }
-    async function createCom () {
-      listLoad.value = true
-      const params = {
-        "name": ruleForm.name
-      }
-      const listRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_RPCAPI}v1/keys/`, 'post', params)
-      if (listRes && String(listRes.code) === '0') paginKey.pageNo = 1
-      ruleForm.name = ''
-      getdataList()
-      listLoad.value = false
-      addVisible.value = false
-    }
-    async function deleteApiKey (id) {
-      tokenShow.value = true
-      const deleteRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_RPCAPI}v1/keys/${id}`, 'delete')
-      getdataList()
-      tokenShow.value = false
-    }
-    async function getdataList() {
-      centerDialogVisible.value = true
-      tokenShow.value = true
-      toolData.value = []
-
-      try {
-        const keysRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}/api_token`, 'get')
-
-        if (keysRes && keysRes.status === 'success') {
-          // Assuming the 'data' field in response contains the required token
-          if (keysRes.data){
-            toolData.value = keysRes.data.token ? [keysRes.data.token] : []  // Assigning the token data to toolData
-            // If there are multiple tokens, and they are in a list, replace the above line with:
-            // toolData.value = keysRes.data.list || []
-          } else {
-            system.$commonFun.messageTip('error', 'No token found, please generate a new token')
-          }
-
-        } else if (keysRes.message) {
-          system.$commonFun.messageTip('error', keysRes.message)
-        }
-      } catch (error) {
-        system.$commonFun.messageTip('error', error.message || 'Error fetching data')
-      }
-
-      tokenShow.value = false
-    }
 
     function handleSizeChange (val) { }
     async function handleCurrentChange (currentPage) {
@@ -423,17 +302,6 @@ export default defineComponent({
         if (providerRes.status) system.$commonFun.messageTip(providerRes.status, providerRes.message)
       }
       providersLoad.value = false
-    }
-    async function reverseList (list) {
-      try {
-        if (!list) return []
-        list.forEach(element => {
-          element.value = element.value.reverse()
-        })
-        return list
-      } catch (err) {
-        return []
-      }
     }
     async function searchProvider () {
       pagin.pageSize = 10
@@ -548,43 +416,6 @@ export default defineComponent({
         else return `${handleArray[0]}.${decimal}`
       } else return handleNum
     }
-    let lastTime = 0
-    async function throttle () {
-      // Prevent multiple signatures
-      let now = new Date().valueOf();
-      if (lastTime > 0 && (now - lastTime) <= 2000) return false
-      lastTime = now
-      return true
-    }
-
-    async function loginMethod () {
-      const time = await throttle()
-      if (!time) return false
-      system.$commonFun.Init(async (addr, chain) => {
-        providersLoad.value = true
-        getnetID.value = await system.$commonFun.web3Init.eth.net.getId()
-        await system.$commonFun.timeout(500)
-        if (accessToken.value !== '' && getnetID.value === 8598668088) providersLoad.value = false
-        else await signIn()
-      })
-    }
-
-    async function signIn () {
-      if (getnetID.value !== 8598668088) system.$commonFun.walletChain(8598668088)
-      else system.$commonFun.login()
-    }
-
-    async function signSetIn (t) {
-      let time = t || 0
-      let timer = null
-      timer = setInterval(() => {
-        if (time > 3) {
-          clearInterval(timer)
-          if (accessToken.value !== '' && getnetID.value === 8598668088) providersLoad.value = false
-          else signIn()
-        } else time += 1
-      }, 1000)
-    }
     const changetype = () => {
       const machart_gpu = echarts.init(document.getElementById("maychar-gpu"));
       const machart_memory = echarts.init(document.getElementById("maychar-memory"));
@@ -601,7 +432,7 @@ export default defineComponent({
             name: 'Total',
             type: 'pie',
             radius: ['50%', '70%'],
-            center: ['40%', '50%'],
+            center: ['50%', '50%'],
             avoidLabelOverlap: false,
             itemStyle: {
               borderRadius: 3,
@@ -635,12 +466,12 @@ export default defineComponent({
         { value: providerBody.data.total_used_gpu, name: providerBody.data.total_used_gpu },
       ]
       option3.series[0].data = [
-        { value: providerBody.data.total_memory - providerBody.data.total_used_memory, name: sizeChange(providerBody.data.total_memory - providerBody.data.total_used_memory) + ' ' },
-        { value: providerBody.data.total_used_memory, name: sizeChange(providerBody.data.total_used_memory) },
+        { value: providerBody.data.total_memory - providerBody.data.total_used_memory, name: system.$commonFun.sizeChange(providerBody.data.total_memory - providerBody.data.total_used_memory) + ' ' },
+        { value: providerBody.data.total_used_memory, name: system.$commonFun.sizeChange(providerBody.data.total_used_memory) },
       ]
       option4.series[0].data = [
-        { value: providerBody.data.total_storage - providerBody.data.total_used_storage, name: sizeChange(providerBody.data.total_storage - providerBody.data.total_used_storage) + ' ' },
-        { value: providerBody.data.total_used_storage, name: sizeChange(providerBody.data.total_used_storage) },
+        { value: providerBody.data.total_storage - providerBody.data.total_used_storage, name: system.$commonFun.sizeChange(providerBody.data.total_storage - providerBody.data.total_used_storage) + ' ' },
+        { value: providerBody.data.total_used_storage, name: system.$commonFun.sizeChange(providerBody.data.total_used_storage) },
       ]
       option5.series[0].data = [
         { value: providerBody.data.total_vcpu - providerBody.data.total_used_vcpu, name: `${providerBody.data.total_vcpu - providerBody.data.total_used_vcpu} vcpu ` },
@@ -657,38 +488,13 @@ export default defineComponent({
         machart_vcpu.resize();
       })
     }
-    function sizeChange (bytes) {
-      if (bytes === 0) return '0 B'
-      if (!bytes) return '-'
-      var k = 1024 // or 1000
-      var sizes = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-      var i = Math.floor(Math.log(bytes) / Math.log(k))
-
-      if (Math.round((bytes / Math.pow(k, i))).toString().length > 3) i += 1
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-    }
-    function goLink (link) {
-      window.open(link)
-    }
-    function fn () {
-      document.addEventListener('visibilitychange', function () {
-        prevType.value = !document.hidden
-      })
-      if (typeof window.ethereum === 'undefined') return
-      ethereum.on('chainChanged', async function (accounts) {
-        if (!prevType.value) return false
-        getnetID.value = await system.$commonFun.web3Init.eth.net.getId()
-        system.$commonFun.signOutFun()
-      })
-    }
     onMounted(async () => {
-      getnetID.value = await system.$commonFun.web3Init.eth.net.getId()
       reset('init')
-      fn()
     })
     return {
       system,
-      swanLogo,
+      route,
+      metaAddress,
       gmtTime,
       providersLoad,
       providersData,
@@ -699,23 +505,16 @@ export default defineComponent({
       providerBody,
       badgeIcon01,
       badgeIcon02,
-      getnetID,
       accessToken,
-      centerDialogVisible,
-      toolData,
-      tokenShow,
-      paginKey,
-      listLoad, addVisible, ruleForm,
-      getdataList, createCom, deleteApiKey, handleKeyChange, handleSizeChange, handleCurrentChange, searchProvider, clearProvider, expandChange, unifyNumber, sizeChange, goLink,
-      loginMethod
+      handleSizeChange, handleCurrentChange, searchProvider, clearProvider, expandChange, unifyNumber
     }
   }
 })
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
 #container {
-  font-size: 18px;
+  font-size: 16px;
   line-height: 1.6;
   letter-spacing: 1px;
   @media screen and (max-width: 1200px) {
@@ -725,20 +524,14 @@ export default defineComponent({
     display: flex;
     align-items: center;
   }
-  .swan-logo {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    margin: 0 0 0.3rem;
-    cursor: pointer;
-    img {
-      width: 200px;
-    }
-    :deep(.el-button) {
-      background-color: #447dff;
-      border-color: #447dff;
-      font-family: inherit;
-    }
+  :deep(.el-button) {
+    border: 0;
+    border-radius: 0.08rem;
+    background: linear-gradient(45deg, @theme-color, #9e42f5);
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    font-family: inherit;
   }
   h1 {
     margin: 0 0 0.2rem;
@@ -755,11 +548,17 @@ export default defineComponent({
     }
     .el-row {
       .el-col {
+        &.flex-row {
+          display: flex;
+        }
         .grid-content {
           padding: 0.15rem;
-          margin: 0.3rem 0 0;
-          border: 1px solid rgba(255, 255, 255, 0.4);
+          margin: 0.45rem 0 0.55rem;
+          background: rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(5px);
+          border: 1px solid rgba(255, 255, 255, 0.2);
           border-radius: 0.1rem;
+          animation: glow 1s ease-in-out infinite alternate;
           h6 {
             font-size: 16px;
             @media screen and (max-width: 1260px) {
@@ -780,30 +579,133 @@ export default defineComponent({
         .el-col {
           margin: 0.3rem 0 0;
           .erchart {
+            position: relative;
+            padding: 0.15rem;
             margin: 0.3rem 0 0;
+            border-radius: 0.15rem;
+            // border: 2px solid @theme-color-opacity1;
+            overflow: hidden;
+            text-align: center;
+            box-shadow: 0 0 15px #447dff;
+
+            border: 2px solid red;
+            animation: glowing 2s linear infinite;
+
+            @keyframes glowing {
+              0% {
+                border-color: red;
+              }
+              50% {
+                border-color: green;
+              }
+              100% {
+                border-color: red;
+              }
+            }
+
+            .drain-time {
+              display: none;
+              position: absolute;
+              z-index: 6;
+              &:nth-child(1) {
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 2px;
+                animation: run1 1s linear infinite; // animation-delay: 0s;
+                background: linear-gradient(
+                  to right,
+                  @theme-color-opacity2,
+                  @theme-color-opacity1,
+                  @theme-color-opacity
+                );
+              }
+              &:nth-child(2) {
+                top: 0;
+                right: 0;
+                height: 100%;
+                width: 2px;
+                animation: run2 1s linear infinite;
+                // animation-delay: 1s;
+                background: linear-gradient(
+                  to right,
+                  @theme-color-opacity2,
+                  @theme-color-opacity1,
+                  @theme-color-opacity
+                );
+              }
+              &:nth-child(3) {
+                bottom: 0;
+                left: 0;
+                height: 2px;
+                width: 100%;
+                animation: run3 1s linear infinite;
+                // animation-delay: 2s;
+                background: linear-gradient(
+                  to right,
+                  @theme-color-opacity2,
+                  @theme-color-opacity1,
+                  @theme-color-opacity
+                );
+              }
+              &:nth-child(4) {
+                top: 0;
+                left: -1px;
+                height: 100%;
+                width: 2px;
+                animation: run4 1s linear infinite;
+                // animation-delay: 3s;
+                background: linear-gradient(
+                  to right,
+                  @theme-color-opacity2,
+                  @theme-color-opacity1,
+                  @theme-color-opacity
+                );
+              }
+            }
             .title {
               font-size: 0.18rem;
             }
             h6 {
               display: flex;
               align-items: center;
+              justify-content: center;
               margin: 0 0 0.1rem;
               font-weight: 100;
+              &.background-free {
+                i {
+                  background-color: #4db470;
+                }
+                b {
+                  color: #4db470;
+                }
+              }
+              &.background-used {
+                i {
+                  background-color: #00b4ff;
+                }
+                b {
+                  color: #00b4ff;
+                }
+              }
+              &.background-total {
+                i {
+                  background-color: #9266a9;
+                }
+                b {
+                  color: #9266a9;
+                }
+              }
               i {
                 display: block;
                 width: 23px;
                 height: 8px;
                 margin: auto 0.05rem auto 0;
                 border-radius: 5px;
-                &.background-free {
-                  background-color: #4db470;
-                }
-                &.background-used {
-                  background-color: #00b4ff;
-                }
-                &.background-total {
-                  background-color: #9266a9;
-                }
+              }
+              b {
+                padding: 0 5px 0 0;
+                font-size: 0.15rem;
               }
             }
             .maychar {
@@ -828,17 +730,18 @@ export default defineComponent({
         .el-input__inner {
           width: 100%;
           height: 40px;
-          background-color: transparent;
+          background-color: rgb(21, 23, 28);
           line-height: 40px;
+          border-color: rgb(38, 39, 47);
           border-radius: 0.1rem;
-          color: #fff;
+          color: rgb(154, 156, 174);
           @media screen and (max-width: 768px) {
             width: 100%;
           }
           &:hover,
           &:active,
           &:focus {
-            border-color: #c37af9;
+            border-color: @theme-color;
           }
         }
       }
@@ -857,36 +760,36 @@ export default defineComponent({
     .el-table {
       margin: 0.24rem auto;
       background-color: transparent;
-      border-top-left-radius: 0.1rem;
-      border-top-right-radius: 0.1rem;
+      border-radius: 0.1rem;
+      border: 1px solid rgb(30, 32, 39);
       tr {
         background-color: transparent;
         th {
           word-break: break-word;
           padding: 0.1rem 0;
-          background-color: #a2a2a2;
+          background-color: @primary-color;
           border: 0;
           .cell {
-            color: #fff;
+            color: @text-color;
             word-break: break-word;
           }
         }
         td {
           padding: 0.16rem 0;
-          background-color: transparent;
-          color: #fff;
-          border-color: rgba(255, 255, 255, 0.4);
+          background-color: @primary-color;
+          color: rgb(181, 183, 200);
+          border-color: rgb(38, 39, 47);
           i {
             margin-right: 5px;
-            color: #ffffff;
+            color: @text-color;
             font-size: 18px;
             @media screen and (max-width: 1260px) {
               font-size: 16px;
             }
           }
           .service-body {
-            padding: 0 0.25rem 0.45rem;
-            color: #333;
+            padding: 0 0.25rem 0.1rem;
+            // color: #333;
             // border-top: rgb(220, 223, 230) 1px solid;
             // border-bottom: rgb(220, 223, 230) 1px solid;
             .tit {
@@ -906,83 +809,94 @@ export default defineComponent({
               }
             }
             .list {
-              padding: 0.1rem 0 0.15rem;
+              padding: 0.1rem 0 0;
               .li-title {
                 width: 100%;
+                padding: 0 0 0.1rem;
+                border-bottom: 1px solid #26272f;
               }
               ul {
                 display: flex;
-                align-items: center;
+                align-items: stretch;
+                justify-content: space-between;
                 flex-wrap: wrap;
-                .flex-warp {
-                  display: flex;
-                  flex-wrap: wrap;
-                  align-items: stretch;
-                }
-                .li-body {
-                  position: relative;
-                  padding: 0.1rem 0.3rem;
-                  margin: 0.15rem 0.15rem 0 0;
-                  // background-color: #f4f4f4;
-                  border: 1px solid #e4e7ed;
-                  border-radius: 5px;
-                  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-                  @media screen and (max-width: 768px) {
-                    padding: 0.1rem 0.5rem;
-                    margin: 0.25rem 0.25rem 0 0;
-                  }
-                  p {
-                    padding: 3px 0;
-                    font-size: 14px;
-                    line-height: 1.3;
-                    @media screen and (max-width: 1260px) {
-                      font-size: 12px;
+                margin: 0 auto 0.25rem;
+                li {
+                  width: 27%;
+                  .flex-row {
+                    .li-body {
+                      width: 27%;
+                      margin-right: 0.7rem;
                     }
-                    strong,
-                    b {
-                      margin-right: 5px;
-                      font-size: 15px;
+                  }
+                  .li-body {
+                    position: relative;
+                    padding: 0.15rem;
+                    margin: 0.3rem 0;
+                    background-color: #0d0e12;
+                    border-radius: 5px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+                    -webkit-backdrop-filter: blur(5px);
+                    backdrop-filter: blur(5px);
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    border-radius: 0.1rem;
+                    animation: glow 1s ease-in-out infinite alternate;
+                    @media screen and (max-width: 768px) {
+                    }
+                    p {
+                      padding: 3px 0;
+                      font-size: 14px;
+                      line-height: 1.3;
+                      text-align: center;
                       @media screen and (max-width: 1260px) {
-                        font-size: 13px;
+                        font-size: 12px;
+                      }
+                      strong,
+                      b {
+                        margin-right: 5px;
+                        font-size: 17px;
+                        @media screen and (max-width: 1260px) {
+                          font-size: 15px;
+                        }
+                      }
+                      &.t {
+                        text-transform: capitalize; // color: #808290;
+                      }
+                      &.t-capitalize {
+                        text-transform: uppercase;
+                      }
+                      &:nth-child(2) {
+                        strong {
+                          color: #4db470;
+                        }
+                      }
+                      &:nth-child(3) {
+                        strong {
+                          color: #488fc3;
+                        }
+                      }
+                      &:nth-child(4) {
+                        strong {
+                          color: #9266a9;
+                        }
                       }
                     }
-                    &.t {
-                      text-transform: capitalize;
-                    }
-                    &.t-capitalize {
-                      text-transform: uppercase;
-                    }
-                    &:nth-child(2) {
-                      strong {
-                        color: #4db470;
+                    &.li-gpu {
+                      &::before {
+                        position: absolute;
+                        content: "";
+                        right: 0.1rem;
+                        top: 0.1rem;
+                        width: 7px;
+                        height: 7px;
+                        background-color: orange;
+                        border-radius: 7px;
                       }
                     }
-                    &:nth-child(3) {
-                      strong {
-                        color: #488fc3;
+                    &.li-status {
+                      &::before {
+                        background-color: #8bc34a;
                       }
-                    }
-                    &:nth-child(4) {
-                      strong {
-                        color: #9266a9;
-                      }
-                    }
-                  }
-                  &.li-gpu {
-                    &::before {
-                      position: absolute;
-                      content: "";
-                      right: 0.1rem;
-                      top: 0.1rem;
-                      width: 7px;
-                      height: 7px;
-                      background-color: orange;
-                      border-radius: 7px;
-                    }
-                  }
-                  &.li-status {
-                    &::before {
-                      background-color: #8bc34a;
                     }
                   }
                 }
@@ -1006,28 +920,26 @@ export default defineComponent({
             }
           }
           &.el-table__expanded-cell {
-            background-color: rgba(255, 255, 255, 0.95) !important;
-          }
-        }
-        &.expanded,
-        &:hover {
-          td {
-            background-color: rgba(255, 255, 255, 0.85);
-            color: #000;
-            i {
-              color: #000;
+            padding: 0.32rem 0.64rem;
+            // border: 1px solid @white-color;
+            &:hover {
+              background-color: @primary-color !important;
             }
           }
         }
+        // &.expanded,
+        // &:hover {
+        //   td {
+        //     background-color: rgba(255, 255, 255, 0.85);
+        //     color: #000;
+        //     i {
+        //       color: #000;
+        //     }
+        //   }
+        // }
         &.expanded {
-          td {
-            background-color: rgba(255, 255, 255, 0.95);
-          }
-          &:hover {
-            td {
-              background-color: rgba(255, 255, 255, 0.85);
-            }
-          }
+          border: 1px solid @white-color;
+          border-collapse: collapse;
         }
       }
     }
@@ -1035,14 +947,15 @@ export default defineComponent({
     .el-table--border::after,
     .el-table--border::before,
     .el-table__inner-wrapper::before {
-      background-color: rgba(255, 255, 255, 0.4);
+      background-color: rgb(38, 39, 47);
+      height: 0;
     }
     .el-pagination {
       display: flex;
       justify-content: flex-end;
       align-items: center;
       .el-pagination__total {
-        color: #fff;
+        color: @white-color;
       }
       .btn-next,
       .btn-prev,
@@ -1050,13 +963,13 @@ export default defineComponent({
         min-width: 32px;
         margin: 0 4px;
         background-color: transparent;
-        color: #fff;
+        color: @white-color;
         border: 1px solid #f4f4f5;
         border-radius: 5px;
         &:not(.disabled).active,
         &:not(.disabled):hover {
-          background-color: #c37af9;
-          border-color: #c37af9;
+          background-color: @theme-color;
+          border-color: @theme-color;
         }
         &:not(.disabled):hover {
         }
@@ -1064,256 +977,118 @@ export default defineComponent({
     }
   }
 }
+</style>
 
-:deep(.apikey_body) {
-  width: 570px;
-  border-radius: 0.23rem;
-  text-align: left;
-  color: #000;
-  word-break: break-word;
-  @media screen and (max-width: 600px) {
-    width: 94%;
-  }
-  .el-dialog__body {
-    .add-button {
-      height: auto;
-      margin: 0 0 0.2rem;
-      padding: 0.1rem 0.15rem;
-      background-color: #447dff;
-      border-color: #447dff;
-      border-radius: 4px;
-      font-size: 14px;
-      @media screen and (max-width: 768px) {
-        font-size: 13px;
+<style lang="less">
+.menu-style {
+  border-radius: 0.1rem;
+  border-top-right-radius: 0.05rem;
+  .el-dropdown-menu {
+    position: relative;
+    border-radius: 0.1rem;
+    border-top-right-radius: 0.05rem;
+    &:first-child {
+      &:before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 12px;
+        right: 12px;
+        height: 1px;
+        background-color: #e7e7e7;
       }
     }
-    .el-table {
-      border-top: 1px solid #f1f1f1;
-      border-bottom: 1px solid #cacaca;
-      .el-table__header-wrapper {
-        .has-gutter {
-          tr {
-            background-color: #f2f2f2;
-          }
+    .el-dropdown-menu__item {
+      min-width: 170px;
+      padding: 5px 12px;
+      &:hover,
+      &:focus {
+        background-color: #fbfbfc;
+        color: #000;
+        // background-color: rgba(116, 5, 255, 0.1);
+        // color: rgba(116, 5, 255, 1);
+        .link {
+          text-decoration: underline;
         }
       }
-      tr {
-        font-size: 12px;
-        line-height: 1.2;
-        border-radius: 0.08rem;
-        th {
-          height: 0.5rem;
-          padding: 0;
-          text-align: center;
-          border-bottom: 1px solid #f1f1f1;
-          .cell {
-            word-break: break-word;
-            font-weight: 500;
-            color: #565656;
-            text-transform: uppercase;
-            line-height: 1.2;
-          }
-        }
-        th:first-child {
-          border-top-left-radius: 0.08rem;
-          border-bottom-left-radius: 0.08rem;
-        }
-        th:last-child {
-          border-top-right-radius: 0.08rem;
-          border-bottom-right-radius: 0.08rem;
-        }
-        td {
-          border-top: 1px solid #f1f1f1;
-          .cell {
-            padding: 0;
-            word-break: break-word;
-            color: #000;
-            text-align: center;
-            line-height: 1.4;
-            .el-rate__icon {
-              font-size: 0.16rem;
-              margin-right: 0;
-              @media screen and (max-width: 768px) {
-                font-size: 14px;
-              }
-            }
-            .revoke {
-              .el-button {
-                width: auto;
-                height: auto;
-                min-width: 0.5rem;
-                padding: 5px 0;
-                background: #447dff;
-                border-color: #447dff;
-                font-family: inherit;
-                font-size: inherit;
-                border: 0;
-                color: #fff;
-                line-height: 1.2;
-                cursor: pointer;
-              }
-            }
-            .el-button.el-icon-upload {
-              padding: 0 0.1rem;
-              line-height: 0.25rem;
-              font-size: 0.1372rem;
-            }
-            .bot {
-              justify-content: center;
-              p {
-                font-size: 0.1372rem;
-                padding: 0 0.08rem;
-                margin: 0 0.05rem;
-                border: 1px solid #0b318f;
-                border-radius: 0.05rem;
-                cursor: pointer;
-              }
-              p.color {
-                background: #0b318f;
-                color: #fff;
-              }
-              .el-radio {
-                margin: 0;
-                .el-radio__input {
-                  display: none;
-                }
-                .el-radio__label {
-                  display: block;
-                  font-size: 0.1372rem;
-                  padding: 0 0.04rem;
-                  margin: 0 0.01rem;
-                  border: 1px solid #0b318f;
-                  border-radius: 0.05rem;
-                  cursor: pointer;
-                  line-height: 1.8;
-                }
-                .el-radio__input.is-checked + .el-radio__label {
-                  background: #0b318f;
-                  color: #fff;
-                }
-              }
-            }
-          }
-        }
-        td.el-table_1_column_1 {
-          .cell {
-            // color:#0c3090
-          }
-        }
+      .link {
+        padding: 5px 0;
+        cursor: pointer;
       }
-    }
-  }
-}
-:deep(.add_body) {
-  width: 40%;
-  max-width: 770px;
-  min-width: 310px;
-  border-radius: 0.13rem;
-  text-align: left;
-  @media screen and (max-width: 768px) {
-    width: 60%;
-  }
-  @media screen and (max-width: 441px) {
-    width: 90%;
-  }
-  .el-dialog__header {
-    padding: 0.17rem 0.25rem 0.1rem;
-    font-size: 17px;
-    color: #000;
-    @media screen and (max-width: 768px) {
-      font-size: 15px;
-    }
-    @media screen and (min-width: 1800px) {
-      font-size: 18px;
-    }
-  }
-  .el-dialog__body {
-    padding: 0;
-    .tip,
-    .tip_black {
-      padding: 0.1rem 0.25rem;
-      background-color: #f3f1ff;
-      color: #562683;
-      font-size: 15px;
-      word-break: break-word;
-      line-height: 1.3;
-      @media screen and (max-width: 768px) {
-        font-size: 14px;
-      }
-      @media screen and (min-width: 1800px) {
-        font-size: 17px;
-      }
-    }
-    .tip_black {
-      background-color: transparent;
-      color: #000;
-      a {
-        text-decoration: underline;
-      }
-    }
-    .el-form {
-      padding: 0.15rem 0.25rem 0;
-      .el-form-item {
-        .el-form-item__content {
-          .label {
-            color: #000;
-            font-size: 15px;
-            @media screen and (max-width: 768px) {
-              font-size: 14px;
-            }
-            @media screen and (min-width: 1800px) {
-              font-size: 17px;
-            }
-          }
-          .flex-row {
-            width: 100%;
-          }
-          .el-input {
-            .el-input__inner {
-              // background: linear-gradient(180deg, #fefefe, #f0f0f0);
-            }
-          }
-        }
-      }
-    }
-    .apiTipCont {
-      padding: 0.15rem 0.25rem;
-      p {
-        margin-bottom: 0.15rem;
-        line-height: 1.5;
-        word-break: break-word;
-        @media screen and (min-width: 1800px) {
-          font-size: 16px;
-        }
-      }
-    }
-  }
-  .el-dialog__footer {
-    padding: 0 0.25rem 0.25rem;
-    text-align: left;
-    .el-button {
-      width: auto;
-      height: auto;
-      padding: 0.07rem 0.15rem;
-      margin: 0 0.15rem 0 0;
-      background: linear-gradient(180deg, #fefefe, #f0f0f0);
-      font-family: inherit;
-      font-size: 16px;
-      line-height: 1;
-      color: #000;
-      border-radius: 0.07rem;
-      @media screen and (max-width: 1600px) {
-        font-size: 14px;
-      }
-      &:hover {
-        opacity: 0.9;
-        span {
+      .profile {
+        width: 100%;
+        padding: 5px 0 0;
+        margin: 0;
+        // &.router-link {
+        //   display: block;
+        //   width: 100%;
+        //   height: auto;
+        //   padding: 3px 3px 3px 22px;
+        //   &:hover {
+        //     text-decoration: underline;
+        //   }
+        // }
+        // &.b {
+        // }
+        cursor: pointer;
+        * {
           cursor: pointer;
         }
+        .tit {
+          font-size: 12px;
+          color: #989898;
+          line-height: 1.5;
+        }
+        .flex-row {
+          img {
+            margin-right: 7px;
+            border-radius: 100%;
+          }
+          .link {
+            padding: 2px 0;
+          }
+        }
       }
-      &.is-disabled {
-        opacity: 0.5;
-        border-color: #e3e6eb;
+      .set {
+        vertical-align: middle;
+        * {
+          vertical-align: middle;
+        }
+        .el-button-group > .el-button {
+          border-radius: 7px;
+          &:first-child {
+            padding-left: 10px;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+          }
+          &:last-child {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+          }
+        }
+        .el-icon {
+          margin: auto;
+          cursor: pointer;
+          svg {
+            width: 1em;
+            cursor: pointer;
+            path {
+              cursor: pointer;
+            }
+          }
+        }
+        .loginImg {
+          cursor: pointer;
+          img {
+            width: 23px;
+            height: 23px;
+            margin: 0 5px 0 0;
+            cursor: pointer;
+            background-color: #fff;
+            border: 1px solid #b9b9b9;
+            border-radius: 50%;
+          }
+        }
       }
     }
   }

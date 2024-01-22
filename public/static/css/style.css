@@ -10,7 +10,7 @@ html,
 body {
     width: 100%;
     min-height: 100%;
-    background-color: #00000094;
+    background-color: #0d0e12;
     /* background-image: linear-gradient(to top left, red, transparent), linear-gradient(to top right, blue, transparent), linear-gradient(to bottom left, green, transparent), linear-gradient(to bottom right, yellow, transparent); */
     font-size: 116px;
     color: #fff;
@@ -120,6 +120,11 @@ a:focus {
     display: none;
 }
 
+.el-message {
+    max-width: 95%;
+    word-break: break-word;
+}
+
 .el-message .el-icon {
     font-size: 35px;
 }
@@ -139,6 +144,60 @@ a:focus {
     width: 16.6rem;
     max-width: 100%;
     margin: auto;
+}
+
+@keyframes run1 {
+    from {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes run2 {
+    from {
+        transform: translateY(-100%)
+    }
+    to {
+        transform: translateY(100%)
+    }
+}
+
+@keyframes run3 {
+    from {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes run4 {
+    from {
+        transform: translateY(100%)
+    }
+    to {
+        transform: translateY(-100%)
+    }
+}
+
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 10px #447dff, 0 0 20px #447dff, 0 0 30px #447dff, 0 0 40px #447dff;
+    }
+    100% {
+        box-shadow: 0 0 15px #447dff, 0 0 25px #447dff, 0 0 35px #447dff, 0 0 45px #447dff;
+    }
+}
+
+@-webkit-keyframes glow {
+    0% {
+        box-shadow: 0 0 10px #447dff, 0 0 20px #447dff, 0 0 30px #447dff, 0 0 40px #447dff;
+    }
+    100% {
+        box-shadow: 0 0 15px #447dff, 0 0 25px #447dff, 0 0 35px #447dff, 0 0 45px #447dff;
+    }
 }
 
 @media screen and (max-width:1800px) {

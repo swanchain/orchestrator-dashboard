@@ -1,4 +1,4 @@
-# Lagrange | Computing Provider
+# SWAN | Computing Provider
 
 **Technology stack：** vue3 + vuex + vue-router + webpack + sass + element-plus
 
