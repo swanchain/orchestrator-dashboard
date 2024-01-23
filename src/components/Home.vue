@@ -93,6 +93,12 @@ export default defineComponent({
   }
 }
 
+.wrongNet {
+  .el-loading-mask {
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+}
+
 .mt-border {
   margin: 0.3rem auto;
   border-top: 1px solid rgba(255, 255, 255, 0.4);
