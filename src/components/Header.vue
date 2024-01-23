@@ -383,7 +383,7 @@ export default defineComponent({
 
         let payMethod = collateralContract.methods.deposit(metaAddress.value)
         let payGasLimit = await payMethod.estimateGas({ from: metaAddress.value })
-        const tx = await payMethod.send({ from: metaAddress.value, gasLimit: Math.floor(payGasLimit * 1.5), value: amount })
+        const tx = await payMethod.send({ from: metaAddress.value, gasLimit: Math.floor(payGasLimit * 5), value: amount })
           .on('transactionHash', async (transactionHash) => {
             console.log('transactionHash:', transactionHash)
             cpCollateralCont.tx_hash = transactionHash
