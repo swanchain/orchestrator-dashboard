@@ -1,8 +1,8 @@
 <template>
   <div id="payment">
     <div class="payment-history container-landing">
-      <div class="title">{{paymentType.toLowerCase() === 'provider'?'provider Payment history':'user Payment history'}}</div>
-      <el-table v-loading="paymentLoad" :data="paymentData" stripe style="width: 100%" v-if="paymentType.toLowerCase() !== 'provider'">
+      <div class="title">Reward history</div>
+      <el-table v-loading="paymentLoad" :data="paymentData" stripe style="width: 100%">
         <el-table-column prop="transaction_hash" label="transaction hash" min-width="120">
           <template #default="scope">
             <a :href="`${scope.row.url_tx}${scope.row.transaction_hash}`" target="_blank">{{scope.row.transaction_hash}}</a>
@@ -37,24 +37,6 @@
           </template>
         </el-table-column>
       </el-table>
-
-      <el-table v-loading="paymentLoad" :data="paymentData" stripe style="width: 100%" v-else>
-        <!-- <el-table-column prop="transaction_hash" label="transaction hash" min-width="120">
-          <template #default="scope">
-            <a :href="`${scope.row.url_tx}${scope.row.transaction_hash}`" target="_blank">{{scope.row.transaction_hash}}</a>
-          </template>
-        </el-table-column> -->
-        <el-table-column prop="chain_id" label="chain id" width="100" />
-        <el-table-column prop="amount" label="amount" />
-        <el-table-column prop="status" label="status" width="120">
-          <template #default="scope">
-            <div>
-              <el-button type="primary" v-if="scope.row.claimed === false" plain @click="refundFun(scope.row, 'claim')">Claim</el-button>
-              <span v-else>Claimed</span>
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
     </div>
   </div>
 </template>
@@ -79,6 +61,8 @@ export default defineComponent({
     let paymentContract = new system.$commonFun.web3Init.eth.Contract(SpaceTokenABI, paymentContractAddress)
 
     async function reviewFun (row) {
+      const net = await system.$commonFun.checkNetwork()
+      if (net) return
       paymentLoad.value = true
       let formData = new FormData()
       formData.append('tx_hash', row.transaction_hash)
@@ -164,8 +148,8 @@ export default defineComponent({
     async function init (params) {
       paymentLoad.value = true
       paymentType.value = route.query.type || 'user'
-      const requestURL = `${process.env.VUE_APP_BASEAPI}user/provider/payments`
-      const paymentsRes = await system.$commonFun.sendRequest(`${requestURL}?public_address=${store.state.metaAddress}`, 'get')
+      const requestURL = `${process.env.VUE_APP_BASEAPI}provider/payments`
+      const paymentsRes = await system.$commonFun.sendRequest(`${requestURL}`, 'get') //?public_address=${store.state.metaAddress}
       if (paymentsRes && paymentsRes.status === 'success') {
         for (let p = 0; p < paymentsRes.data.payments.length; p++) {
           let { url_tx } = await system.$commonFun.getUnit(parseInt(paymentsRes.data.payments[p].chain_id), 16)

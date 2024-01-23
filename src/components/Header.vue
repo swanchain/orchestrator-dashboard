@@ -4,9 +4,9 @@
       <img :src="swanLogo" @click="system.$commonFun.goLink('https://www.swanchain.io/')" />
       <div class="nav">
         <router-link :to="{name: 'dashboard'}" :class="{'active': route.name === 'dashboard'}">Dashboard</router-link>
-        <router-link :to="{ name: 'paymentHistory', query: { type: 'user' }}" :class="{'active': route.name === 'paymentHistory'}" v-if="getnetID === 8598668088 && accessToken !== ''">Reword History</router-link>
+        <router-link :to="{ name: 'paymentHistory', query: { type: 'user' }}" :class="{'active': route.name === 'paymentHistory'}" v-if="accessToken !== ''">Reword History</router-link>
       </div>
-      <div class="header-right flex-row nowrap" v-if="getnetID === 8598668088 && accessToken !== ''">
+      <div class="header-right flex-row nowrap" v-if="accessToken !== ''">
         <div class="set ">
           <div class="info-style flex-row">
             <div class="address" @click="wrongMethod">
@@ -280,13 +280,13 @@ export default defineComponent({
         providersLoad.value = true
         getnetID.value = await system.$commonFun.web3Init.eth.net.getId()
         await system.$commonFun.timeout(500)
-        if (accessToken.value !== '' && getnetID.value === 8598668088) providersLoad.value = false
-        else await signIn()
+        if (accessToken.value !== '') providersLoad.value = false
+        else system.$commonFun.login()
       })
     }
     async function signIn () {
-      if (getnetID.value !== 8598668088) system.$commonFun.walletChain(8598668088)
-      else system.$commonFun.login()
+      // if (getnetID.value !== 2024) system.$commonFun.walletChain(2024)
+      // else system.$commonFun.login()
     }
     async function signSetIn (t) {
       let time = t || 0
@@ -294,7 +294,7 @@ export default defineComponent({
       timer = setInterval(() => {
         if (time > 3) {
           clearInterval(timer)
-          if (accessToken.value !== '' && getnetID.value === 8598668088) providersLoad.value = false
+          if (accessToken.value !== '') providersLoad.value = false
           else signIn()
         } else time += 1
       }, 1000)
@@ -319,6 +319,8 @@ export default defineComponent({
       // console.log(key, keyPath) //  
       if (key === 'apiKey') getdataList()
       else if (key === 'cpCollateral') {
+        const net = await system.$commonFun.checkNetwork()
+        if (net) return
         cpCollateralCont.tip = false
         cpCollateralCont.tx_hash = ''
         cpCollateralCont.diagle = true
@@ -373,15 +375,15 @@ export default defineComponent({
       try {
         const amount = system.$commonFun.web3Init.utils.toWei(String(cpCollateralCont.amount), 'ether')
 
-        let approveMethod = tokenContract.methods.approve(collateralAddress, amount)
-        let approveGasLimit = await approveMethod.estimateGas({ from: metaAddress.value })
-        const approve_tx = await approveMethod.send({
-          from: metaAddress.value, gasLimit: approveGasLimit
-        })
+        // let approveMethod = tokenContract.methods.approve(collateralAddress, amount)
+        // let approveGasLimit = await approveMethod.estimateGas({ from: metaAddress.value })
+        // const approve_tx = await approveMethod.send({
+        //   from: metaAddress.value, gasLimit: approveGasLimit
+        // })
 
-        let payMethod = collateralContract.methods.deposit(cpCollateralCont.address, amount)
+        let payMethod = collateralContract.methods.deposit(metaAddress.value)
         let payGasLimit = await payMethod.estimateGas({ from: metaAddress.value })
-        const tx = await payMethod.send({ from: metaAddress.value, gasLimit: payGasLimit })
+        const tx = await payMethod.send({ from: metaAddress.value, gasLimit: payGasLimit, value: amount })
           .on('transactionHash', async (transactionHash) => {
             console.log('transactionHash:', transactionHash)
             cpCollateralCont.tx_hash = transactionHash
@@ -395,6 +397,8 @@ export default defineComponent({
       }
     }
     async function cpCheck () {
+      const net = await system.$commonFun.checkNetwork()
+      if (net) return
       cpCheckCont.diagle = true
       cpCheckCont.show = true
       const cpRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}cp/collateral/${metaAddress.value}`, 'get')

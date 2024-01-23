@@ -174,18 +174,27 @@ if (typeof window.ethereum === 'undefined') {
 
 async function walletChain(chainId) {
   let text = {}
+  const currentID = await web3Init.eth.net.getId()
   switch (chainId) {
     case 8598668088:
       text = {
         chainId: web3Init.utils.numberToHex(8598668088),
         chainName: 'OpSwan',
         // nativeCurrency: {
-        //   name: 'SwanETH',
-        //   symbol: 'SwanETH', // 2-6 characters long
+        //   name: 'SWAN',
+        //   symbol: 'SWAN', // 2-6 characters long
         //   decimals: 18
         // },
         rpcUrls: [process.env.VUE_APP_OPSWANRPCURL],
         blockExplorerUrls: [process.env.VUE_APP_OPSWANURL]
+      }
+      break
+    case 2024:
+      text = {
+        chainId: web3Init.utils.numberToHex(2024),
+        chainName: 'Saturn Testnet',
+        rpcUrls: [process.env.VUE_APP_SATURNURL],
+        blockExplorerUrls: [process.env.VUE_APP_SATURNBLOCKURL]
       }
       break
       // case 80001:
@@ -236,15 +245,16 @@ async function walletChain(chainId) {
       ]
     })
     await timeout(500)
-    await login()
+    const newID = await web3Init.eth.net.getId()
+    if (newID !== currentID) await login()
   } catch (err) {
     if (err.message) messageTip('error', err.message)
   }
 }
 
 async function login() {
+  // if (chain_id !== 2024) return
   const chain_id = await web3Init.eth.net.getId()
-  if (chain_id !== 8598668088) return
   if (!store.state.metaAddress || store.state.metaAddress === undefined) {
     const accounts = await providerInit.request({
       method: 'eth_requestAccounts'
@@ -350,6 +360,12 @@ async function getUnit(id) {
       url = `${process.env.VUE_APP_OPSWANURL}/address/`
       url_tx = `${process.env.VUE_APP_OPSWANURL}/tx/`
       break
+    case 2024:
+      unit = 'SWAN'
+      name = 'Saturn Testnet '
+      url = `${process.env.VUE_APP_SATURNBLOCKURL}/address/`
+      url_tx = `${process.env.VUE_APP_SATURNBLOCKURL}/tx/`
+      break
     default:
       unit = '-'
       name = `Chain ${id}`
@@ -365,6 +381,14 @@ async function getUnit(id) {
 
 function goLink(link) {
   window.open(link)
+}
+
+async function checkNetwork() {
+  const getnetID = await web3Init.eth.net.getId()
+  if (getnetID !== 2024) {
+    walletChain(2024)
+    return true
+  } else return false
 }
 
 export default {
@@ -383,5 +407,6 @@ export default {
   sizeChange,
   getUnit,
   goLink,
-  providerInit
+  providerInit,
+  checkNetwork
 }
