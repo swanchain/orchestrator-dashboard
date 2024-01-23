@@ -125,8 +125,8 @@
           <div class="area flex-row">
             <div class="fast width">
               <label>Amount</label>
-              <el-input-number v-model="cpCollateralCont.amount" :precision="0" :step="1" :min="1" controls-position="right" @change="cpCollateralCont.tip_amount=false" />
-              <p class="error" v-show="cpCollateralCont.tip_amount">The minimum amount is 1</p>
+              <el-input-number v-model="cpCollateralCont.amount" controls-position="right" @change="cpCollateralCont.tip_amount=false" />
+              <!-- <p class="error" v-show="cpCollateralCont.tip_amount">The minimum amount is 1</p> -->
             </div>
           </div>
           <br />
@@ -334,7 +334,7 @@ export default defineComponent({
     async function cpCollateral () {
       cpCollateralCont.show = true
       try {
-        if (Number(cpCollateralCont.amount) >= 1) cpDeposit()
+        if (Number(cpCollateralCont.amount) >= 0) cpDeposit()
         else {
           cpCollateralCont.tip_amount = true
           cpCollateralCont.show = false
