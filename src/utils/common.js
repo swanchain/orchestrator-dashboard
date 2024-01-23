@@ -118,8 +118,7 @@ async function Init(callback) {
     window.open('https://metamask.io/download.html')
     alert("Consider installing MetaMask!");
   } else {
-    const ethereum = window.ethereum;
-    ethereum
+    providerInit
       .request({
         method: 'eth_requestAccounts'
       })
@@ -129,7 +128,7 @@ async function Init(callback) {
         }
         web3Init.eth.getAccounts().then(async webAccounts => {
             store.dispatch('setMetaAddress', webAccounts[0])
-            // const chainId = await ethereum.request({ method: 'eth_chainId' })
+            // const chainId = await providerInit.request({ method: 'eth_chainId' })
             // console.log(parseInt(chainId, 16))
             callback(webAccounts[0])
           })
@@ -153,13 +152,14 @@ async function Init(callback) {
 }
 
 let web3Init
+const providerInit = window.ethereum && window.ethereum.providers ? window.ethereum.providers.find((provider) => provider.isMetaMask) : window.ethereum
 if (typeof window.ethereum === 'undefined') {
   // window.open('https://metamask.io/download.html')
   // alert("Consider installing MetaMask!");
 } else {
   if (window.ethereum) {
-    web3 = new Web3(ethereum);
-    web3.setProvider(ethereum);
+    web3 = new Web3(providerInit);
+    web3.setProvider(providerInit);
   } else if (window.web3) {
     web3 = window.web3;
     console.log("Injected web3 detected.");
@@ -229,7 +229,7 @@ async function walletChain(chainId) {
       //   break
   }
   try {
-    await ethereum.request({
+    await providerInit.request({
       method: 'wallet_addEthereumChain',
       params: [
         text
@@ -246,7 +246,7 @@ async function login() {
   const chain_id = await web3Init.eth.net.getId()
   if (chain_id !== 8598668088) return
   if (!store.state.metaAddress || store.state.metaAddress === undefined) {
-    const accounts = await ethereum.request({
+    const accounts = await providerInit.request({
       method: 'eth_requestAccounts'
     })
     store.dispatch('setMetaAddress', accounts[0])
@@ -274,7 +274,7 @@ async function sign(nonce) {
   const buff = Buffer.from("Signing in to " + local + " at " + sortanow, 'utf-8')
   let signature = null
   let signErr = ''
-  await ethereum.request({
+  await providerInit.request({
     method: 'personal_sign',
     params: [buff.toString('hex'), store.state.metaAddress]
   }).then(sig => {
@@ -293,15 +293,16 @@ async function performSignin(sig) {
   try {
     const reqOpts = [store.state.metaAddress, sig]
     const response = await sendRequest(`${process.env.VUE_APP_BASEAPI}login`, 'post', reqOpts)
-    if (response) {
+    if (response && response.access_token) {
       store.dispatch('setAccessToken', response.access_token)
       return true
-    }
+    } else signOutFun()
     messageTip('error', response ? response.message : 'Fail')
     return null
   } catch (err) {
     console.log('login err:', err)
     messageTip('error', 'Fail')
+    signOutFun()
     return null
   }
 }
@@ -381,5 +382,6 @@ export default {
   expiredTime,
   sizeChange,
   getUnit,
-  goLink
+  goLink,
+  providerInit
 }

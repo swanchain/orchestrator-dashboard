@@ -304,12 +304,12 @@ export default defineComponent({
         prevType.value = !document.hidden
       })
       if (typeof window.ethereum === 'undefined') return
-      ethereum.on('accountsChanged', async function (accounts) {
+      system.$commonFun.providerInit.on('accountsChanged', async function (accounts) {
         if (!prevType.value) return false
         getnetID.value = await system.$commonFun.web3Init.eth.net.getId()
         system.$commonFun.signOutFun()
       })
-      ethereum.on('chainChanged', async function (accounts) {
+      system.$commonFun.providerInit.on('chainChanged', async function (accounts) {
         if (!prevType.value) return false
         getnetID.value = await system.$commonFun.web3Init.eth.net.getId()
         system.$commonFun.signOutFun()

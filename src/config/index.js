@@ -1,3 +1,3 @@
 module.exports = {
-  baseTitle: 'Swan Hub'
+  baseTitle: 'Orchestrator'
 }
