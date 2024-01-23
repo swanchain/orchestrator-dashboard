@@ -118,8 +118,7 @@ async function Init(callback) {
     window.open('https://metamask.io/download.html')
     alert("Consider installing MetaMask!");
   } else {
-    const ethereum = window.ethereum;
-    ethereum
+    providerInit
       .request({
         method: 'eth_requestAccounts'
       })
@@ -129,7 +128,7 @@ async function Init(callback) {
         }
         web3Init.eth.getAccounts().then(async webAccounts => {
             store.dispatch('setMetaAddress', webAccounts[0])
-            // const chainId = await ethereum.request({ method: 'eth_chainId' })
+            // const chainId = await providerInit.request({ method: 'eth_chainId' })
             // console.log(parseInt(chainId, 16))
             callback(webAccounts[0])
           })
@@ -153,13 +152,14 @@ async function Init(callback) {
 }
 
 let web3Init
+const providerInit = window.ethereum && window.ethereum.providers ? window.ethereum.providers.find((provider) => provider.isMetaMask) : window.ethereum
 if (typeof window.ethereum === 'undefined') {
   // window.open('https://metamask.io/download.html')
   // alert("Consider installing MetaMask!");
 } else {
   if (window.ethereum) {
-    web3 = new Web3(ethereum);
-    web3.setProvider(ethereum);
+    web3 = new Web3(providerInit);
+    web3.setProvider(providerInit);
   } else if (window.web3) {
     web3 = window.web3;
     console.log("Injected web3 detected.");
@@ -174,18 +174,27 @@ if (typeof window.ethereum === 'undefined') {
 
 async function walletChain(chainId) {
   let text = {}
+  const currentID = await web3Init.eth.net.getId()
   switch (chainId) {
     case 8598668088:
       text = {
         chainId: web3Init.utils.numberToHex(8598668088),
         chainName: 'OpSwan',
         // nativeCurrency: {
-        //   name: 'SwanETH',
-        //   symbol: 'SwanETH', // 2-6 characters long
+        //   name: 'SWAN',
+        //   symbol: 'SWAN', // 2-6 characters long
         //   decimals: 18
         // },
         rpcUrls: [process.env.VUE_APP_OPSWANRPCURL],
         blockExplorerUrls: [process.env.VUE_APP_OPSWANURL]
+      }
+      break
+    case 2024:
+      text = {
+        chainId: web3Init.utils.numberToHex(2024),
+        chainName: 'Saturn Testnet',
+        rpcUrls: [process.env.VUE_APP_SATURNURL],
+        blockExplorerUrls: [process.env.VUE_APP_SATURNBLOCKURL]
       }
       break
       // case 80001:
@@ -229,24 +238,25 @@ async function walletChain(chainId) {
       //   break
   }
   try {
-    await ethereum.request({
+    await providerInit.request({
       method: 'wallet_addEthereumChain',
       params: [
         text
       ]
     })
     await timeout(500)
-    await login()
+    const newID = await web3Init.eth.net.getId()
+    if (newID !== currentID) await login()
   } catch (err) {
     if (err.message) messageTip('error', err.message)
   }
 }
 
 async function login() {
+  // if (chain_id !== 2024) return
   const chain_id = await web3Init.eth.net.getId()
-  if (chain_id !== 8598668088) return
   if (!store.state.metaAddress || store.state.metaAddress === undefined) {
-    const accounts = await ethereum.request({
+    const accounts = await providerInit.request({
       method: 'eth_requestAccounts'
     })
     store.dispatch('setMetaAddress', accounts[0])
@@ -274,7 +284,7 @@ async function sign(nonce) {
   const buff = Buffer.from("Signing in to " + local + " at " + sortanow, 'utf-8')
   let signature = null
   let signErr = ''
-  await ethereum.request({
+  await providerInit.request({
     method: 'personal_sign',
     params: [buff.toString('hex'), store.state.metaAddress]
   }).then(sig => {
@@ -293,15 +303,16 @@ async function performSignin(sig) {
   try {
     const reqOpts = [store.state.metaAddress, sig]
     const response = await sendRequest(`${process.env.VUE_APP_BASEAPI}login`, 'post', reqOpts)
-    if (response) {
+    if (response && response.access_token) {
       store.dispatch('setAccessToken', response.access_token)
       return true
-    }
+    } else signOutFun()
     messageTip('error', response ? response.message : 'Fail')
     return null
   } catch (err) {
     console.log('login err:', err)
     messageTip('error', 'Fail')
+    signOutFun()
     return null
   }
 }
@@ -349,6 +360,12 @@ async function getUnit(id) {
       url = `${process.env.VUE_APP_OPSWANURL}/address/`
       url_tx = `${process.env.VUE_APP_OPSWANURL}/tx/`
       break
+    case 2024:
+      unit = 'SWAN'
+      name = 'Saturn Testnet '
+      url = `${process.env.VUE_APP_SATURNBLOCKURL}/address/`
+      url_tx = `${process.env.VUE_APP_SATURNBLOCKURL}/tx/`
+      break
     default:
       unit = '-'
       name = `Chain ${id}`
@@ -366,6 +383,14 @@ function goLink(link) {
   window.open(link)
 }
 
+async function checkNetwork() {
+  const getnetID = await web3Init.eth.net.getId()
+  if (getnetID !== 2024) {
+    walletChain(2024)
+    return true
+  } else return false
+}
+
 export default {
   sendRequest,
   timeout,
@@ -381,5 +406,7 @@ export default {
   expiredTime,
   sizeChange,
   getUnit,
-  goLink
+  goLink,
+  providerInit,
+  checkNetwork
 }

@@ -35,6 +35,18 @@ const routes = [{
                 meta: {
                     keepAlive: true,
                     title: ''
+                },
+                beforeEnter: (to, from, next) => {
+                    if (!sessionStorage.getItem('access_token_swan')) {
+                        next({
+                            path: '/provider-status',
+                            query: {
+                                redirect: to.fullPath
+                            }
+                        })
+                    } else {
+                        next()
+                    }
                 }
             },
         ]
