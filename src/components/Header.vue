@@ -4,7 +4,7 @@
       <img :src="swanLogo" @click="system.$commonFun.goLink('https://www.swanchain.io/')" />
       <div class="nav">
         <router-link :to="{name: 'dashboard'}" :class="{'active': route.name === 'dashboard'}">Dashboard</router-link>
-        <router-link :to="{ name: 'paymentHistory', query: { type: 'user' }}" :class="{'active': route.name === 'paymentHistory'}" v-if="accessToken !== ''">Reword History</router-link>
+        <router-link :to="{ name: 'paymentHistory', query: { type: 'user' }}" :class="{'active': route.name === 'paymentHistory'}" v-if="accessToken !== ''">Reward History</router-link>
       </div>
       <div class="header-right flex-row nowrap" v-if="accessToken !== ''">
         <div class="set ">
