@@ -475,7 +475,7 @@ export default defineComponent({
   line-height: 1.6;
   letter-spacing: 1px;
   @media screen and (max-width: 1200px) {
-    font-size: 16px;
+    font-size: 14px;
   }
   .flex {
     display: flex;
@@ -497,7 +497,7 @@ export default defineComponent({
     margin: 0 0 0.3rem;
     cursor: pointer;
     img {
-      height: 50px;
+      height: 0.45rem;
     }
     .nav {
       color: @white-color;
@@ -594,6 +594,10 @@ export default defineComponent({
           }
         }
       }
+    }
+    .el-button {
+      font-family: inherit;
+      font-size: inherit;
     }
   }
 }
