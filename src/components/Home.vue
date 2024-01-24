@@ -74,11 +74,18 @@ export default defineComponent({
       @media (min-width: 768px) {
         max-width: 770px;
       }
-      @media (min-width: 992px) {
+      @media (min-width: 1024px) {
         max-width: 1010px;
       }
       @media (min-width: 1200px) {
         max-width: 1190px;
+      }
+      @media (min-width: 1920px) {
+        max-width: 1440px;
+      }
+      @media (max-width: 600px) {
+        width: calc(100% - 0.32rem);
+        padding: 0 0.16rem;
       }
     }
   }

@@ -4,7 +4,7 @@
       <img :src="swanLogo" @click="system.$commonFun.goLink('https://www.swanchain.io/')" />
       <div class="nav">
         <router-link :to="{name: 'dashboard'}" :class="{'active': route.name === 'dashboard'}">Dashboard</router-link>
-        <router-link :to="{ name: 'paymentHistory', query: { type: 'user' }}" :class="{'active': route.name === 'paymentHistory'}" v-if="accessToken !== ''">Reword History</router-link>
+        <router-link :to="{ name: 'paymentHistory', query: { type: 'user' }}" :class="{'active': route.name === 'paymentHistory'}" v-if="accessToken !== ''">Reward History</router-link>
       </div>
       <div class="header-right flex-row nowrap" v-if="accessToken !== ''">
         <div class="set ">
@@ -475,7 +475,7 @@ export default defineComponent({
   line-height: 1.6;
   letter-spacing: 1px;
   @media screen and (max-width: 1200px) {
-    font-size: 16px;
+    font-size: 14px;
   }
   .flex {
     display: flex;
@@ -497,7 +497,7 @@ export default defineComponent({
     margin: 0 0 0.3rem;
     cursor: pointer;
     img {
-      height: 50px;
+      height: 0.45rem;
     }
     .nav {
       color: @white-color;
@@ -594,6 +594,10 @@ export default defineComponent({
           }
         }
       }
+    }
+    .el-button {
+      font-family: inherit;
+      font-size: inherit;
     }
   }
 }

@@ -197,7 +197,7 @@
             <div class="service-body" v-else>No Data</div>
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="Name" min-width="90">
+        <el-table-column prop="name" label="Name" min-width="120">
           <template #default="scope">
             <div class="badge">
               <img v-if="scope.$index < 2 && pagin.pageNo <= 1" :src="badgeIcon01" alt="">
@@ -518,7 +518,7 @@ export default defineComponent({
   line-height: 1.6;
   letter-spacing: 1px;
   @media screen and (max-width: 1200px) {
-    font-size: 16px;
+    font-size: 14px;
   }
   .flex {
     display: flex;
@@ -541,6 +541,11 @@ export default defineComponent({
   :deep(.providers-overview),
   :deep(.providers-network) {
     padding: 0.4rem 0;
+    &.providers-overview {
+      @media screen and (max-width: 992px) {
+        padding: 0.4rem 0.5rem;
+      }
+    }
     .title {
       margin: 0;
       font-size: 0.21rem;
@@ -573,6 +578,9 @@ export default defineComponent({
           width: 100%;
           margin: 0 auto;
           height: 400px;
+          @media screen and (max-width: 540px) {
+            height: 300px;
+          }
         }
       }
       &.erchart-body {
@@ -714,6 +722,7 @@ export default defineComponent({
               @media screen and (max-width: 599px) {
                 max-width: 250px;
                 height: 150px;
+                margin: auto;
               }
             }
           }
@@ -772,6 +781,10 @@ export default defineComponent({
           .cell {
             color: @text-color;
             word-break: break-word;
+            @media screen and (max-width: 540px) {
+              font-size: 12px;
+              line-height: 1.1;
+            }
           }
         }
         td {
@@ -779,6 +792,10 @@ export default defineComponent({
           background-color: @primary-color;
           color: rgb(181, 183, 200);
           border-color: rgb(38, 39, 47);
+          @media screen and (max-width: 540px) {
+            font-size: 12px;
+            line-height: 1.1;
+          }
           i {
             margin-right: 5px;
             color: @text-color;
@@ -821,12 +838,23 @@ export default defineComponent({
                 justify-content: space-between;
                 flex-wrap: wrap;
                 margin: 0 auto 0.25rem;
+                @media screen and (max-width: 768px) {
+                  justify-content: flex-start;
+                }
                 li {
                   width: 27%;
+                  @media screen and (max-width: 768px) {
+                    width: auto;
+                    margin-right: 0.5rem;
+                  }
                   .flex-row {
+                    flex-wrap: wrap;
                     .li-body {
                       width: 27%;
-                      margin-right: 0.7rem;
+                      margin-right: 0.5rem;
+                      @media screen and (max-width: 768px) {
+                        width: auto;
+                      }
                     }
                   }
                   .li-body {
@@ -842,6 +870,7 @@ export default defineComponent({
                     border-radius: 0.1rem;
                     animation: glow 1s ease-in-out infinite alternate;
                     @media screen and (max-width: 768px) {
+                      padding: 0.15rem 0.3rem;
                     }
                     p {
                       padding: 3px 0;
@@ -857,6 +886,9 @@ export default defineComponent({
                         font-size: 17px;
                         @media screen and (max-width: 1260px) {
                           font-size: 15px;
+                        }
+                        @media screen and (max-width: 540px) {
+                          font-size: 13px;
                         }
                       }
                       &.t {
