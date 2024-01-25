@@ -38,7 +38,7 @@ COPY . .
 # build app for production with minification
 RUN npm run build:testnet_u
 
-FROM nginx:1.15.2-alpine as production-build
+FROM nginx:1.15.2-alpine as testnet-build
 
 COPY --from=builder dist_testnet /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
