@@ -236,7 +236,6 @@
 import { defineComponent, computed, onMounted, watch, ref, reactive, getCurrentInstance } from 'vue'
 import { useStore } from "vuex"
 import { useRouter, useRoute } from 'vue-router'
-import qs from 'qs'
 import {
   CircleCheck, DocumentCopy, Avatar
 } from '@element-plus/icons-vue'
@@ -287,7 +286,7 @@ export default defineComponent({
         offset: page * pagin.pageSize,
         search_string: nameText
       }
-      const providerRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}cp/dashboard?${qs.stringify(params)}`, 'get')
+      const providerRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}cp/dashboard?${system.$Qs.stringify(params)}`, 'get')
       if (providerRes && providerRes.status === 'success') {
         pagin.total = providerRes.data.total_providers
         pagin.total_deployments = providerRes.data.total_deployments

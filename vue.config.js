@@ -78,6 +78,9 @@ module.exports = {
         threshold: 10240,
         minRatio: 0.8,
         deleteOriginalAssets: false
+      }),
+      new webpack.DefinePlugin({
+        __INTLIFY_PROD_DEVTOOLS__: JSON.stringify(false)
       })
     ];
     Object.assign(config, {
