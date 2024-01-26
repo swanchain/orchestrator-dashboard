@@ -11,6 +11,8 @@ const main = () =>
     import ("@/views/dashboard/main/index");
 const paymentHistory = () =>
     import ("@/components/paymentHistory");
+const UBIHistory = () =>
+    import ("@/components/UBIHistory");
 
 const routes = [{
         path: '/',
@@ -29,7 +31,7 @@ const routes = [{
                 }
             },
             {
-                path: '/payment_history',
+                path: '/payment-history',
                 name: 'paymentHistory',
                 component: paymentHistory,
                 meta: {
@@ -49,6 +51,27 @@ const routes = [{
                     }
                 }
             },
+            {
+                path: '/UBI-reward-history',
+                name: 'UBIHistory',
+                component: UBIHistory,
+                meta: {
+                    keepAlive: true,
+                    title: ''
+                },
+                beforeEnter: (to, from, next) => {
+                    if (!sessionStorage.getItem('access_token_swan')) {
+                        next({
+                            path: '/provider-status',
+                            query: {
+                                redirect: to.fullPath
+                            }
+                        })
+                    } else {
+                        next()
+                    }
+                }
+            }
         ]
     },
     {

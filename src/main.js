@@ -11,9 +11,11 @@ import 'element-plus/dist/index.css'
 import en from 'element-plus/es/locale/lang/en'
 import commonFun from '@/utils/common'
 import './assets/js/world.js'
+import qs from 'qs'
 
 const app = createApp(App)
 app.config.globalProperties.$commonFun = commonFun
+app.config.globalProperties.$Qs = qs
 app.use(ElementPlus, {
         locale: en,
     })

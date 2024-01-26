@@ -4,7 +4,8 @@
       <img :src="swanLogo" @click="system.$commonFun.goLink('https://www.swanchain.io/')" />
       <div class="nav">
         <router-link :to="{name: 'dashboard'}" :class="{'active': route.name === 'dashboard'}">Dashboard</router-link>
-        <router-link :to="{ name: 'paymentHistory', query: { type: 'user' }}" :class="{'active': route.name === 'paymentHistory'}" v-if="accessToken !== ''">Reward History</router-link>
+        <router-link :to="{ name: 'paymentHistory'}" :class="{'active': route.name === 'paymentHistory'}" v-if="accessToken !== ''">Reward History</router-link>
+        <router-link :to="{ name: 'UBIHistory'}" :class="{'active': route.name === 'UBIHistory'}" v-if="accessToken !== ''">UBI Reward History</router-link>
       </div>
       <div class="header-right flex-row nowrap" v-if="accessToken !== ''">
         <div class="set ">
@@ -150,7 +151,6 @@
 import { defineComponent, computed, onMounted, watch, ref, reactive, getCurrentInstance } from 'vue'
 import { useStore } from "vuex"
 import { useRouter, useRoute } from 'vue-router'
-import qs from 'qs'
 import {
   CircleCheck, DocumentCopy, Avatar, Delete, View
 } from '@element-plus/icons-vue'
@@ -502,8 +502,8 @@ export default defineComponent({
     .nav {
       color: @white-color;
       a {
-        padding: 10px;
-        margin: 0 0.1rem;
+        padding: 6px;
+        margin: 0 0.05rem;
         color: inherit;
         border-radius: 8px;
         &:hover,
