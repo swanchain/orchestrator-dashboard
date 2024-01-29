@@ -136,6 +136,9 @@ export default defineComponent({
   &.flex-start {
     justify-content: flex-start;
   }
+  &.flex-end {
+    justify-content: flex-end;
+  }
   &.nowrap {
     flex-wrap: nowrap;
   }

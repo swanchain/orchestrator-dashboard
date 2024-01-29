@@ -3,30 +3,9 @@
     <div class="payment-history container-landing">
       <div class="title">Reward history</div>
       <el-table v-loading="paymentLoad" :data="paymentData" stripe style="width: 100%">
-        <el-table-column prop="transaction_hash" label="transaction hash" min-width="120">
-          <template #default="scope">
-            <a :href="`${scope.row.url_tx}${scope.row.transaction_hash}`" target="_blank">{{scope.row.transaction_hash}}</a>
-          </template>
-        </el-table-column>
-        <el-table-column prop="chain_id" label="chain id" width="110" />
-        <el-table-column prop="token" label="token">
-          <template #default="scope">
-            <!--            <span>{{scope.row.chain_id === 80001 ? 'PUSDC': 'SUSDC'}}</span>-->
-            <span>USDC</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="message" label="refund/Denied reason" min-width="120">
-          <template #default="scope">
-            <span>{{scope.row.refund_reason ||scope.row.denied_reason || '-'}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="order" label="space name">
-          <template #default="scope">
-            <span>{{scope.row.order.space_name}}</span>
-          </template>
-        </el-table-column>
+        <el-table-column prop="chain_id" label="chain id" min-width="110" />
         <el-table-column prop="amount" label="amount" />
-        <el-table-column prop="status" label="status" width="135">
+        <el-table-column prop="status" label="status" min-width="135">
           <template #default="scope">
             <div>
               <span v-if="scope.row.chain_id === 80001 && scope.row.order.updated_at < 1700508000 && scope.row.status.toLowerCase() === 'refundable'">Pending</span>
@@ -36,8 +15,34 @@
             </div>
           </template>
         </el-table-column>
+        <el-table-column prop="transaction_hash" label="transaction hash" min-width="120">
+          <template #default="scope">
+            <!-- <a :href="`${scope.row.url_tx}${scope.row.transaction_hash}`" target="_blank">{{scope.row.transaction_hash}}</a> -->
+            <el-button type="primary" v-if="scope.row.transaction_hash" plain @click="checkFun(scope.row.transaction_hash)">Check</el-button>
+            <el-button type="primary" v-else disabled plain>Check</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
+
+    <el-dialog v-model="txhashVisible" title="Transaction Hash" :append-to-body="false" :show-close="false" custom-class="transaction-style" :before-close="handleClose">
+      <div class="flex-row hash">
+        {{system.$commonFun.hiddAddress(txHash)}}
+        <svg @click="system.$commonFun.copyContent(txHash, 'Copied')" t="1706499607741" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2309" width="18" height="18">
+          <path d="M720 192h-544A80.096 80.096 0 0 0 96 272v608C96 924.128 131.904 960 176 960h544c44.128 0 80-35.872 80-80v-608C800 227.904 764.128 192 720 192z m16 688c0 8.8-7.2 16-16 16h-544a16 16 0 0 1-16-16v-608a16 16 0 0 1 16-16h544a16 16 0 0 1 16 16v608z"
+            p-id="2310" fill="#b5b7c8"></path>
+          <path d="M848 64h-544a32 32 0 0 0 0 64h544a16 16 0 0 1 16 16v608a32 32 0 1 0 64 0v-608C928 99.904 892.128 64 848 64z" p-id="2311" fill="#b5b7c8"></path>
+          <path d="M608 360H288a32 32 0 0 0 0 64h320a32 32 0 1 0 0-64zM608 520H288a32 32 0 1 0 0 64h320a32 32 0 1 0 0-64zM480 678.656H288a32 32 0 1 0 0 64h192a32 32 0 1 0 0-64z" p-id="2312" fill="#b5b7c8"></path>
+        </svg>
+      </div>
+      <template #footer>
+        <span class="dialog-footer flex-row flex-end">
+          <el-button type="primary" @click="txhashVisible = false">
+            Close
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -57,6 +62,8 @@ export default defineComponent({
     const paymentLoad = ref(false)
     const paymentType = ref(route.query.type || 'user')
     const prevType = ref(true)
+    const txhashVisible = ref(false)
+    const txHash = ref('')
     let paymentContractAddress = process.env.VUE_APP_HARDWARE_ADDRESS
     let paymentContract = new system.$commonFun.web3Init.eth.Contract(SpaceTokenABI, paymentContractAddress)
 
@@ -83,6 +90,14 @@ export default defineComponent({
           }
         )
       }
+    }
+    function handleClose () {
+      txHash.value = ''
+      txhashVisible.value = false
+    }
+    function checkFun (hash) {
+      txHash.value = hash
+      txhashVisible.value = true
     }
     async function refundFun (row, type) {
       if (row.chain_id.toString() !== getnetID.toString()) {
@@ -183,7 +198,9 @@ export default defineComponent({
       route,
       router,
       paymentType,
-      refundFun, reviewFun
+      txhashVisible,
+      txHash,
+      refundFun, reviewFun, checkFun, handleClose
     }
   },
 })
@@ -258,6 +275,14 @@ export default defineComponent({
                 background-color: @theme-color;
                 color: @white-color;
               }
+              &.is-disabled {
+                border-color: @text-color;
+                color: @text-color;
+                &:hover {
+                  background-color: transparent;
+                  color: @text-color;
+                }
+              }
             }
           }
         }
@@ -278,6 +303,53 @@ export default defineComponent({
       .el-table__inner-wrapper::before {
         height: 0;
       }
+    }
+  }
+}
+:deep(.el-overlay-dialog) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .transaction-style {
+    width: 40%;
+    max-width: 400px;
+    min-width: 300px;
+    margin: auto;
+    text-align: left;
+    @media screen and (max-width: 768px) {
+      width: 60%;
+    }
+    @media screen and (max-width: 441px) {
+      width: 90%;
+    }
+    .el-dialog__header {
+      padding: 15px 15px 10px;
+      font-size: 17px;
+      color: #000;
+      @media screen and (max-width: 768px) {
+        font-size: 15px;
+      }
+      @media screen and (min-width: 1800px) {
+        font-size: 18px;
+      }
+      .el-dialog__title {
+        font-size: inherit;
+      }
+      .el-dialog__headerbtn {
+        top: 14px;
+      }
+    }
+    .el-dialog__body {
+      padding: 10px 15px;
+      .hash {
+        svg {
+          margin: 0 0 0 0.05rem;
+          cursor: pointer;
+        }
+      }
+    }
+    .el-dialog__footer {
+      padding: 5px 15px 10px;
     }
   }
 }

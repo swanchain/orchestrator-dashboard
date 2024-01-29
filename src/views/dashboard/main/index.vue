@@ -132,7 +132,7 @@
         <el-button type="primary" :disabled="!networkInput ? true:false" round @click="searchProvider">Search</el-button>
         <el-button type="info" :disabled="!networkInput ? true:false" round @click="clearProvider">Clear</el-button>
       </div>
-      <el-table :data="providersData" @expand-change="expandChange" style="width: 100%" empty-text="No Data" v-loading="providersLoad">
+      <el-table :data="providersData" @expand-change="expandChange" :row-key="getRowKeys" :expand-row-keys="expands" style="width: 100%" empty-text="No Data" v-loading="providersLoad">
         <el-table-column type="expand" width="40">
           <template #default="props">
             <div class="service-body" v-if="props.row.computer_provider">
@@ -271,6 +271,7 @@ export default defineComponent({
     const background = ref(false)
     const searchJudge = ref(false)
     const dataArr = ref([])
+    const expands = ref([])
 
     function handleSizeChange (val) { }
     async function handleCurrentChange (currentPage) {
@@ -311,8 +312,15 @@ export default defineComponent({
       searchJudge.value = false
       reset('init')
     }
-    function expandChange (row, expand) {
-      // console.log(row, expand)
+    function expandChange (row, expandedRows) {
+      // console.log(row, expandedRows)
+      if (expandedRows.length) {
+        expands.value = [];
+        if (row) expands.value.push(row.node_id);
+      } else expands.value = [];
+    }
+    let getRowKeys = (row) => {
+      return row.node_id;
     }
     function reset (type) {
       pagin.total = 0
@@ -504,8 +512,8 @@ export default defineComponent({
       providerBody,
       badgeIcon01,
       badgeIcon02,
-      accessToken,
-      handleSizeChange, handleCurrentChange, searchProvider, clearProvider, expandChange, unifyNumber
+      accessToken, expands,
+      handleSizeChange, handleCurrentChange, searchProvider, clearProvider, expandChange, unifyNumber, getRowKeys
     }
   }
 })
