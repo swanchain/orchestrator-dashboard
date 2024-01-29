@@ -4,12 +4,25 @@
       <div class="title">UBI Reward history</div>
       <el-table v-loading="paymentLoad" :data="paymentData" stripe style="width: 100%">
         <el-table-column prop="task_id" label="Task ID" width="90" />
-        <el-table-column prop="type" label="Task Type" width="90">
+        <el-table-column prop="type" label="Task Type" min-width="90">
           <template #default="scope">
             <span>{{scope.row.type === 0 ? 'CPU': 'GPU'}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="zk_type" label="ZK Type" min-width="120" />
+        <el-table-column prop="zk_type" label="ZK Type" min-width="110" />
+        <el-table-column prop="node_id" label="NODE ID" min-width="100">
+          <template #default="scope">
+            <div class="flex-row center copy-style" @click="system.$commonFun.copyContent(scope.row.node_id, 'Copied')">
+              {{system.$commonFun.hiddAddress(scope.row.node_id)}}
+              <svg t="1706499607741" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2309" width="18" height="18">
+                <path d="M720 192h-544A80.096 80.096 0 0 0 96 272v608C96 924.128 131.904 960 176 960h544c44.128 0 80-35.872 80-80v-608C800 227.904 764.128 192 720 192z m16 688c0 8.8-7.2 16-16 16h-544a16 16 0 0 1-16-16v-608a16 16 0 0 1 16-16h544a16 16 0 0 1 16 16v608z"
+                  p-id="2310" fill="#b5b7c8"></path>
+                <path d="M848 64h-544a32 32 0 0 0 0 64h544a16 16 0 0 1 16 16v608a32 32 0 1 0 64 0v-608C928 99.904 892.128 64 848 64z" p-id="2311" fill="#b5b7c8"></path>
+                <path d="M608 360H288a32 32 0 0 0 0 64h320a32 32 0 1 0 0-64zM608 520H288a32 32 0 1 0 0 64h320a32 32 0 1 0 0-64zM480 678.656H288a32 32 0 1 0 0 64h192a32 32 0 1 0 0-64z" p-id="2312" fill="#b5b7c8"></path>
+              </svg>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column prop="started_at" label="Started AT" min-width="135">
           <template #default="scope">
             <span>{{system.$commonFun.momentFun(scope.row.started_at)}}</span>
@@ -177,6 +190,12 @@ export default defineComponent({
               &:hover {
                 background-color: @theme-color;
                 color: @white-color;
+              }
+            }
+            .copy-style {
+              cursor: pointer;
+              svg {
+                margin: 0 0 0 0.05rem;
               }
             }
           }
