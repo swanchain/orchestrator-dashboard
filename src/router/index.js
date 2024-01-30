@@ -41,10 +41,7 @@ const routes = [{
                 beforeEnter: (to, from, next) => {
                     if (!sessionStorage.getItem('access_token_swan')) {
                         next({
-                            path: '/provider-status',
-                            query: {
-                                redirect: to.fullPath
-                            }
+                            path: '/provider-status'
                         })
                     } else {
                         next()
@@ -62,10 +59,7 @@ const routes = [{
                 beforeEnter: (to, from, next) => {
                     if (!sessionStorage.getItem('access_token_swan')) {
                         next({
-                            path: '/provider-status',
-                            query: {
-                                redirect: to.fullPath
-                            }
+                            path: '/provider-status'
                         })
                     } else {
                         next()
