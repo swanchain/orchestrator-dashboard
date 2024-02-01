@@ -1,0 +1,270 @@
+@font-face {
+    font-family: 'Montserrat-Regular';
+    src: url(../font/Montserrat-Regular.ttf);
+    font-weight: 400;
+    font-style: normal;
+    font-display: block;
+}
+
+@font-face {
+    font-family: 'Montserrat-Bold';
+    src: url(../font/Montserrat-Bold.ttf);
+    font-weight: 400;
+    font-style: normal;
+    font-display: block;
+}
+
+.font-bold {
+    font-family: 'Montserrat-Bold';
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    background-color: #0d0e12;
+    /* background-image: linear-gradient(to top left, red, transparent), linear-gradient(to top right, blue, transparent), linear-gradient(to bottom left, green, transparent), linear-gradient(to bottom right, yellow, transparent); */
+    font-size: 116px;
+    color: #fff;
+    overflow-x: hidden;
+}
+
+*,
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+code,
+form,
+fieldset,
+legend,
+input,
+button,
+textarea,
+p,
+blockquote,
+th,
+td {
+    margin: 0;
+    padding: 0;
+    cursor: inherit;
+}
+
+body {
+    padding: 0;
+    /* font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif; */
+    /* font-family: 'Merriweather Sans'; */
+    /* font-family: 'Roboto,sans-serif';
+    font-family: 'Lumanosimo', cursive;
+    font-family: 'Tektur', cursive;
+    font-family: 'VT323', monospace; */
+    font-family: 'Raleway', sans-serif;
+    font-family: 'Montserrat-Regular';
+}
+
+/* body::-webkit-scrollbar-track, #app::-webkit-scrollbar-track {
+    background: #f7f7f7;
+}
+body::-webkit-scrollbar, #app::-webkit-scrollbar {
+    width: 6px;
+    background: #ccc;
+}
+body::-webkit-scrollbar-thumb, #app::-webkit-scrollbar-thumb {
+    background: #ccc;
+} */
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+fieldset {
+    border: none;
+}
+
+img {
+    border: none;
+}
+
+ul,
+li,
+dd,
+dl,
+dt {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: #333;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+}
+
+a:active,
+a:visited,
+a:link,
+a:hover {
+    border: 0;
+    border-color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a:focus {
+    outline: none;
+    /* -moz-outline-style:none; */
+}
+
+[v-cloak] {
+    display: none;
+}
+
+.el-message {
+    max-width: 95%;
+    word-break: break-word;
+}
+
+.el-message .el-icon {
+    font-size: 35px;
+}
+
+.el-message .el-message__closeBtn {
+    font-size: 18px;
+}
+
+.el-message .el-message__closeBtn .icon {
+    width: 20px;
+    height: 20px;
+    color: #303133;
+    cursor: pointer;
+}
+
+.landing {
+    width: 16.6rem;
+    max-width: 100%;
+    margin: auto;
+}
+
+@keyframes run1 {
+    from {
+        transform: translateX(-100%)
+    }
+    to {
+        transform: translateX(100%)
+    }
+}
+
+@keyframes run2 {
+    from {
+        transform: translateY(-100%)
+    }
+    to {
+        transform: translateY(100%)
+    }
+}
+
+@keyframes run3 {
+    from {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes run4 {
+    from {
+        transform: translateY(100%)
+    }
+    to {
+        transform: translateY(-100%)
+    }
+}
+
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 10px #447dff, 0 0 20px #447dff, 0 0 30px #447dff, 0 0 40px #447dff;
+    }
+    100% {
+        box-shadow: 0 0 15px #447dff, 0 0 25px #447dff, 0 0 35px #447dff, 0 0 45px #447dff;
+    }
+}
+
+@-webkit-keyframes glow {
+    0% {
+        box-shadow: 0 0 10px #447dff, 0 0 20px #447dff, 0 0 30px #447dff, 0 0 40px #447dff;
+    }
+    100% {
+        box-shadow: 0 0 15px #447dff, 0 0 25px #447dff, 0 0 35px #447dff, 0 0 45px #447dff;
+    }
+}
+
+@media screen and (max-width:1800px) {
+    html,
+    body,
+    #app,
+    .wrapper {
+        font-size: 110px;
+    }
+    .landing {
+        width: 16rem;
+    }
+}
+
+@media screen and (max-width:1600px) {
+    html,
+    body,
+    #app,
+    .wrapper {
+        font-size: 100px;
+    }
+}
+
+@media screen and (max-width:1260px) {
+    html,
+    body,
+    #app,
+    .wrapper {
+        font-size: 80px;
+    }
+}
+
+@media screen and (max-width:1024px) {
+    html,
+    body,
+    #app,
+    .wrapper {
+        font-size: 70px;
+    }
+}
+
+@media screen and (max-width:768px) {
+    html,
+    body,
+    #app,
+    .wrapper {
+        font-size: 55px;
+    }
+}
+
+@media screen and (max-width:640px) {
+    html,
+    body,
+    #app,
+    .wrapper {
+        font-size: 42px;
+    }
+}
