@@ -1,35 +1,87 @@
 <template>
   <section id="container">
-    <h1>Swan Provider Status</h1>
-    <div class="describe">
+    <h1 class="color">Swan Provider Status</h1>
+    <div class="describe ">
       Use this status page to check an Swan Provider information and status.
       <br> This list is refreshed every 5 minutes. Below snapshot taken at
-      <strong>{{gmtTime}}</strong>
+      <span class="color">{{gmtTime}}</span>
     </div>
 
     <div class="providers-overview mt-border">
       <div class="title">Providers Overview</div>
-      <el-row :gutter="30">
+      <el-row :gutter="26">
+        <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="flex-row">
+          <div class='chart' id='chart' v-loading="providersLoad" element-loading-background="rgba(0, 0, 0, 0)"></div>
+        </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
-            <h6>Network Providers</h6>
-            <b v-loading="providersLoad">{{pagin.total}}</b>
-          </div>
-          <div class="grid-content">
-            <h6>Active Applications</h6>
-            <b v-loading="providersLoad">{{pagin.active_applications}}</b>
-          </div>
-          <div class="grid-content">
-            <h6>Total Deployments</h6>
-            <b v-loading="providersLoad">{{pagin.total_deployments}}</b>
+            <h6 class="flex-row">Network Providers</h6>
+            <b v-loading="providersLoad" class="font-bold color">{{pagin.total}}</b>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="24" :md="18" :lg="18" :xl="18" class="flex-row">
-          <div class='chart' id='chart' v-loading="providersLoad" element-loading-background="rgba(0, 0, 0, 0)"></div>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">Total UBI Tasks</h6>
+            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.sent ?providerBody.ubiData.tasks.sent.count : '-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">CPU UBI Tasks</h6>
+            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.sent ?providerBody.ubiData.tasks.sent.count_cpu : '-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">Total UBI Reward</h6>
+            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.rewards ? system.$commonFun.NumFormat(providerBody.ubiData.rewards.total) : '-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">Active Applications</h6>
+            <b v-loading="providersLoad" class="font-bold color">{{pagin.active_applications}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">Total UBI Tasks Type</h6>
+            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.tasks?providerBody.ubiData.tasks.zk_types:'-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">GPU UBI Tasks</h6>
+            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.sent ?providerBody.ubiData.tasks.sent.count_gpu:'-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">Average UBI Reward per day</h6>
+            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.rewards?system.$commonFun.NumFormat(providerBody.ubiData.rewards.average):'-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">Total Deployments</h6>
+            <b v-loading="providersLoad" class="font-bold color">{{pagin.total_deployments}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">Verified UBI Tasks</h6>
+            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.verified ?providerBody.ubiData.tasks.verified.count:'-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">CP Numbers of UBI Task</h6>
+            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.providers?providerBody.ubiData.providers.count:'-'}}</b>
+          </div>
         </el-col>
       </el-row>
 
-      <el-row :gutter="40" class="erchart-body">
+      <el-row :gutter="26" class="erchart-body">
         <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
           <div class="erchart">
             <div class="drain-time"></div>
@@ -233,7 +285,7 @@
 </template>
 
 <script>
-import { defineComponent, computed, onMounted, watch, ref, reactive, getCurrentInstance } from 'vue'
+import { defineComponent, computed, onActivated, watch, ref, reactive, getCurrentInstance } from 'vue'
 import { useStore } from "vuex"
 import { useRouter, useRoute } from 'vue-router'
 import {
@@ -264,7 +316,8 @@ export default defineComponent({
       active_applications: 0
     })
     const providerBody = reactive({
-      data: {}
+      data: {},
+      ubiData: {}
     })
     const networkInput = ref('')
     const small = ref(false)
@@ -281,6 +334,7 @@ export default defineComponent({
     async function init (nameText) {
       if (searchJudge.value) return
       providersLoad.value = true
+      getUBITotal()
       const page = pagin.pageNo > 0 ? pagin.pageNo - 1 : 0
       const params = {
         limit: pagin.pageSize,
@@ -302,6 +356,11 @@ export default defineComponent({
         if (providerRes.status) system.$commonFun.messageTip(providerRes.status, providerRes.message)
       }
       providersLoad.value = false
+    }
+    async function getUBITotal () {
+      const statsRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_UBISTATS}stats`, 'get')
+      if (statsRes && statsRes.code === 0) providerBody.ubiData = statsRes.data || {}
+      else providersData.ubiData = {}
     }
     async function searchProvider () {
       pagin.pageSize = 10
@@ -375,8 +434,8 @@ export default defineComponent({
           roam: false,
           itemStyle: {
             normal: {
-              areaColor: '#fff',
-              borderColor: '#eee'
+              areaColor: '#565658',
+              borderColor: '#404042'
             },
             // emphasis: {
             //   areaColor: '#a467d1',
@@ -401,12 +460,12 @@ export default defineComponent({
               // borderWidth: 1,
               // borderColor: '#fff',
               // color: 'rgba(89, 152, 14, 1)',
-              color: '#4db470',
+              color: '#447dff',
               shadowBlur: 2,
-              shadowColor: '#000'
+              shadowColor: '#7ca3fb'
             },
             data: dataArr,
-            symbolSize: 10,
+            symbolSize: 8,
             zlevel: 1
           }
         ]
@@ -495,7 +554,7 @@ export default defineComponent({
         machart_vcpu.resize();
       })
     }
-    onMounted(async () => {
+    onActivated(async () => {
       reset('init')
     })
     return {
@@ -534,7 +593,7 @@ export default defineComponent({
   :deep(.el-button) {
     border: 0;
     border-radius: 0.08rem;
-    background: linear-gradient(45deg, @theme-color, #9e42f5);
+    background: linear-gradient(45deg, #025bd5, #3c73ec);
     color: white;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
@@ -544,6 +603,9 @@ export default defineComponent({
     margin: 0 0 0.2rem;
     font-size: 0.35rem;
     font-weight: 600;
+  }
+  .color {
+    color: #3c85ff;
   }
   :deep(.providers-overview),
   :deep(.providers-network) {
@@ -555,7 +617,7 @@ export default defineComponent({
     }
     .title {
       margin: 0;
-      font-size: 0.21rem;
+      font-size: 0.24rem;
       font-weight: 600;
     }
     .el-row {
@@ -565,32 +627,38 @@ export default defineComponent({
         }
         .grid-content {
           padding: 0.15rem;
-          margin: 0.45rem 0 0.55rem;
-          background: rgba(255, 255, 255, 0.1);
-          backdrop-filter: blur(5px);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          border-radius: 0.1rem;
-          animation: glow 1s ease-in-out infinite alternate;
+          margin: 0.3rem 0 0;
+          background: #26272a;
+          // backdrop-filter: blur(5px);
+          border: 1px solid #3a67cf;
+          border-radius: 0.14rem;
+          // animation: glow 1s ease-in-out infinite alternate;
+          overflow: hidden;
           h6 {
+            min-height: 38px;
             font-size: 16px;
+            line-height: 19px;
             @media screen and (max-width: 1260px) {
+              min-height: 34px;
               font-size: 14px;
+              line-height: 17px;
             }
           }
           b {
-            font-size: 0.3rem;
+            font-size: 0.32rem;
           }
         }
         .chart {
           width: 100%;
-          margin: 0 auto;
-          height: 400px;
+          margin: 0.45rem auto 0;
+          height: 500px;
           @media screen and (max-width: 540px) {
-            height: 300px;
+            height: 400px;
           }
         }
       }
       &.erchart-body {
+        margin: 0.7rem 0 0;
         .el-col {
           margin: 0.3rem 0 0;
           .erchart {
@@ -601,10 +669,13 @@ export default defineComponent({
             // border: 2px solid @theme-color-opacity1;
             overflow: hidden;
             text-align: center;
-            box-shadow: 0 0 15px #447dff;
+            // box-shadow: 0 0 15px #447dff;
 
-            border: 2px solid red;
-            animation: glowing 2s linear infinite;
+            background: #26272a;
+            // backdrop-filter: blur(5px);
+            border: 1px solid #3a67cf;
+            // border: 2px solid red;
+            // animation: glowing 2s linear infinite;
 
             @keyframes glowing {
               0% {
@@ -679,13 +750,14 @@ export default defineComponent({
               }
             }
             .title {
-              font-size: 0.18rem;
+              font-size: 0.22rem;
             }
             h6 {
               display: flex;
               align-items: center;
               justify-content: center;
               margin: 0 0 0.1rem;
+              font-size: 0.14rem;
               font-weight: 100;
               &.background-free {
                 i {
@@ -721,6 +793,7 @@ export default defineComponent({
               b {
                 padding: 0 5px 0 0;
                 font-size: 0.15rem;
+                font-weight: normal;
               }
             }
             .maychar {
@@ -769,7 +842,7 @@ export default defineComponent({
         }
         &:hover,
         &.is-disabled {
-          opacity: 0.7;
+          opacity: 0.9;
         }
       }
     }

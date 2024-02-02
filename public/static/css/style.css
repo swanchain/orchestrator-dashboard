@@ -1,9 +1,21 @@
 @font-face {
-    font-family: 'Helvetica-Neue';
-    src: url(../font/Helvetica-Neue-CE-55-Roman.ttf);
+    font-family: 'Montserrat-Regular';
+    src: url(../font/Montserrat-Regular.ttf);
     font-weight: 400;
     font-style: normal;
     font-display: block;
+}
+
+@font-face {
+    font-family: 'Montserrat-Bold';
+    src: url(../font/Montserrat-Bold.ttf);
+    font-weight: 400;
+    font-style: normal;
+    font-display: block;
+}
+
+.font-bold {
+    font-family: 'Montserrat-Bold';
 }
 
 html,
@@ -54,11 +66,11 @@ body {
     /* font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif; */
     /* font-family: 'Merriweather Sans'; */
     /* font-family: 'Roboto,sans-serif';
-    font-family: 'Helvetica-Neue';
     font-family: 'Lumanosimo', cursive;
     font-family: 'Tektur', cursive;
     font-family: 'VT323', monospace; */
     font-family: 'Raleway', sans-serif;
+    font-family: 'Montserrat-Regular';
 }
 
 /* body::-webkit-scrollbar-track, #app::-webkit-scrollbar-track {

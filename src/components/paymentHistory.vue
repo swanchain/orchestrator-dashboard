@@ -23,6 +23,8 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination hide-on-single-page :page-size="pagin.pageSize" :current-page="pagin.pageNo" :pager-count="5" :small="small" :background="background" layout="total, prev, pager, next" :total="pagin.total" @size-change="handleSizeChange" @current-change="handleCurrentChange"
+      />
     </div>
 
     <el-dialog v-model="txhashVisible" title="Transaction Hash" :append-to-body="false" :show-close="false" custom-class="transaction-style" :before-close="handleClose">
@@ -64,9 +66,21 @@ export default defineComponent({
     const prevType = ref(true)
     const txhashVisible = ref(false)
     const txHash = ref('')
+    const pagin = reactive({
+      pageSize: 10,
+      pageNo: 1,
+      total: 0
+    })
+    const small = ref(false)
+    const background = ref(false)
     let paymentContractAddress = process.env.VUE_APP_HARDWARE_ADDRESS
     let paymentContract = new system.$commonFun.web3Init.eth.Contract(SpaceTokenABI, paymentContractAddress)
 
+    function handleSizeChange (val) { }
+    async function handleCurrentChange (currentPage) {
+      pagin.pageNo = currentPage
+      init()
+    }
     async function reviewFun (row) {
       const net = await system.$commonFun.checkNetwork()
       if (net) return
@@ -164,13 +178,19 @@ export default defineComponent({
       paymentLoad.value = true
       paymentType.value = route.query.type || 'user'
       const requestURL = `${process.env.VUE_APP_BASEAPI}provider/payments`
-      const paymentsRes = await system.$commonFun.sendRequest(`${requestURL}`, 'get') //?public_address=${store.state.metaAddress}
+      const page = pagin.pageNo > 0 ? pagin.pageNo - 1 : 0
+      const paramsOption = {
+        limit: pagin.pageSize,
+        offset: page * pagin.pageSize
+      }
+      const paymentsRes = await system.$commonFun.sendRequest(`${requestURL}?${system.$Qs.stringify(paramsOption)}`, 'get') //?public_address=${store.state.metaAddress}
       if (paymentsRes && paymentsRes.status === 'success') {
         for (let p = 0; p < paymentsRes.data.payments.length; p++) {
           let { url_tx } = await system.$commonFun.getUnit(parseInt(paymentsRes.data.payments[p].chain_id), 16)
           paymentsRes.data.payments[p].url_tx = url_tx
         }
         paymentData.value = paymentsRes.data.payments || []
+        pagin.total = paymentsRes.data.total || 0
       }
       // else if (paymentsRes.message) system.$commonFun.messageTip('error', paymentsRes.message)
       paymentLoad.value = false
@@ -200,7 +220,10 @@ export default defineComponent({
       paymentType,
       txhashVisible,
       txHash,
-      refundFun, reviewFun, checkFun, handleClose
+      pagin,
+      background,
+      small,
+      refundFun, reviewFun, checkFun, handleClose, handleSizeChange, handleCurrentChange
     }
   },
 })

@@ -391,6 +391,15 @@ async function checkNetwork() {
   } else return false
 }
 
+function NumFormat(num) {
+  try {
+    if (num) return parseFloat(num).toFixed(2)
+    else return '-'
+  } catch {
+    return '-'
+  }
+}
+
 export default {
   sendRequest,
   timeout,
@@ -408,5 +417,6 @@ export default {
   getUnit,
   goLink,
   providerInit,
-  checkNetwork
+  checkNetwork,
+  NumFormat
 }

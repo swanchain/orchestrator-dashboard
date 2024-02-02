@@ -108,7 +108,7 @@ export default defineComponent({
 
 .mt-border {
   margin: 0.3rem auto;
-  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  border-top: 2px solid #868688;
 }
 
 .describe {

@@ -2,46 +2,48 @@
   <section id="container">
     <div class="swan-logo flex-row nowrap">
       <img :src="swanLogo" @click="system.$commonFun.goLink('https://www.swanchain.io/')" />
-      <div class="nav">
-        <router-link :to="{name: 'dashboard'}" :class="{'active': route.name === 'dashboard'}">Dashboard</router-link>
-        <router-link :to="{ name: 'paymentHistory'}" :class="{'active': route.name === 'paymentHistory'}" v-if="accessToken !== ''">Reward History</router-link>
-        <router-link :to="{ name: 'UBIHistory'}" :class="{'active': route.name === 'UBIHistory'}" v-if="accessToken !== ''">UBI Reward History</router-link>
-      </div>
-      <div class="header-right flex-row nowrap" v-if="accessToken !== ''">
-        <div class="set ">
-          <div class="info-style flex-row">
-            <div class="address" @click="wrongMethod">
-              {{system.$commonFun.hiddAddress(metaAddress)}}
+      <div class="flex-row nowrap">
+        <div class="nav">
+          <router-link :to="{name: 'dashboard'}" :class="{'active': route.name === 'dashboard'}">Dashboard</router-link>
+          <router-link :to="{ name: 'paymentHistory'}" :class="{'active': route.name === 'paymentHistory'}" v-if="accessToken !== ''">Reward History</router-link>
+          <router-link :to="{ name: 'UBIHistory'}" :class="{'active': route.name === 'UBIHistory'}" v-if="accessToken !== ''">UBI Reward History</router-link>
+        </div>
+        <div class="header-right flex-row nowrap" v-if="accessToken !== ''">
+          <div class="set ">
+            <div class="info-style flex-row">
+              <div class="address" @click="wrongMethod">
+                {{system.$commonFun.hiddAddress(metaAddress)}}
+              </div>
             </div>
           </div>
+          <div class="set">
+            <el-dropdown popper-class="menu-style" @command="handleSelect" placement="bottom-end" :hide-on-click="false">
+              <router-link to="/personal_center" class="el-dropdown-link setting-style loginImg flex-row">
+                <el-icon>
+                  <Avatar />
+                </el-icon>
+              </router-link>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item command="apiKey">
+                    <div class="profile router-link b">Show API-Key</div>
+                  </el-dropdown-item>
+                  <el-dropdown-item command="cpCollateral">
+                    <div class="profile router-link b">CP Collateral</div>
+                  </el-dropdown-item>
+                  <el-dropdown-item command="cpCollateralCheck">
+                    <div class="profile router-link b">CP Collateral Check</div>
+                  </el-dropdown-item>
+                  <el-dropdown-item command="sign_out">
+                    <span class="link">Sign Out</span>
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </div>
         </div>
-        <div class="set">
-          <el-dropdown popper-class="menu-style" @command="handleSelect" placement="bottom-end" :hide-on-click="false">
-            <router-link to="/personal_center" class="el-dropdown-link setting-style loginImg flex-row">
-              <el-icon>
-                <Avatar />
-              </el-icon>
-            </router-link>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item command="apiKey">
-                  <div class="profile router-link b">Show API-Key</div>
-                </el-dropdown-item>
-                <el-dropdown-item command="cpCollateral">
-                  <div class="profile router-link b">CP Collateral</div>
-                </el-dropdown-item>
-                <el-dropdown-item command="cpCollateralCheck">
-                  <div class="profile router-link b">CP Collateral Check</div>
-                </el-dropdown-item>
-                <el-dropdown-item command="sign_out">
-                  <span class="link">Sign Out</span>
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-        </div>
+        <el-button type="primary" @click="loginMethod" v-else>Login</el-button>
       </div>
-      <el-button type="primary" @click="loginMethod" v-else>Login</el-button>
     </div>
 
     <el-dialog v-model="centerDialogVisible" title="API Keys" custom-class="apikey_body">
@@ -471,9 +473,12 @@ export default defineComponent({
 
 <style lang="less" scoped>
 #container {
-  font-size: 16px;
+  font-size: 17px;
   line-height: 1.6;
   letter-spacing: 1px;
+  @media screen and (max-width: 1600px) {
+    font-size: 15px;
+  }
   @media screen and (max-width: 1200px) {
     font-size: 14px;
   }
@@ -484,7 +489,7 @@ export default defineComponent({
   :deep(.el-button) {
     border: 0;
     border-radius: 0.08rem;
-    background: linear-gradient(45deg, @theme-color, #9e42f5);
+    background: linear-gradient(45deg, #025bd5, #3c73ec);
     color: white;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
@@ -494,10 +499,10 @@ export default defineComponent({
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    margin: 0 0 0.3rem;
+    margin: 0 0 0.5rem;
     cursor: pointer;
     img {
-      height: 0.45rem;
+      height: 0.42rem;
     }
     .nav {
       color: @white-color;
@@ -519,7 +524,7 @@ export default defineComponent({
         height: 35px;
         padding: 0;
         margin: 0 0 0 0.1rem;
-        background: linear-gradient(45deg, @theme-color, #9e42f5) !important;
+        background: linear-gradient(45deg, #025bd5, #3c73ec) !important;
         cursor: pointer;
         border-radius: 0.08rem;
         transition: all 0.2s;
@@ -551,7 +556,7 @@ export default defineComponent({
           vertical-align: middle;
         }
         .info-style {
-          background: linear-gradient(45deg, @theme-color, #9e42f5);
+          background: linear-gradient(45deg, #025bd5, #3c73ec);
           color: @white-color;
           cursor: text;
           border-radius: 0.08rem;
