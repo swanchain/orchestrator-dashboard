@@ -358,7 +358,7 @@ export default defineComponent({
       providersLoad.value = false
     }
     async function getUBITotal () {
-      const statsRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_UBISTATS}stats`, 'get')
+      const statsRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_UBI}stats`, 'get')
       if (statsRes && statsRes.code === 0) providerBody.ubiData = statsRes.data || {}
       else providersData.ubiData = {}
     }
