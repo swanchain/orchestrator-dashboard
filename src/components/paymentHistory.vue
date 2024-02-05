@@ -9,8 +9,8 @@
           <template #default="scope">
             <div>
               <!-- <span v-if="scope.row.chain_id === 80001 && scope.row.order.updated_at < 1700508000 && scope.row.status.toLowerCase() === 'refundable'">Pending</span> -->
-              <el-button type="primary" v-if="scope.row.status.toLowerCase() === 'accepted' || scope.row.status.toLowerCase() === 'refundable'" plain @click="refundFun(scope.row)">Refund</el-button>
-              <el-button type="primary" v-else-if="scope.row.status.toLowerCase() === 'rewardable'" plain @click="refundFun(scope.row, 1)">Claim Reward</el-button>
+              <!-- <el-button type="primary" v-if="scope.row.status.toLowerCase() === 'accepted' || scope.row.status.toLowerCase() === 'refundable'" plain @click="refundFun(scope.row)">Refund</el-button> -->
+              <el-button type="primary" v-if="scope.row.status.toLowerCase() === 'rewardable'" plain @click="refundFun(scope.row, 1)">Claim Reward</el-button>
               <span v-else>{{scope.row.status}}</span>
             </div>
           </template>
@@ -52,7 +52,8 @@ import { defineComponent, computed, onMounted, onActivated, watch, ref, reactive
 import { useStore } from "vuex"
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
-import SpaceTokenABI from '@/utils/abi/SpacePaymentV6.json'
+import BiddingABI from '@/utils/abi/Bidding.json'
+import TaskABI from '@/utils/abi/Task.json'
 export default defineComponent({
   name: 'Payment History',
   setup () {
@@ -73,8 +74,8 @@ export default defineComponent({
     })
     const small = ref(false)
     const background = ref(false)
-    let paymentContractAddress = process.env.VUE_APP_HARDWARE_ADDRESS
-    let paymentContract = new system.$commonFun.web3Init.eth.Contract(SpaceTokenABI, paymentContractAddress)
+    let biddingContractAddress = process.env.VUE_APP_OPSWAN_BIDDING_ADDRESS
+    let biddingContract = new system.$commonFun.web3Init.eth.Contract(BiddingABI, biddingContractAddress)
 
     function handleSizeChange (val) { }
     async function handleCurrentChange (currentPage) {
@@ -120,15 +121,18 @@ export default defineComponent({
       }
       paymentLoad.value = true
       try {
+        let taskContractAddress = await biddingContract.methods.tasks(String(row.job.uuid)).call()
+        let taskContract = new system.$commonFun.web3Init.eth.Contract(TaskABI, taskContractAddress)
+
         if (type) {
           console.log('task_uuid:', row.job.uuid)
-          let gasLimit = await paymentContract.methods
-            .claimReward(String(row.job.uuid))
+          let gasLimit = await taskContract.methods
+            .claimReward()
             .estimateGas({ from: store.state.metaAddress })
 
-          const tx = await paymentContract.methods
-            .claimReward(String(row.job.uuid))
-            .send({ from: store.state.metaAddress, gasLimit: gasLimit })
+          const tx = await taskContract.methods
+            .claimReward()
+            .send({ from: store.state.metaAddress, gasLimit: Math.floor(gasLimit * 1.5) })
             .on('transactionHash', async (transactionHash) => {
               console.log('claim transactionHash:', transactionHash)
               claimStatus(row, transactionHash)
@@ -136,13 +140,13 @@ export default defineComponent({
             .on('error', () => paymentLoad.value = false)
         } else {
           console.log('refund id:', row.transaction_hash)
-          let gasLimit = await paymentContract.methods
-            .claimRefund(String(row.transaction_hash))
+          let gasLimit = await taskContract.methods
+            .claimRefund()
             .estimateGas({ from: store.state.metaAddress })
 
-          const tx = await paymentContract.methods
-            .claimRefund(String(row.transaction_hash))
-            .send({ from: store.state.metaAddress, gasLimit: gasLimit })
+          const tx = await taskContract.methods
+            .claimRefund()
+            .send({ from: store.state.metaAddress, gasLimit: Math.floor(gasLimit * 1.5) })
             .on('transactionHash', async (transactionHash) => {
               console.log('refund transactionHash:', transactionHash)
               refundStatus(row, transactionHash)
@@ -195,17 +199,10 @@ export default defineComponent({
       // else if (paymentsRes.message) system.$commonFun.messageTip('error', paymentsRes.message)
       paymentLoad.value = false
     }
-    async function paymentEnv () {
-      if (getnetID !== 80001) {
-        paymentContractAddress = process.env.VUE_APP_OPSWAN_ADDRESS
-        paymentContract = new system.$commonFun.web3Init.eth.Contract(SpaceTokenABI, paymentContractAddress)
-      }
-    }
     let getnetID = NaN
     onMounted(async () => { })
     onActivated(async () => {
       getnetID = await system.$commonFun.web3Init.eth.net.getId()
-      paymentEnv()
       init()
     })
     watch(route, (to, from) => {

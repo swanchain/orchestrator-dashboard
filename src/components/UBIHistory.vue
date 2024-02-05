@@ -50,7 +50,6 @@ import { defineComponent, computed, onMounted, onActivated, watch, ref, reactive
 import { useStore } from "vuex"
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
-import SpaceTokenABI from '@/utils/abi/SpacePaymentV6.json'
 export default defineComponent({
   name: 'Payment History',
   setup () {
