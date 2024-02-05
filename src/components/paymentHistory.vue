@@ -3,14 +3,14 @@
     <div class="payment-history container-landing">
       <div class="title">Reward history</div>
       <el-table v-loading="paymentLoad" :data="paymentData" stripe style="width: 100%">
-        <el-table-column prop="chain_id" label="chain id" min-width="110" />
+        <!-- <el-table-column prop="chain_id" label="chain id" min-width="110" /> -->
         <el-table-column prop="amount" label="amount" />
         <el-table-column prop="status" label="status" min-width="135">
           <template #default="scope">
             <div>
               <!-- <span v-if="scope.row.chain_id === 80001 && scope.row.order.updated_at < 1700508000 && scope.row.status.toLowerCase() === 'refundable'">Pending</span> -->
               <el-button type="primary" v-if="scope.row.status.toLowerCase() === 'accepted' || scope.row.status.toLowerCase() === 'refundable'" plain @click="refundFun(scope.row)">Refund</el-button>
-              <el-button type="primary" v-else-if="scope.row.status.toLowerCase() === 'rewardable'" plain @click="reviewFun(scope.row)">Claim Reward</el-button>
+              <el-button type="primary" v-else-if="scope.row.status.toLowerCase() === 'rewardable'" plain @click="refundFun(scope.row, 1)">Claim Reward</el-button>
               <span v-else>{{scope.row.status}}</span>
             </div>
           </template>
