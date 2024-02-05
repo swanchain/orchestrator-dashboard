@@ -1,13 +1,11 @@
-[
-  {
+[{
     "inputs": [],
     "stateMutability": "nonpayable",
     "type": "constructor"
   },
   {
     "anonymous": false,
-    "inputs": [
-      {
+    "inputs": [{
         "indexed": false,
         "internalType": "address",
         "name": "previousAdmin",
@@ -25,34 +23,29 @@
   },
   {
     "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "beacon",
-        "type": "address"
-      }
-    ],
+    "inputs": [{
+      "indexed": true,
+      "internalType": "address",
+      "name": "beacon",
+      "type": "address"
+    }],
     "name": "BeaconUpgraded",
     "type": "event"
   },
   {
     "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint8",
-        "name": "version",
-        "type": "uint8"
-      }
-    ],
+    "inputs": [{
+      "indexed": false,
+      "internalType": "uint8",
+      "name": "version",
+      "type": "uint8"
+    }],
     "name": "Initialized",
     "type": "event"
   },
   {
     "anonymous": false,
-    "inputs": [
-      {
+    "inputs": [{
         "indexed": true,
         "internalType": "address",
         "name": "previousOwner",
@@ -70,8 +63,7 @@
   },
   {
     "anonymous": false,
-    "inputs": [
-      {
+    "inputs": [{
         "indexed": false,
         "internalType": "string",
         "name": "taskId",
@@ -89,25 +81,21 @@
   },
   {
     "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "implementation",
-        "type": "address"
-      }
-    ],
+    "inputs": [{
+      "indexed": true,
+      "internalType": "address",
+      "name": "implementation",
+      "type": "address"
+    }],
     "name": "Upgraded",
     "type": "event"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "newAdmin",
-        "type": "address"
-      }
-    ],
+    "inputs": [{
+      "internalType": "address",
+      "name": "newAdmin",
+      "type": "address"
+    }],
     "name": "addAdmin",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -116,32 +104,27 @@
   {
     "inputs": [],
     "name": "apWallet",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
+    "outputs": [{
+      "internalType": "address",
+      "name": "",
+      "type": "address"
+    }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "arWallet",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
+    "outputs": [{
+      "internalType": "address",
+      "name": "",
+      "type": "address"
+    }],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [
-      {
+    "inputs": [{
         "internalType": "string",
         "name": "taskId",
         "type": "string"
@@ -175,32 +158,27 @@
   {
     "inputs": [],
     "name": "collateralContract",
-    "outputs": [
-      {
-        "internalType": "contract CollateralContract",
-        "name": "",
-        "type": "address"
-      }
-    ],
+    "outputs": [{
+      "internalType": "contract CollateralContract",
+      "name": "",
+      "type": "address"
+    }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "implementation",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
+    "outputs": [{
+      "internalType": "address",
+      "name": "",
+      "type": "address"
+    }],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [
-      {
+    "inputs": [{
         "internalType": "address",
         "name": "ar",
         "type": "address"
@@ -227,84 +205,70 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
+    "inputs": [{
+      "internalType": "address",
+      "name": "",
+      "type": "address"
+    }],
     "name": "isAdmin",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
+    "outputs": [{
+      "internalType": "bool",
+      "name": "",
+      "type": "bool"
+    }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "owner",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
+    "outputs": [{
+      "internalType": "address",
+      "name": "",
+      "type": "address"
+    }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "paymentToken",
-    "outputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "",
-        "type": "address"
-      }
-    ],
+    "outputs": [{
+      "internalType": "contract IERC20",
+      "name": "",
+      "type": "address"
+    }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "proxiableUUID",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
+    "outputs": [{
+      "internalType": "bytes32",
+      "name": "",
+      "type": "bytes32"
+    }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "refundClaimDuration",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
+    "outputs": [{
+      "internalType": "uint256",
+      "name": "",
+      "type": "uint256"
+    }],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "admin",
-        "type": "address"
-      }
-    ],
+    "inputs": [{
+      "internalType": "address",
+      "name": "admin",
+      "type": "address"
+    }],
     "name": "removeAdmin",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -318,92 +282,77 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "newCollateralContract",
-        "type": "address"
-      }
-    ],
+    "inputs": [{
+      "internalType": "address",
+      "name": "newCollateralContract",
+      "type": "address"
+    }],
     "name": "setCollateralContract",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "newImplementation",
-        "type": "address"
-      }
-    ],
+    "inputs": [{
+      "internalType": "address",
+      "name": "newImplementation",
+      "type": "address"
+    }],
     "name": "setImplementation",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "claimDuration",
-        "type": "uint256"
-      }
-    ],
+    "inputs": [{
+      "internalType": "uint256",
+      "name": "claimDuration",
+      "type": "uint256"
+    }],
     "name": "setRefundClaimDuration",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
+    "inputs": [{
+      "internalType": "string",
+      "name": "",
+      "type": "string"
+    }],
     "name": "tasks",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
+    "outputs": [{
+      "internalType": "address",
+      "name": "",
+      "type": "address"
+    }],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
+    "inputs": [{
+      "internalType": "address",
+      "name": "newOwner",
+      "type": "address"
+    }],
     "name": "transferOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "newImplementation",
-        "type": "address"
-      }
-    ],
+    "inputs": [{
+      "internalType": "address",
+      "name": "newImplementation",
+      "type": "address"
+    }],
     "name": "upgradeTo",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [
-      {
+    "inputs": [{
         "internalType": "address",
         "name": "newImplementation",
         "type": "address"
@@ -422,13 +371,11 @@
   {
     "inputs": [],
     "name": "version",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
+    "outputs": [{
+      "internalType": "uint256",
+      "name": "",
+      "type": "uint256"
+    }],
     "stateMutability": "pure",
     "type": "function"
   }
