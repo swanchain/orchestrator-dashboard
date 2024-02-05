@@ -4,6 +4,7 @@ import moment from 'moment'
 import {
   ElMessage
 } from 'element-plus'
+import router from '../router'
 let lastTime = 0
 
 async function sendRequest(apilink, type, jsonObject, api_token) {
@@ -193,6 +194,11 @@ async function walletChain(chainId) {
       text = {
         chainId: web3Init.utils.numberToHex(2024),
         chainName: 'Saturn Testnet',
+        nativeCurrency: {
+          name: 'sETH',
+          symbol: 'sETH', // 2-6 characters long
+          decimals: 18
+        },
         rpcUrls: [process.env.VUE_APP_SATURNURL],
         blockExplorerUrls: [process.env.VUE_APP_SATURNBLOCKURL]
       }
@@ -246,7 +252,12 @@ async function walletChain(chainId) {
     })
     await timeout(500)
     const newID = await web3Init.eth.net.getId()
-    if (newID !== currentID) await login()
+    if (newID !== currentID) {
+      router.push({
+        name: 'dashboard'
+      })
+      await login()
+    }
   } catch (err) {
     if (err.message) messageTip('error', err.message)
   }

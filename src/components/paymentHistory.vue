@@ -114,10 +114,10 @@ export default defineComponent({
       txhashVisible.value = true
     }
     async function refundFun (row, type) {
-      // if (row.chain_id.toString() !== getnetID.toString()) {
-      //   await system.$commonFun.walletChain(Number(row.chain_id))
-      //   return
-      // }
+      if (getnetID.toString() !== '2024') {
+        await system.$commonFun.walletChain(2024)
+        return
+      }
       paymentLoad.value = true
       try {
         if (type) {
