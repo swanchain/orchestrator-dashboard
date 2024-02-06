@@ -4,7 +4,14 @@
       <div class="title">Reward history</div>
       <el-table v-loading="paymentLoad" :data="paymentData" stripe style="width: 100%">
         <!-- <el-table-column prop="chain_id" label="chain id" min-width="110" /> -->
-        <el-table-column prop="amount" label="amount" />
+        <el-table-column prop="job" label="task uuid">
+          <template #default="scope">
+            <div>
+              <span v-if="scope.row.job && scope.row.job.task_uuid">{{scope.row.job.task_uuid}}</span>
+              <span v-else>-</span>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column prop="status" label="status" min-width="135">
           <template #default="scope">
             <div>
