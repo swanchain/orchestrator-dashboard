@@ -40,8 +40,8 @@
         </el-table-column>
         <el-table-column prop="amount" label="Amount (SWAN)" />
       </el-table>
-      <el-pagination class="flex-row" hide-on-single-page :page-size="pagin.pageSize" :current-page="pagin.pageNo" :pager-count="5" :small="small" :background="background" layout="total, prev, pager, next" :total="pagin.total" @size-change="handleSizeChange"
-        @current-change="handleCurrentChange" />
+      <el-pagination class="flex-row" :page-size="pagin.pageSize" :current-page="pagin.pageNo" :pager-count="5" :small="small" :background="background" layout="total, prev, pager, next" :total="pagin.total" @size-change="handleSizeChange" @current-change="handleCurrentChange"
+      />
     </div>
   </div>
 </template>

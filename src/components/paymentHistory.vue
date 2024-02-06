@@ -23,7 +23,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination hide-on-single-page :page-size="pagin.pageSize" :current-page="pagin.pageNo" :pager-count="5" :small="small" :background="background" layout="total, prev, pager, next" :total="pagin.total" @size-change="handleSizeChange" @current-change="handleCurrentChange"
+      <el-pagination class="flex-row" :page-size="pagin.pageSize" :current-page="pagin.pageNo" :pager-count="5" :small="small" :background="background" layout="total, prev, pager, next" :total="pagin.total" @size-change="handleSizeChange" @current-change="handleCurrentChange"
       />
     </div>
 
@@ -328,6 +328,28 @@ export default defineComponent({
       }
       .el-table__inner-wrapper::before {
         height: 0;
+      }
+    }
+    :deep(.el-pagination) {
+      margin: 0.4rem auto;
+      justify-content: center;
+      .btn-next,
+      .btn-prev,
+      .el-pager li {
+        background-color: @primary-color;
+        color: rgb(181, 183, 200);
+        &.active,
+        &:hover {
+          color: @white-color;
+        }
+      }
+      .btn-prev {
+        i {
+          font-size: 14px;
+          @media screen and (min-width: 1800px) {
+            font-size: 16px;
+          }
+        }
       }
     }
   }
