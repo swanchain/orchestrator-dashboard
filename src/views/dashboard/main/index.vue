@@ -16,67 +16,67 @@
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">Network Providers</h6>
-            <b v-loading="providersLoad" class="font-bold color">{{pagin.total}}</b>
+            <b v-loading="providersLoad" class="font-bold color">{{system.$commonFun.replaceFormat(pagin.total)}}</b>
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">Total UBI Tasks</h6>
-            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.sent ?providerBody.ubiData.tasks.sent.count : '-'}}</b>
+            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.sent ?system.$commonFun.replaceFormat(providerBody.ubiData.tasks.sent.count) : '-'}}</b>
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">CPU UBI Tasks</h6>
-            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.sent ?providerBody.ubiData.tasks.sent.count_cpu : '-'}}</b>
+            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.sent ?system.$commonFun.replaceFormat(providerBody.ubiData.tasks.sent.count_cpu) : '-'}}</b>
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">Total UBI Reward</h6>
-            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.rewards ? system.$commonFun.NumFormat(providerBody.ubiData.rewards.total) : '-'}}</b>
+            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.rewards ? system.$commonFun.replaceFormat(providerBody.ubiData.rewards.total) : '-'}}</b>
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">Active Applications</h6>
-            <b v-loading="providersLoad" class="font-bold color">{{pagin.active_applications}}</b>
+            <b v-loading="providersLoad" class="font-bold color">{{system.$commonFun.replaceFormat(pagin.active_applications)}}</b>
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">Total UBI Tasks Type</h6>
-            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.tasks?providerBody.ubiData.tasks.zk_types:'-'}}</b>
+            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.tasks?system.$commonFun.replaceFormat(providerBody.ubiData.tasks.zk_types):'-'}}</b>
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">GPU UBI Tasks</h6>
-            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.sent ?providerBody.ubiData.tasks.sent.count_gpu:'-'}}</b>
+            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.sent ?system.$commonFun.replaceFormat(providerBody.ubiData.tasks.sent.count_gpu):'-'}}</b>
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">Average UBI Reward per day</h6>
-            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.rewards?system.$commonFun.NumFormat(providerBody.ubiData.rewards.average):'-'}}</b>
+            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.rewards?system.$commonFun.replaceFormat(providerBody.ubiData.rewards.average):'-'}}</b>
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">Total Deployments</h6>
-            <b v-loading="providersLoad" class="font-bold color">{{pagin.total_deployments}}</b>
+            <b v-loading="providersLoad" class="font-bold color">{{system.$commonFun.replaceFormat(pagin.total_deployments)}}</b>
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">Verified UBI Tasks</h6>
-            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.verified ?providerBody.ubiData.tasks.verified.count:'-'}}</b>
+            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.verified ?system.$commonFun.replaceFormat(providerBody.ubiData.tasks.verified.count):'-'}}</b>
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">CP Numbers of UBI Task</h6>
-            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.providers?providerBody.ubiData.providers.count:'-'}}</b>
+            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.providers?system.$commonFun.replaceFormat(providerBody.ubiData.providers.count):'-'}}</b>
           </div>
         </el-col>
       </el-row>
