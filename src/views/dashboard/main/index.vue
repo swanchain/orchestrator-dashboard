@@ -16,67 +16,145 @@
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">Network Providers</h6>
-            <b v-loading="providersLoad" class="font-bold color">{{pagin.total}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">Total UBI Tasks</h6>
-            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.sent ?providerBody.ubiData.tasks.sent.count : '-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">CPU UBI Tasks</h6>
-            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.sent ?providerBody.ubiData.tasks.sent.count_cpu : '-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">Total UBI Reward</h6>
-            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.rewards ? system.$commonFun.NumFormat(providerBody.ubiData.rewards.total) : '-'}}</b>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{system.$commonFun.replaceFormat(pagin.total)}}</b>
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">Active Applications</h6>
-            <b v-loading="providersLoad" class="font-bold color">{{pagin.active_applications}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">Total UBI Tasks Type</h6>
-            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.tasks?providerBody.ubiData.tasks.zk_types:'-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">GPU UBI Tasks</h6>
-            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.sent ?providerBody.ubiData.tasks.sent.count_gpu:'-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">Average UBI Reward per day</h6>
-            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.rewards?system.$commonFun.NumFormat(providerBody.ubiData.rewards.average):'-'}}</b>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{system.$commonFun.replaceFormat(pagin.active_applications)}}</b>
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">Total Deployments</h6>
-            <b v-loading="providersLoad" class="font-bold color">{{pagin.total_deployments}}</b>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{system.$commonFun.replaceFormat(pagin.total_deployments)}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">Total UBI Tasks</h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.sent ?system.$commonFun.replaceFormat(providerBody.ubiData.tasks.sent.count) : '-'}}</b>
+          </div>
+        </el-col>
+
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">Total UBI Tasks Type</h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.tasks?system.$commonFun.replaceFormat(providerBody.ubiData.tasks.zk_types):'-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">GPU UBI Tasks</h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.sent ?system.$commonFun.replaceFormat(providerBody.ubiData.tasks.sent.count_gpu):'-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">CPU UBI Tasks</h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.sent ?system.$commonFun.replaceFormat(providerBody.ubiData.tasks.sent.count_cpu) : '-'}}</b>
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">Verified UBI Tasks</h6>
-            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.verified ?providerBody.ubiData.tasks.verified.count:'-'}}</b>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.verified ?system.$commonFun.replaceFormat(providerBody.ubiData.tasks.verified.count):'-'}}</b>
+          </div>
+        </el-col>
+
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">
+              24h Average UBI Reward
+              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average UBI reward per CP over 24 hours">
+                <template #reference>
+                  <div class="flex-row">
+                    <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
+                      <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
+                        fill="#ffffff" p-id="7202"></path>
+                    </svg>
+                  </div>
+                </template>
+              </el-popover>
+            </h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.rewards?system.$commonFun.replaceFormat(providerBody.ubiData.rewards.avg_24h):'-'}}
+              <small>SWAN/CP</small>
+            </b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">
+              7d Average UBI Reward
+              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average UBI reward per CP per day over 7 days">
+                <template #reference>
+                  <div class="flex-row">
+                    <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
+                      <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
+                        fill="#ffffff" p-id="7202"></path>
+                    </svg>
+                  </div>
+                </template>
+              </el-popover>
+            </h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.rewards?system.$commonFun.replaceFormat(providerBody.ubiData.rewards.avg_7d):'-'}}
+              <small>SWAN/CP</small>
+            </b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">
+              30d Average UBI Reward
+              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average UBI reward per CP per day over 30 days">
+                <template #reference>
+                  <div class="flex-row">
+                    <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
+                      <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
+                        fill="#ffffff" p-id="7202"></path>
+                    </svg>
+                  </div>
+                </template>
+              </el-popover>
+            </h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.rewards?system.$commonFun.replaceFormat(providerBody.ubiData.rewards.avg_30d):'-'}}
+              <small>SWAN/CP</small>
+            </b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">
+              1y Average UBI Reward
+              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average UBI reward per CP per day over 1 year">
+                <template #reference>
+                  <div class="flex-row">
+                    <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
+                      <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
+                        fill="#ffffff" p-id="7202"></path>
+                    </svg>
+                  </div>
+                </template>
+              </el-popover>
+            </h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.rewards?system.$commonFun.replaceFormat(providerBody.ubiData.rewards.avg_1y):'-'}}
+              <small>SWAN/CP</small>
+            </b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">Total UBI Reward</h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.rewards ? system.$commonFun.replaceFormat(providerBody.ubiData.rewards.total) : '-'}}
+              <small>SWAN</small>
+            </b>
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">CP Numbers of UBI Task</h6>
-            <b v-loading="providersLoad" class="font-bold color">{{providerBody.ubiData.providers?providerBody.ubiData.providers.count:'-'}}</b>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.providers?system.$commonFun.replaceFormat(providerBody.ubiData.providers.count):'-'}}</b>
           </div>
         </el-col>
       </el-row>
@@ -635,17 +713,33 @@ export default defineComponent({
           // animation: glow 1s ease-in-out infinite alternate;
           overflow: hidden;
           h6 {
-            min-height: 38px;
-            font-size: 16px;
-            line-height: 19px;
-            @media screen and (max-width: 1260px) {
-              min-height: 34px;
+            min-height: 34px;
+            font-size: 12px;
+            line-height: 17px;
+            @media screen and (min-width: 1800px) {
+              min-height: 38px;
               font-size: 14px;
-              line-height: 17px;
+              line-height: 19px;
+            }
+            .el-tooltip__trigger {
+              margin: 0 0 0 4px;
             }
           }
           b {
-            font-size: 0.32rem;
+            align-items: baseline;
+            margin: 6px 0;
+            font-size: 22px;
+            line-height: 1;
+            @media screen and (min-width: 1800px) {
+              font-size: 24px;
+            }
+            small {
+              margin: 0 0 0 4px;
+              font-size: 16px;
+              @media screen and (min-width: 1800px) {
+                font-size: 18px;
+              }
+            }
           }
         }
         .chart {
