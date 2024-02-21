@@ -17,7 +17,7 @@
             <div>
               <!-- <span v-if="scope.row.chain_id === 80001 && scope.row.order.updated_at < 1700508000 && scope.row.status.toLowerCase() === 'refundable'">Pending</span> -->
               <!-- <el-button type="primary" v-if="scope.row.status.toLowerCase() === 'accepted' || scope.row.status.toLowerCase() === 'refundable'" plain @click="refundFun(scope.row)">Refund</el-button> -->
-              <el-button type="primary" v-if="scope.row.status.toLowerCase() === 'rewardable'" plain @click="refundFun(scope.row, 1)">Claim Reward</el-button>
+              <el-button type="primary" v-if="scope.row.status && scope.row.status.toLowerCase() === 'rewardable'" plain @click="refundFun(scope.row, 1)">Claim Reward</el-button>
               <span v-else>{{scope.row.status}}</span>
             </div>
           </template>
@@ -25,7 +25,7 @@
         <el-table-column prop="transaction_hash" label="transaction hash" min-width="120">
           <template #default="scope">
             <!-- <a :href="`${scope.row.url_tx}${scope.row.transaction_hash}`" target="_blank">{{scope.row.transaction_hash}}</a> -->
-            <el-button type="primary" v-if="scope.row.transaction_hash" plain @click="checkFun(scope.row.transaction_hash)">Check</el-button>
+            <el-button type="primary" v-if="scope.row.transaction_hash" plain @click="checkFun(scope.row)">Check</el-button>
             <el-button type="primary" v-else disabled plain>Check</el-button>
           </template>
         </el-table-column>
@@ -34,15 +34,22 @@
       />
     </div>
 
-    <el-dialog v-model="txhashVisible" title="Transaction Hash" :append-to-body="false" :show-close="false" custom-class="transaction-style" :before-close="handleClose">
-      <div class="flex-row hash">
-        {{system.$commonFun.hiddAddress(txHash)}}
-        <svg @click="system.$commonFun.copyContent(txHash, 'Copied')" t="1706499607741" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2309" width="18" height="18">
-          <path d="M720 192h-544A80.096 80.096 0 0 0 96 272v608C96 924.128 131.904 960 176 960h544c44.128 0 80-35.872 80-80v-608C800 227.904 764.128 192 720 192z m16 688c0 8.8-7.2 16-16 16h-544a16 16 0 0 1-16-16v-608a16 16 0 0 1 16-16h544a16 16 0 0 1 16 16v608z"
-            p-id="2310" fill="#b5b7c8"></path>
-          <path d="M848 64h-544a32 32 0 0 0 0 64h544a16 16 0 0 1 16 16v608a32 32 0 1 0 64 0v-608C928 99.904 892.128 64 848 64z" p-id="2311" fill="#b5b7c8"></path>
-          <path d="M608 360H288a32 32 0 0 0 0 64h320a32 32 0 1 0 0-64zM608 520H288a32 32 0 1 0 0 64h320a32 32 0 1 0 0-64zM480 678.656H288a32 32 0 1 0 0 64h192a32 32 0 1 0 0-64z" p-id="2312" fill="#b5b7c8"></path>
-        </svg>
+    <el-dialog v-model="txhashVisible" :append-to-body="false" :show-close="false" custom-class="transaction-style" :before-close="handleClose">
+      <div class="cont">
+        <div class="title">Transaction Hash</div>
+        <div class="flex-row hash">
+          {{system.$commonFun.hiddAddress(txHash)}}
+          <svg @click="system.$commonFun.copyContent(txHash, 'Copied')" t="1706499607741" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2309" width="18" height="18">
+            <path d="M720 192h-544A80.096 80.096 0 0 0 96 272v608C96 924.128 131.904 960 176 960h544c44.128 0 80-35.872 80-80v-608C800 227.904 764.128 192 720 192z m16 688c0 8.8-7.2 16-16 16h-544a16 16 0 0 1-16-16v-608a16 16 0 0 1 16-16h544a16 16 0 0 1 16 16v608z"
+              p-id="2310" fill="#b5b7c8"></path>
+            <path d="M848 64h-544a32 32 0 0 0 0 64h544a16 16 0 0 1 16 16v608a32 32 0 1 0 64 0v-608C928 99.904 892.128 64 848 64z" p-id="2311" fill="#b5b7c8"></path>
+            <path d="M608 360H288a32 32 0 0 0 0 64h320a32 32 0 1 0 0-64zM608 520H288a32 32 0 1 0 0 64h320a32 32 0 1 0 0-64zM480 678.656H288a32 32 0 1 0 0 64h192a32 32 0 1 0 0-64z" p-id="2312" fill="#b5b7c8"></path>
+          </svg>
+        </div>
+        <div class="title">Amount</div>
+        <div class="flex-row hash">
+          {{rowAll.amount}}
+        </div>
       </div>
       <template #footer>
         <span class="dialog-footer flex-row flex-end">
@@ -74,6 +81,7 @@ export default defineComponent({
     const prevType = ref(true)
     const txhashVisible = ref(false)
     const txHash = ref('')
+    const rowAll = ref({})
     const pagin = reactive({
       pageSize: 10,
       pageNo: 1,
@@ -115,10 +123,12 @@ export default defineComponent({
     }
     function handleClose () {
       txHash.value = ''
+      rowAll.value = {}
       txhashVisible.value = false
     }
-    function checkFun (hash) {
-      txHash.value = hash
+    function checkFun (row) {
+      rowAll.value = row
+      txHash.value = row.transaction_hash
       txhashVisible.value = true
     }
     async function refundFun (row, type) {
@@ -230,6 +240,7 @@ export default defineComponent({
       paymentType,
       txhashVisible,
       txHash,
+      rowAll,
       pagin,
       background,
       small,
@@ -378,6 +389,7 @@ export default defineComponent({
       width: 90%;
     }
     .el-dialog__header {
+      display: none;
       padding: 15px 15px 10px;
       font-size: 17px;
       color: #000;
@@ -396,6 +408,11 @@ export default defineComponent({
     }
     .el-dialog__body {
       padding: 10px 15px;
+      .title {
+        padding: 15px 0 5px;
+        font-weight: 600;
+        text-transform: capitalize;
+      }
       .hash {
         svg {
           margin: 0 0 0 0.05rem;
