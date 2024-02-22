@@ -33,7 +33,7 @@
         <el-table-column prop="created_at" label="created at" min-width="100">
           <template #default="scope">
             <span>
-              {{system.$commonFun.momentFun(rowAll.created_at)}}
+              {{system.$commonFun.momentFun(scope.row.created_at)}}
             </span>
           </template>
         </el-table-column>
