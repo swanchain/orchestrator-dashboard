@@ -4,10 +4,11 @@
       <div class="title">Reward history</div>
       <el-table v-loading="paymentLoad" :data="paymentData" stripe style="width: 100%">
         <!-- <el-table-column prop="chain_id" label="chain id" min-width="110" /> -->
-        <el-table-column prop="job" label="task uuid">
+        <el-table-column prop="job" label="task uuid" min-width="100">
           <template #default="scope">
             <div>
               <span v-if="scope.row.job && scope.row.job.task_uuid">{{scope.row.job.task_uuid}}</span>
+              <span v-else-if="scope.row.uuid">{{scope.row.uuid}}</span>
               <span v-else>-</span>
             </div>
           </template>
@@ -29,6 +30,13 @@
             <el-button type="primary" v-else disabled plain>Check</el-button>
           </template>
         </el-table-column>
+        <el-table-column prop="created_at" label="created at" min-width="100">
+          <template #default="scope">
+            <span>
+              {{system.$commonFun.momentFun(rowAll.created_at)}}
+            </span>
+          </template>
+        </el-table-column>
       </el-table>
       <el-pagination class="flex-row" :page-size="pagin.pageSize" :current-page="pagin.pageNo" :pager-count="5" :small="small" :background="background" layout="total, prev, pager, next" :total="pagin.total" @size-change="handleSizeChange" @current-change="handleCurrentChange"
       />
@@ -48,7 +56,7 @@
         </div>
         <div class="title">Amount</div>
         <div class="flex-row hash">
-          {{rowAll.amount}}
+          {{system.$commonFun.NumFormat(rowAll.amount)}}
         </div>
       </div>
       <template #footer>
