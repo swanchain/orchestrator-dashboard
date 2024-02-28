@@ -372,7 +372,7 @@ async function getUnit(id) {
       url_tx = `${process.env.VUE_APP_OPSWANURL}/tx/`
       break
     case 2024:
-      unit = 'SWAN'
+      unit = 'sETH'
       name = 'Saturn Testnet '
       url = `${process.env.VUE_APP_SATURNBLOCKURL}/address/`
       url_tx = `${process.env.VUE_APP_SATURNBLOCKURL}/tx/`

@@ -267,7 +267,6 @@ export default defineComponent({
     margin: 0 auto;
     box-sizing: border-box;
     word-break: break-word;
-    text-transform: capitalize;
     color: @white-color;
     font-size: 14px;
     text-align: left;
@@ -276,6 +275,7 @@ export default defineComponent({
       font-weight: bold;
       font-size: 0.24rem;
       color: @white-color;
+      text-transform: capitalize;
     }
     :deep(.el-table) {
       background-color: transparent;
