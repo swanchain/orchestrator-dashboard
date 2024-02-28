@@ -173,7 +173,7 @@ export default defineComponent({
               claimStatus(row, receipt.transactionHash)
 
               let claimAmount = receipt.events.RewardClaimed.returnValues.reward
-              claimAmount = web3.utils.fromWei(claimAmount)  // convert to eth (optional)
+              claimAmount = system.$commonFun.web3Init.web3.utils.fromWei(claimAmount)  // convert to eth (optional)
               console.log('claim amount:', claimAmount)
             })
             .on('error', () => paymentLoad.value = false)
