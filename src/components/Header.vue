@@ -142,7 +142,7 @@
       <div class="area flex-row" v-loading="cpCheckCont.show">
         <div class="fast width">
           <label>Balance</label>
-          <div class="address">{{cpCheckCont.balance}} SWAN</div>
+          <div class="address">{{cpCheckCont.balance}} sETH</div>
         </div>
       </div>
     </el-dialog>

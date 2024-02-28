@@ -16,8 +16,8 @@
           <template #default="scope">
             <div>
               <!-- <span v-if="scope.row.chain_id === 80001 && scope.row.order.updated_at < 1700508000 && scope.row.status.toLowerCase() === 'refundable'">Pending</span> -->
-              <!-- <el-button type="primary" v-if="scope.row.status.toLowerCase() === 'accepted' || scope.row.status.toLowerCase() === 'refundable'" plain @click="refundFun(scope.row)">Refund</el-button> -->
-              <el-button type="primary" v-if="scope.row.status && scope.row.status.toLowerCase() === 'rewardable'" plain @click="refundFun(scope.row, 1)">Claim Reward</el-button>
+              <!-- <el-button type="primary" v-if="scope.row.status.toLowerCase() === 'accepted' || scope.row.status.toLowerCase() === 'refundable'" plain @click="rewardFun(scope.row)">Refund</el-button> -->
+              <el-button type="primary" v-if="scope.row.status && scope.row.status.toLowerCase() === 'rewardable'" plain @click="rewardFun(scope.row, 1)">Claim Reward</el-button>
               <span v-else>{{scope.row.status}}</span>
             </div>
           </template>
@@ -138,7 +138,7 @@ export default defineComponent({
       txHash.value = row.transaction_hash
       txhashVisible.value = true
     }
-    async function refundFun (row, type) {
+    async function rewardFun (row, type) {
       if (getnetID.toString() !== '2024') {
         await system.$commonFun.walletChain(2024)
         return
@@ -146,7 +146,7 @@ export default defineComponent({
       paymentLoad.value = true
       try {
         // get task contract address
-        let taskContractAddress = await biddingContract.methods.tasks(String(row.job.uuid)).call()
+        let taskContractAddress = await biddingContract.methods.tasks(String(row.job.task_uuid)).call()
         if (taskContractAddress.indexOf('0x0') > -1) {
           system.$commonFun.messageTip('error', 'Cannot get task contract, Please try again later!')
           paymentLoad.value = false
@@ -155,7 +155,7 @@ export default defineComponent({
         let taskContract = new system.$commonFun.web3Init.eth.Contract(TaskABI, taskContractAddress)
 
         if (type) {
-          console.log('task_uuid:', row.job.uuid)
+          console.log('task_uuid:', row.job.task_uuid)
           let gasLimit = await taskContract.methods
             .claimReward()
             .estimateGas({ from: store.state.metaAddress })
@@ -251,7 +251,7 @@ export default defineComponent({
       pagin,
       background,
       small,
-      refundFun, reviewFun, checkFun, handleClose, handleSizeChange, handleCurrentChange
+      rewardFun, reviewFun, checkFun, handleClose, handleSizeChange, handleCurrentChange
     }
   },
 })
