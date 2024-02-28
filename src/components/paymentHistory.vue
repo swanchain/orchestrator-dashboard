@@ -8,7 +8,6 @@
           <template #default="scope">
             <div>
               <span v-if="scope.row.job && scope.row.job.task_uuid">{{scope.row.job.task_uuid}}</span>
-              <span v-else-if="scope.row.uuid">{{scope.row.uuid}}</span>
               <span v-else>-</span>
             </div>
           </template>
