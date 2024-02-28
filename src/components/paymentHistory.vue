@@ -147,6 +147,7 @@ export default defineComponent({
       try {
         // get task contract address
         let taskContractAddress = await biddingContract.methods.tasks(String(row.job.task_uuid)).call()
+        console.log(row.job.task_uuid)
         if (taskContractAddress.indexOf('0x0') > -1) {
           system.$commonFun.messageTip('error', 'Cannot get task contract, Please try again later!')
           paymentLoad.value = false
@@ -165,7 +166,11 @@ export default defineComponent({
             .send({ from: store.state.metaAddress, gasLimit: Math.floor(gasLimit * 1.5) })
             .on('transactionHash', async (transactionHash) => {
               console.log('claim transactionHash:', transactionHash)
-              claimStatus(row, transactionHash)
+            })
+            .on('receipt', async (receipt) => {
+              // receipt example
+              console.log('claim receipt:', receipt)
+              claimStatus(row, receipt.transactionHash)
             })
             .on('error', () => paymentLoad.value = false)
         } else {
@@ -203,7 +208,8 @@ export default defineComponent({
       let formData = new FormData()
       formData.append('tx_hash', transactionHash)
       formData.append('chain_id', row.chain_id)
-      formData.append('uuid', row.uuid)
+      formData.append('uuid', row.job.task_uuid)
+      formData.append('amount', row.uuid)
       const claimRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}user/provider/payments`, 'post', formData)
       if (!claimRes || claimRes.status !== 'success') if (claimRes.message) system.$commonFun.messageTip('error', claimRes.message)
       init()
