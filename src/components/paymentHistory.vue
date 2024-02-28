@@ -8,7 +8,6 @@
           <template #default="scope">
             <div>
               <span v-if="scope.row.job && scope.row.job.task_uuid">{{scope.row.job.task_uuid}}</span>
-              <span v-else-if="scope.row.uuid">{{scope.row.uuid}}</span>
               <span v-else>-</span>
             </div>
           </template>
@@ -267,7 +266,6 @@ export default defineComponent({
     margin: 0 auto;
     box-sizing: border-box;
     word-break: break-word;
-    text-transform: capitalize;
     color: @white-color;
     font-size: 14px;
     text-align: left;
@@ -276,6 +274,7 @@ export default defineComponent({
       font-weight: bold;
       font-size: 0.24rem;
       color: @white-color;
+      text-transform: capitalize;
     }
     :deep(.el-table) {
       background-color: transparent;
