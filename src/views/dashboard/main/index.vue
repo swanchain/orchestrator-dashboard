@@ -157,6 +157,42 @@
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.providers?system.$commonFun.replaceFormat(providerBody.ubiData.providers.count):'-'}}</b>
           </div>
         </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">Gas Used Today</h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.gas_used_today?system.$commonFun.replaceFormat(providerBody.totalData.gas_used_today):'-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">Total Gas Used</h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.total_gas_used?system.$commonFun.replaceFormat(providerBody.totalData.total_gas_used):'-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">Total Addresses</h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.total_addresses?system.$commonFun.replaceFormat(providerBody.totalData.total_addresses):'-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">Total Blocks</h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.total_blocks?system.$commonFun.replaceFormat(providerBody.totalData.total_blocks):'-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">Total Transactions</h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.total_transactions?system.$commonFun.replaceFormat(providerBody.totalData.total_transactions):'-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">Transactions Today</h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.transactions_today?system.$commonFun.replaceFormat(providerBody.totalData.transactions_today):'-'}}</b>
+          </div>
+        </el-col>
       </el-row>
 
       <el-row :gutter="26" class="erchart-body">
@@ -395,7 +431,15 @@ export default defineComponent({
     })
     const providerBody = reactive({
       data: {},
-      ubiData: {}
+      ubiData: {},
+      totalData: {
+        gas_used_today: '',
+        total_addresses: '',
+        total_blocks: '',
+        total_gas_used: '',
+        total_transactions: '',
+        transactions_today: ''
+      }
     })
     const networkInput = ref('')
     const small = ref(false)
@@ -413,6 +457,7 @@ export default defineComponent({
       if (searchJudge.value) return
       providersLoad.value = true
       getUBITotal()
+      getTotalTotal()
       const page = pagin.pageNo > 0 ? pagin.pageNo - 1 : 0
       const params = {
         limit: pagin.pageSize,
@@ -438,6 +483,18 @@ export default defineComponent({
     async function getUBITotal () {
       const statsRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_UBI}stats`, 'get')
       if (statsRes && statsRes.code === 0) providerBody.ubiData = statsRes.data || {}
+      else providersData.ubiData = {}
+    }
+    async function getTotalTotal () {
+      const statsRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_STATS}v2/stats`, 'get')
+      if (statsRes) {
+        providerBody.totalData.gas_used_today = statsRes.gas_used_today || ''
+        providerBody.totalData.total_addresses = statsRes.total_addresses || ''
+        providerBody.totalData.total_blocks = statsRes.total_blocks || ''
+        providerBody.totalData.total_gas_used = statsRes.total_gas_used || ''
+        providerBody.totalData.total_transactions = statsRes.total_transactions || ''
+        providerBody.totalData.transactions_today = statsRes.transactions_today || ''
+      }
       else providersData.ubiData = {}
     }
     async function searchProvider () {
