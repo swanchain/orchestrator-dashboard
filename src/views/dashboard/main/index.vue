@@ -372,9 +372,20 @@
           </template>
         </el-table-column>
         <!-- <el-table-column prop="country" label="Country" /> -->
-        <el-table-column prop="computer_provider.active_deployment" label="Active deployment" />
-        <el-table-column prop="computer_provider.score" label="Score" />
-        <el-table-column prop="region" label="Region" />
+        <el-table-column prop="computer_provider.active_deployment" label="Active deployment" width="130" />
+        <el-table-column prop="computer_provider.score" label="Score" width="120" />
+        <el-table-column prop="gpu_list" label="GPU" min-width="140">
+          <template #default="scope">
+            <div class="badge">
+              <div class="flex-row machines-style">
+                <span v-for="(gpu, g) in scope.row.gpu_list" :key="g">
+                  {{gpu}}
+                </span>
+              </div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="region" label="Region" min-width="100" />
         <el-table-column prop="uptime" label="Uptime">
           <template #default="scope">
             <div>
@@ -470,7 +481,7 @@ export default defineComponent({
         pagin.total_deployments = providerRes.data.total_deployments
         pagin.active_applications = providerRes.data.active_applications
         providerBody.data = providerRes.data || {}
-        providersData.value = providerRes.data.providers || []
+        providersData.value = await getList(providerRes.data.providers)
         dataArr.value = providerRes.data.map_info
         drawChart(dataArr.value)
         changetype()
@@ -479,6 +490,18 @@ export default defineComponent({
         if (providerRes.status) system.$commonFun.messageTip(providerRes.status, providerRes.message)
       }
       providersLoad.value = false
+    }
+    async function getList (list) {
+      let l = list || []
+      l.forEach((element) => {
+        element.gpu_list = []
+        element.computer_provider.machines.forEach((machines) => {
+          machines.specs.gpu.details.forEach((gpu) => {
+            if (element.gpu_list.indexOf(gpu.product_name) < 0) element.gpu_list.push(gpu.product_name)
+          })
+        })
+      })
+      return l
     }
     async function getUBITotal () {
       const statsRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_UBI}stats`, 'get')
@@ -1179,6 +1202,19 @@ export default defineComponent({
               @media screen and (max-width: 1260px) {
                 width: 25px;
                 height: 25px;
+              }
+            }
+            .machines-style {
+              flex-wrap: wrap;
+              span {
+                padding: 3px 10px;
+                margin: 3px 5px 3px 0;
+                background-color: @theme-color;
+                font-size: 12px;
+                border-radius: 45px;
+                word-break: break-word;
+                line-height: 1;
+                color: @white-color;
               }
             }
           }
