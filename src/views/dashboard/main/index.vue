@@ -163,12 +163,12 @@
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.gas_used_today?system.$commonFun.replaceFormat(providerBody.totalData.gas_used_today):'-'}}</b>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+        <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">Total Gas Used</h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.total_gas_used?system.$commonFun.replaceFormat(providerBody.totalData.total_gas_used):'-'}}</b>
           </div>
-        </el-col>
+        </el-col> -->
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">Total Addresses</h6>
@@ -514,7 +514,7 @@ export default defineComponent({
         providerBody.totalData.gas_used_today = statsRes.gas_used_today || ''
         providerBody.totalData.total_addresses = statsRes.total_addresses || ''
         providerBody.totalData.total_blocks = statsRes.total_blocks || ''
-        providerBody.totalData.total_gas_used = statsRes.total_gas_used || ''
+        // providerBody.totalData.total_gas_used = statsRes.total_gas_used || ''
         providerBody.totalData.total_transactions = statsRes.total_transactions || ''
         providerBody.totalData.transactions_today = statsRes.transactions_today || ''
       }
