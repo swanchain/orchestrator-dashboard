@@ -495,11 +495,17 @@ export default defineComponent({
       let l = list || []
       l.forEach((element) => {
         element.gpu_list = []
-        element.computer_provider.machines.forEach((machines) => {
-          machines.specs.gpu.details.forEach((gpu) => {
-            if (element.gpu_list.indexOf(gpu.product_name) < 0) element.gpu_list.push(gpu.product_name)
-          })
-        })
+        try {
+          if (element.computer_provider.machines && element.computer_provider.machines.length > 0) {
+            element.computer_provider.machines.forEach((machines) => {
+              if (machines.specs.gpu.details && machines.specs.gpu.details.length > 0) {
+                machines.specs.gpu.details.forEach((gpu) => {
+                  if (element.gpu_list.indexOf(gpu.product_name) < 0) element.gpu_list.push(gpu.product_name)
+                })
+              }
+            })
+          }
+        } catch{ }
       })
       return l
     }
