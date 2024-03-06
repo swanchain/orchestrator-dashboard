@@ -193,6 +193,17 @@
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.transactions_today?system.$commonFun.replaceFormat(providerBody.totalData.transactions_today):'-'}}</b>
           </div>
         </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">Total Contracts</h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">
+              {{providerBody.totalData.smart_contracts?system.$commonFun.replaceFormat(providerBody.totalData.smart_contracts):'-'}}
+              <span class="span" :class="{'up': providerBody.totalData.new_smart_contracts_24h&&providerBody.totalData.new_smart_contracts_24h>=0,'down': providerBody.totalData.new_smart_contracts_24h&&providerBody.totalData.new_smart_contracts_24h<0}">{{providerBody.totalData.new_smart_contracts_24h?providerBody.totalData.new_smart_contracts_24h>=0?'+':'-':''}}{{system.$commonFun.replaceFormat(providerBody.totalData.new_smart_contracts_24h)}}
+                <small>(24H)</small>
+              </span>
+            </b>
+          </div>
+        </el-col>
       </el-row>
 
       <el-row :gutter="26" class="erchart-body">
@@ -449,7 +460,9 @@ export default defineComponent({
         total_blocks: '',
         total_gas_used: '',
         total_transactions: '',
-        transactions_today: ''
+        transactions_today: '',
+        smart_contracts: '',
+        new_smart_contracts_24h: ''
       }
     })
     const networkInput = ref('')
@@ -468,7 +481,8 @@ export default defineComponent({
       if (searchJudge.value) return
       providersLoad.value = true
       getUBITotal()
-      getTotalTotal()
+      getTotal()
+      getCounters()
       const page = pagin.pageNo > 0 ? pagin.pageNo - 1 : 0
       const params = {
         limit: pagin.pageSize,
@@ -514,7 +528,7 @@ export default defineComponent({
       if (statsRes && statsRes.code === 0) providerBody.ubiData = statsRes.data || {}
       else providersData.ubiData = {}
     }
-    async function getTotalTotal () {
+    async function getTotal () {
       const statsRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_STATS}v2/stats`, 'get')
       if (statsRes) {
         providerBody.totalData.gas_used_today = statsRes.gas_used_today || ''
@@ -524,7 +538,13 @@ export default defineComponent({
         providerBody.totalData.total_transactions = statsRes.total_transactions || ''
         providerBody.totalData.transactions_today = statsRes.transactions_today || ''
       }
-      else providersData.ubiData = {}
+    }
+    async function getCounters () {
+      const statsRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_STATS}v2/smart-contracts/counters`, 'get')
+      if (statsRes) {
+        providerBody.totalData.new_smart_contracts_24h = statsRes.new_smart_contracts_24h || ''
+        providerBody.totalData.smart_contracts = statsRes.smart_contracts || ''
+      }
     }
     async function searchProvider () {
       pagin.pageSize = 10
@@ -818,6 +838,29 @@ export default defineComponent({
             line-height: 1;
             @media screen and (min-width: 1800px) {
               font-size: 24px;
+            }
+            .span {
+              margin: 0 0 0 10px;
+              font-size: 16px;
+              @media screen and (min-width: 1800px) {
+                font-size: 18px;
+              }
+              &.up {
+                color: #38a169;
+              }
+              &.down {
+                color: #e53e3e;
+              }
+              small {
+                margin: 0;
+                font-family: "Montserrat-Regular";
+                font-weight: normal;
+                color: #a0a0a0;
+                font-size: 14px;
+                @media screen and (min-width: 1800px) {
+                  font-size: 16px;
+                }
+              }
             }
             small {
               margin: 0 0 0 4px;
