@@ -556,6 +556,8 @@ export default defineComponent({
     }
     function clearProvider () {
       networkInput.value = ''
+      pagin.pageSize = 10
+      pagin.pageNo = 1
       init()
     }
     function expandChange (row, expandedRows) {
