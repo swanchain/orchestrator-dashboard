@@ -353,7 +353,7 @@
                 <div class="li-title">GPU Source</div>
                 <ul>
                   <li v-for="(child, gpuKeys, k) in n.specs" :key="k" v-show="gpuKeys === 'gpu'" style="width:100%;">
-                    <div class="flex-row">
+                    <div class="flex-row space-between">
                       <div v-for="g in child.details" :key="g" :class="{'li-body':true}">
                         <p :class="{'t':true, 't-capitalize': gpuKeys === 'gpu'}">{{g.product_name}} ({{gpuKeys}})</p>
                         <p>
@@ -1165,7 +1165,7 @@ export default defineComponent({
                     flex-wrap: wrap;
                     .li-body {
                       width: 27%;
-                      margin-right: 0.5rem;
+                      // margin-right: 0.5rem;
                       @media screen and (max-width: 768px) {
                         width: auto;
                       }
