@@ -487,7 +487,7 @@ export default defineComponent({
       }
       const providerRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}cp/cplist?${system.$Qs.stringify(params)}`, 'get')
       if (providerRes && providerRes.status === 'success') {
-        pagin.total = providerRes.data.total_providers || 0
+        pagin.total = providerRes.data.list_providers_cnt || 0
         providersData.value = await getList(providerRes.data.providers)
       } else {
         providersData.value = []
