@@ -309,7 +309,7 @@
         <el-button type="primary" :disabled="!networkInput ? true:false" round @click="searchProvider">Search</el-button>
         <el-button type="info" :disabled="!networkInput ? true:false" round @click="clearProvider">Clear</el-button>
       </div>
-      <el-table :data="providersData" @expand-change="expandChange" :row-key="getRowKeys" :expand-row-keys="expands" style="width: 100%" empty-text="No Data" v-loading="providersLoad">
+      <el-table :data="providersData" @expand-change="expandChange" :row-key="getRowKeys" :expand-row-keys="expands" style="width: 100%" empty-text="No Data" v-loading="providersTableLoad">
         <el-table-column type="expand" width="40">
           <template #default="props">
             <div class="service-body" v-if="props.row.computer_provider">
@@ -353,7 +353,7 @@
                 <div class="li-title">GPU Source</div>
                 <ul>
                   <li v-for="(child, gpuKeys, k) in n.specs" :key="k" v-show="gpuKeys === 'gpu'" style="width:100%;">
-                    <div class="flex-row">
+                    <div class="flex-row space-between">
                       <div v-for="g in child.details" :key="g" :class="{'li-body':true}">
                         <p :class="{'t':true, 't-capitalize': gpuKeys === 'gpu'}">{{g.product_name}} ({{gpuKeys}})</p>
                         <p>
@@ -443,6 +443,7 @@ export default defineComponent({
     const badgeIcon02 = require("@/assets/images/icons/badge-2.png")
     const gmtTime = new Date().toGMTString()
     const providersLoad = ref(false)
+    const providersTableLoad = ref(false)
     const providersData = ref([])
     const pagin = reactive({
       pageSize: 10,
@@ -468,7 +469,6 @@ export default defineComponent({
     const networkInput = ref('')
     const small = ref(false)
     const background = ref(false)
-    const searchJudge = ref(false)
     const dataArr = ref([])
     const expands = ref([])
 
@@ -477,33 +477,23 @@ export default defineComponent({
       pagin.pageNo = currentPage
       init()
     }
-    async function init (nameText) {
-      if (searchJudge.value) return
-      providersLoad.value = true
-      getUBITotal()
-      getTotal()
-      getCounters()
+    async function init () {
+      providersTableLoad.value = true
       const page = pagin.pageNo > 0 ? pagin.pageNo - 1 : 0
       const params = {
         limit: pagin.pageSize,
         offset: page * pagin.pageSize,
-        search_string: nameText
+        search_string: networkInput.value
       }
-      const providerRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}cp/dashboard?${system.$Qs.stringify(params)}`, 'get')
+      const providerRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}cp/cplist?${system.$Qs.stringify(params)}`, 'get')
       if (providerRes && providerRes.status === 'success') {
-        pagin.total = providerRes.data.total_providers
-        pagin.total_deployments = providerRes.data.total_deployments
-        pagin.active_applications = providerRes.data.active_applications
-        providerBody.data = providerRes.data || {}
+        pagin.total = providerRes.data.list_providers_cnt || 0
         providersData.value = await getList(providerRes.data.providers)
-        dataArr.value = providerRes.data.map_info
-        drawChart(dataArr.value)
-        changetype()
       } else {
         providersData.value = []
         if (providerRes.status) system.$commonFun.messageTip(providerRes.status, providerRes.message)
       }
-      providersLoad.value = false
+      providersTableLoad.value = false
     }
     async function getList (list) {
       let l = list || []
@@ -546,14 +536,29 @@ export default defineComponent({
         providerBody.totalData.smart_contracts = statsRes.smart_contracts || ''
       }
     }
+    async function getOverview () {
+      providersLoad.value = true
+      const overviewRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}cp/overview`, 'get')
+      if (overviewRes && overviewRes.status === 'success') {
+        pagin.total_deployments = overviewRes.data.total_deployments
+        pagin.active_applications = overviewRes.data.active_applications
+        providerBody.data = overviewRes.data || {}
+        dataArr.value = overviewRes.data.map_info
+        drawChart(dataArr.value)
+        changetype()
+      }
+      providersLoad.value = false
+    }
     async function searchProvider () {
       pagin.pageSize = 10
       pagin.pageNo = 1
-      init(networkInput.value)
+      init()
     }
     function clearProvider () {
-      searchJudge.value = false
-      reset('init')
+      networkInput.value = ''
+      pagin.pageSize = 10
+      pagin.pageNo = 1
+      init()
     }
     function expandChange (row, expandedRows) {
       // console.log(row, expandedRows)
@@ -573,8 +578,13 @@ export default defineComponent({
       pagin.pageNo = 1
       providersData.value = []
       providersLoad.value = false
+      providersTableLoad.value = false
       networkInput.value = ''
       if (type) init()
+      getOverview()
+      getUBITotal()
+      getTotal()
+      getCounters()
     }
     function drawChart (dataArr) {
       let chart = echarts.init(document.getElementById('chart'))
@@ -747,6 +757,7 @@ export default defineComponent({
       metaAddress,
       gmtTime,
       providersLoad,
+      providersTableLoad,
       providersData,
       networkInput,
       pagin,
@@ -1154,7 +1165,7 @@ export default defineComponent({
                     flex-wrap: wrap;
                     .li-body {
                       width: 27%;
-                      margin-right: 0.5rem;
+                      // margin-right: 0.5rem;
                       @media screen and (max-width: 768px) {
                         width: auto;
                       }
