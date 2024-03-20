@@ -4,7 +4,7 @@
       <div class="title">Reward history</div>
       <el-table v-loading="paymentLoad" :data="paymentData" stripe style="width: 100%">
         <!-- <el-table-column prop="chain_id" label="chain id" min-width="110" /> -->
-        <el-table-column prop="job" label="task uuid" min-width="90">
+        <el-table-column prop="job" label="task uuid" min-width="100">
           <template #default="scope">
             <div>
               <span>{{scope.row.task_uuid || '-'}}</span>
@@ -29,21 +29,21 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="created_at" label="created at" min-width="130">
+        <el-table-column prop="created_at" label="created at" min-width="120">
           <template #default="scope">
             <span>
               {{system.$commonFun.momentFun(scope.row.created_at)}}
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="updated_at" label="updated at" min-width="130">
+        <el-table-column prop="updated_at" label="updated at" min-width="120">
           <template #default="scope">
             <span>
               {{system.$commonFun.momentFun(scope.row.updated_at)}}
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="task_end_at" label="Estimated End At" min-width="130">
+        <el-table-column prop="task_end_at" label="Estimated End At" min-width="120">
           <template #default="scope">
             <span>
               {{system.$commonFun.momentFun(scope.row.task_end_at)}}
@@ -89,6 +89,13 @@
             </div>
           </template>
         </el-table-column>
+        <el-table-column prop="token" label="token" min-width="80">
+          <template #default="scope">
+            <span>
+              {{scope.row.token || '-'}}
+            </span>
+          </template>
+        </el-table-column>
         <el-table-column prop="transaction_hash" label="transaction hash" min-width="130">
           <template #default="scope">
             <span>{{scope.row.amount&&scope.row.amount.indexOf('-') > -1 ? '-' :scope.row.transaction_hash||'-' }}</span>
@@ -97,13 +104,6 @@
         <el-table-column prop="amount" label="Amount (SWAN)" min-width="90">
           <template #default="scope">
             <span>{{scope.row.amount&&scope.row.amount.indexOf('-') > -1 ? '-' :scope.row.amount||'-' }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="token" label="token" min-width="80">
-          <template #default="scope">
-            <span>
-              {{scope.row.token || '-'}}
-            </span>
           </template>
         </el-table-column>
       </el-table>
@@ -384,6 +384,7 @@ export default defineComponent({
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
+            padding: 0 5px;
             line-height: 1.5;
             word-break: break-word;
             text-align: center;
