@@ -11,7 +11,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="hardware_type" label="Task Type" min-width="70">
+        <el-table-column prop="hardware_type" label="Task Type" min-width="60">
           <template #default="scope">
             <span>{{scope.row.hardware_type}}</span>
           </template>
@@ -89,14 +89,21 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="transaction_hash" label="transaction hash" min-width="120">
+        <el-table-column prop="transaction_hash" label="transaction hash" min-width="130">
           <template #default="scope">
             <span>{{scope.row.amount&&scope.row.amount.indexOf('-') > -1 ? '-' :scope.row.transaction_hash||'-' }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="amount" label="Amount (SWAN)" min-width="100">
+        <el-table-column prop="amount" label="Amount (SWAN)" min-width="90">
           <template #default="scope">
             <span>{{scope.row.amount&&scope.row.amount.indexOf('-') > -1 ? '-' :scope.row.amount||'-' }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="token" label="token" min-width="80">
+          <template #default="scope">
+            <span>
+              {{scope.row.token || '-'}}
+            </span>
           </template>
         </el-table-column>
       </el-table>
