@@ -89,6 +89,24 @@
       },
       {
         "indexed": false,
+        "internalType": "uint256",
+        "name": "refund",
+        "type": "uint256"
+      }
+    ],
+    "name": "RewardRefunded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [{
+        "indexed": false,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
         "internalType": "address[]",
         "name": "cpList",
         "type": "address[]"
@@ -400,6 +418,20 @@
   },
   {
     "inputs": [],
+    "name": "refundToUser",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "releaseReward",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "renounceOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -487,6 +519,23 @@
       "type": "string"
     }],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "end",
+        "type": "uint256"
+      }
+    ],
+    "name": "terminate",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
