@@ -73,7 +73,7 @@
               </span>
               <span v-else-if="scope.row.status && scope.row.status.toLowerCase() === 'failed'" class="flex-row center">
                 Task Failed &nbsp;
-                <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Cannot get any reward">
+                <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Cannot get any reward back because task failed in some reason">
                   <template #reference>
                     <div class="flex-row">
                       <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
