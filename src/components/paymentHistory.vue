@@ -175,7 +175,7 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="transaction_hash" label="transaction hash" min-width="110">
+        <el-table-column prop="transaction_hash" label="transaction hash" min-width="120">
           <template #default="scope">
             <span v-if="scope.row.amount && scope.row.amount.indexOf('-') > -1">-</span>
             <a v-else :href="`${scope.row.url_tx}${scope.row.transaction_hash}`" target="_blank">{{scope.row.transaction_hash}}</a>
