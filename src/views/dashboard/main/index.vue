@@ -13,6 +13,11 @@
         <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="flex-row">
           <div class='chart' id='chart' v-loading="providersLoad" element-loading-background="rgba(0, 0, 0, 0)"></div>
         </el-col>
+      </el-row>
+      <el-row :gutter="26" class="border-row">
+        <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="flex-row">
+          <div class="title top">Computing Provider</div>
+        </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">Network Providers</h6>
@@ -30,6 +35,11 @@
             <h6 class="flex-row">Total Deployments</h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{system.$commonFun.replaceFormat(pagin.total_deployments)}}</b>
           </div>
+        </el-col>
+      </el-row>
+      <el-row :gutter="26" class="border-row">
+        <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="flex-row">
+          <div class="title top">UBI</div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
@@ -157,6 +167,11 @@
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.providers?system.$commonFun.replaceFormat(providerBody.ubiData.providers.count):'-'}}</b>
           </div>
         </el-col>
+      </el-row>
+      <el-row :gutter="26" class="border-row">
+        <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="flex-row">
+          <div class="title top">Saturn Chain</div>
+        </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">Gas Used Today</h6>
@@ -195,12 +210,12 @@
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
-            <h6 class="flex-row">Total Contracts</h6>
+            <h6 class="flex-row">Total Contracts
+              <small>(24H)</small>
+            </h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">
               {{providerBody.totalData.smart_contracts?system.$commonFun.replaceFormat(providerBody.totalData.smart_contracts):'-'}}
-              <span class="span" :class="{'up': providerBody.totalData.new_smart_contracts_24h&&providerBody.totalData.new_smart_contracts_24h>=0,'down': providerBody.totalData.new_smart_contracts_24h&&providerBody.totalData.new_smart_contracts_24h<0}">{{providerBody.totalData.new_smart_contracts_24h?providerBody.totalData.new_smart_contracts_24h>=0?'+':'-':''}}{{system.$commonFun.replaceFormat(providerBody.totalData.new_smart_contracts_24h)}}
-                <small>(24H)</small>
-              </span>
+              <span class="span" :class="{'up': providerBody.totalData.new_smart_contracts_24h&&providerBody.totalData.new_smart_contracts_24h>=0,'down': providerBody.totalData.new_smart_contracts_24h&&providerBody.totalData.new_smart_contracts_24h<0}">{{providerBody.totalData.new_smart_contracts_24h?providerBody.totalData.new_smart_contracts_24h>=0?'+':'-':''}}{{system.$commonFun.replaceFormat(providerBody.totalData.new_smart_contracts_24h)}}</span>
             </b>
           </div>
         </el-col>
@@ -810,10 +825,22 @@ export default defineComponent({
         padding: 0.4rem 0.5rem;
       }
     }
+    .border-row {
+      padding: 0 0.1rem 0.3rem;
+      margin: 0.5rem 0 0;
+      border: 1px solid #3a67cf;
+      border-radius: 0.14rem;
+    }
     .title {
       margin: 0;
       font-size: 0.24rem;
       font-weight: 600;
+      &.top {
+        margin: 0.15rem 0 0;
+        font-size: 0.18rem;
+        font-weight: 600;
+        // border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+      }
     }
     .el-row {
       .el-col {
@@ -840,6 +867,16 @@ export default defineComponent({
             }
             .el-tooltip__trigger {
               margin: 0 0 0 4px;
+            }
+            small {
+              margin: 0 0 0 5px;
+              font-family: "Montserrat-Regular";
+              font-weight: normal;
+              color: #a0a0a0;
+              font-size: 14px;
+              @media screen and (min-width: 1800px) {
+                font-size: 16px;
+              }
             }
           }
           b {
