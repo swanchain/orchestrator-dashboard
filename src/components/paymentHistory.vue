@@ -2,7 +2,7 @@
   <div id="payment">
     <div class="payment-history container-landing">
       <div class="title">Reward history</div>
-      <el-table v-loading="paymentLoad" :data="paymentData" stripe style="width: 100%">
+      <el-table v-loading="paymentLoad" :data="paymentData" stripe style="width: 100%" @filter-change="handleFilterChange">
         <!-- <el-table-column prop="chain_id" label="chain id" min-width="110" /> -->
         <el-table-column prop="job" label="task uuid" min-width="100">
           <template #default="scope">
@@ -35,7 +35,16 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="created_at" label="created at" min-width="120">
+        <el-table-column prop="created_at" label="created at" min-width="120" column-key="created_at" filterable :filters="[
+        { text: '60', value: '60' },
+        { text: '50', value: '50' },
+        { text: '40', value: '40' },
+        { text: '30', value: '30' },
+        { text: '20', value: '20' },
+        { text: '10', value: '10' },
+        { text: '5', value: '5' },
+        { text: '1', value: '1' },
+      ]" filter-placement="bottom-end" :filter-multiple="false">
           <template #default="scope">
             <span>
               {{ system.$commonFun.momentFun(scope.row.created_at) }}
@@ -98,11 +107,20 @@
                   </template>
                 </el-popover>
               </span>
+              <el-button type="primary" v-else-if="scope.row.task_status && (scope.row.task_status.toLowerCase() === 'terminate_retry_stop' || scope.row.task_status.toLowerCase() === 'terminate retry stop')" plain @click="retryFun(scope.row)">Retry Terminate
+              </el-button>
               <span v-else>{{ scope.row.task_status }}</span>
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="payment_status" label="payment status" min-width="130">
+        <el-table-column prop="status" label="payment status" min-width="130" column-key="status" filterable :filters="[
+        { text: 'Claim Failed', value: 'Claim Failed' },
+        { text: 'Rewardable', value: 'Rewardable' },
+        { text: 'Pending', value: 'Pending' },
+        { text: 'Cooling Down', value: 'Cooling Down' },
+        { text: 'Reward Claimed', value: 'Reward Claimed' },
+        { text: 'Terminate Failed', value: 'Terminate Failed' },
+      ]" filter-placement="bottom-end" :filter-multiple="false">
           <template #default="scope">
             <div>
               <!-- <span v-if="scope.row.chain_id === 80001 && scope.row.order.updated_at < 1700508000 && scope.row.status.toLowerCase() === 'refundable'">Pending</span> -->
@@ -247,6 +265,12 @@ export default defineComponent({
       pageNo: 1,
       total: 0
     })
+    const paramsFilter = reactive({
+      data: {
+        days_ago: '',
+        status_filter: ''
+      }
+    })
     const small = ref(false)
     const background = ref(false)
     let biddingContractAddress = process.env.VUE_APP_OPSWAN_BIDDING_ADDRESS
@@ -295,6 +319,19 @@ export default defineComponent({
       rowAll.value = row
       txHash.value = row.transaction_hash
       txhashVisible.value = true
+    }
+
+    async function retryFun (row) {
+      if (getnetID.toString() !== '2024') {
+        await system.$commonFun.walletChain(2024)
+        return
+      }
+      paymentLoad.value = true
+      let formData = new FormData()
+      formData.append('task_uuid', row.task_uuid)
+      const retryRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}terminate_retry`, 'post', formData)
+      if (!retryRes || retryRes.status !== 'success') if (retryRes.message) system.$commonFun.messageTip('error', retryRes.message)
+      init()
     }
 
     async function rewardFun (row, type) {
@@ -380,15 +417,16 @@ export default defineComponent({
       init()
     }
 
-    async function init (params) {
+    async function init (pFilter) {
       paymentLoad.value = true
       paymentType.value = route.query.type || 'user'
       const requestURL = `${process.env.VUE_APP_BASEAPI}provider/payments`
       const page = pagin.pageNo > 0 ? pagin.pageNo - 1 : 0
-      const paramsOption = {
+      let paramsOption = {
         limit: pagin.pageSize,
         offset: page * pagin.pageSize
       }
+      if (pFilter) paramsOption = Object.assign({}, paramsOption, pFilter)
       const paymentsRes = await system.$commonFun.sendRequest(`${requestURL}?${system.$Qs.stringify(paramsOption)}`, 'get') //?public_address=${store.state.metaAddress}
       if (paymentsRes && paymentsRes.status === 'success') {
         for (let p = 0; p < paymentsRes.data.payments.length; p++) {
@@ -401,6 +439,13 @@ export default defineComponent({
       // else if (paymentsRes.message) system.$commonFun.messageTip('error', paymentsRes.message)
       paymentLoad.value = false
     }
+    const handleFilterChange = (filters) => {
+      for (const key in filters) {
+        if (key === 'created_at') paramsFilter.data.days_ago = filters.created_at[0] || ''
+        else if (key === 'status') paramsFilter.data.status_filter = filters.status[0] || ''
+      }
+      init(paramsFilter.data)
+    };
 
     let getnetID = NaN
     onMounted(async () => {
@@ -425,7 +470,7 @@ export default defineComponent({
       pagin,
       background,
       small, bodyWidth,
-      rewardFun, reviewFun, checkFun, handleClose, handleSizeChange, handleCurrentChange
+      rewardFun, reviewFun, checkFun, handleClose, handleSizeChange, handleCurrentChange, retryFun, handleFilterChange
     }
   },
 })
