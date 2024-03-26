@@ -21,7 +21,7 @@
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">Network Providers</h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{system.$commonFun.replaceFormat(pagin.total)}}</b>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.data.total_providers ? system.$commonFun.replaceFormat(providerBody.data.total_providers):'-'}}</b>
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
@@ -39,7 +39,13 @@
       </el-row>
       <el-row :gutter="26" class="border-row">
         <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="flex-row">
-          <div class="title top">UBI</div>
+          <div class="title top">ZK Provider</div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">CP Numbers of UBI Task</h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.providers?system.$commonFun.replaceFormat(providerBody.ubiData.providers.count):'-'}}</b>
+          </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
@@ -48,12 +54,12 @@
           </div>
         </el-col>
 
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+        <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">Total UBI Tasks Type</h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.tasks?system.$commonFun.replaceFormat(providerBody.ubiData.tasks.zk_types):'-'}}</b>
           </div>
-        </el-col>
+        </el-col> -->
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">GPU UBI Tasks</h6>
@@ -161,16 +167,39 @@
             </b>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">CP Numbers of UBI Task</h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.providers?system.$commonFun.replaceFormat(providerBody.ubiData.providers.count):'-'}}</b>
-          </div>
-        </el-col>
       </el-row>
       <el-row :gutter="26" class="border-row">
         <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="flex-row">
           <div class="title top">Saturn Chain</div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">Total Addresses</h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.total_addresses?system.$commonFun.replaceFormat(providerBody.totalData.total_addresses):'-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">Total Contracts
+              <small>(24H)</small>
+            </h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">
+              {{providerBody.totalData.smart_contracts?system.$commonFun.replaceFormat(providerBody.totalData.smart_contracts):'-'}}
+              <span class="span" :class="{'up': providerBody.totalData.new_smart_contracts_24h&&providerBody.totalData.new_smart_contracts_24h>=0,'down': providerBody.totalData.new_smart_contracts_24h&&providerBody.totalData.new_smart_contracts_24h<0}">{{providerBody.totalData.new_smart_contracts_24h?providerBody.totalData.new_smart_contracts_24h>=0?'+':'-':''}}{{system.$commonFun.replaceFormat(providerBody.totalData.new_smart_contracts_24h)}}</span>
+            </b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">Transactions Today</h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.transactions_today?system.$commonFun.replaceFormat(providerBody.totalData.transactions_today):'-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">Total Transactions</h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.total_transactions?system.$commonFun.replaceFormat(providerBody.totalData.total_transactions):'-'}}</b>
+          </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
@@ -186,37 +215,26 @@
         </el-col> -->
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
-            <h6 class="flex-row">Total Addresses</h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.total_addresses?system.$commonFun.replaceFormat(providerBody.totalData.total_addresses):'-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
             <h6 class="flex-row">Total Blocks</h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.total_blocks?system.$commonFun.replaceFormat(providerBody.totalData.total_blocks):'-'}}</b>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">Total Transactions</h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.total_transactions?system.$commonFun.replaceFormat(providerBody.totalData.total_transactions):'-'}}</b>
-          </div>
+      </el-row>
+      <el-row :gutter="26" class="border-row">
+        <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="flex-row">
+          <div class="title top">storage provider</div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
-            <h6 class="flex-row">Transactions Today</h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.transactions_today?system.$commonFun.replaceFormat(providerBody.totalData.transactions_today):'-'}}</b>
+            <h6 class="flex-row">average cost push message</h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.storageData?providerBody.storageData.average_cost_push_message:'-'}}</b>
           </div>
         </el-col>
+
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
-            <h6 class="flex-row">Total Contracts
-              <small>(24H)</small>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">
-              {{providerBody.totalData.smart_contracts?system.$commonFun.replaceFormat(providerBody.totalData.smart_contracts):'-'}}
-              <span class="span" :class="{'up': providerBody.totalData.new_smart_contracts_24h&&providerBody.totalData.new_smart_contracts_24h>=0,'down': providerBody.totalData.new_smart_contracts_24h&&providerBody.totalData.new_smart_contracts_24h<0}">{{providerBody.totalData.new_smart_contracts_24h?providerBody.totalData.new_smart_contracts_24h>=0?'+':'-':''}}{{system.$commonFun.replaceFormat(providerBody.totalData.new_smart_contracts_24h)}}</span>
-            </b>
+            <h6 class="flex-row">active sp quantity</h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.providerData?providerBody.providerData.active_sp_quantity:'-'}}</b>
           </div>
         </el-col>
       </el-row>
@@ -479,7 +497,9 @@ export default defineComponent({
         transactions_today: '',
         smart_contracts: '',
         new_smart_contracts_24h: ''
-      }
+      },
+      storageData: {},
+      providerData: {}
     })
     const networkInput = ref('')
     const small = ref(false)
@@ -564,6 +584,14 @@ export default defineComponent({
       }
       providersLoad.value = false
     }
+    async function getStorageStats () {
+      const storageRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_FILSWANSTATS}stats/storage`, 'get')
+      if (storageRes && storageRes.status === "success") providerBody.storageData = storageRes.data || {}
+    }
+    async function getProviderStats () {
+      const providerRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_FILSWANSTATS}stats/provider`, 'get')
+      if (providerRes && providerRes.status === "success") providerBody.providerData = providerRes.data || {}
+    }
     async function searchProvider () {
       pagin.pageSize = 10
       pagin.pageNo = 1
@@ -600,6 +628,8 @@ export default defineComponent({
       getUBITotal()
       getTotal()
       getCounters()
+      getStorageStats()
+      getProviderStats()
     }
     function drawChart (dataArr) {
       let chart = echarts.init(document.getElementById('chart'))
@@ -839,6 +869,7 @@ export default defineComponent({
         margin: 0.15rem 0 0;
         font-size: 0.18rem;
         font-weight: 600;
+        text-transform: capitalize;
         // border-bottom: 2px solid rgba(255, 255, 255, 0.3);
       }
     }
@@ -860,6 +891,7 @@ export default defineComponent({
             min-height: 34px;
             font-size: 12px;
             line-height: 17px;
+            text-transform: capitalize;
             @media screen and (min-width: 1800px) {
               min-height: 38px;
               font-size: 14px;

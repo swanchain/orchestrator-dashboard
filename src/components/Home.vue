@@ -143,5 +143,16 @@ export default defineComponent({
     flex-wrap: nowrap;
   }
 }
+
+.el-popper {
+  .el-table-filter__list {
+    .el-table-filter__list-item {
+      color: #000;
+      &.is-active {
+        color: #fff;
+      }
+    }
+  }
+}
 </style>
 
