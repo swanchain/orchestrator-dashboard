@@ -214,8 +214,13 @@
         </el-table-column>
         <el-table-column prop="amount" label="Amount (SWAN)" min-width="90">
           <template #default="scope">
-            <span>{{ scope.row.amount && scope.row.amount.indexOf('-') > -1 ? '-' : scope.row.amount || '-' }}</span>
+<!--            Also if the amount is 0.00000, it will be displayed as Free in the table-->
+            <span v-if="scope.row.amount && scope.row.amount.indexOf('-') > -1">-</span>
+            <span v-else-if="scope.row.amount === '0.00000'">Free</span>
+            <span v-else>{{ scope.row.amount || '-' }}</span>
           </template>
+<!--            <span>{{ scope.row.amount && scope.row.amount.indexOf('-') > -1 ? '-' : scope.row.amount || '-' }}</span>-->
+<!--          </template>-->
         </el-table-column>
       </el-table>
       <el-pagination class="flex-row" :page-size="pagin.pageSize" :current-page="pagin.pageNo" :pager-count="5" :small="small" :background="background" layout="total, prev, pager, next" :total="pagin.total" @size-change="handleSizeChange" @current-change="handleCurrentChange"
