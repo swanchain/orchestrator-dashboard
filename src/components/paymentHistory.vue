@@ -216,7 +216,7 @@
           <template #default="scope">
 <!--            Also if the amount is 0.00000, it will be displayed as Free in the table-->
             <span v-if="scope.row.amount && scope.row.amount.indexOf('-') > -1">-</span>
-            <span v-else-if="scope.row.amount === '0.00000'">Free</span>
+            <span v-else-if="scope.row.amount === '0.00000'">Free Task</span>
             <span v-else>{{ scope.row.amount || '-' }}</span>
           </template>
 <!--            <span>{{ scope.row.amount && scope.row.amount.indexOf('-') > -1 ? '-' : scope.row.amount || '-' }}</span>-->
