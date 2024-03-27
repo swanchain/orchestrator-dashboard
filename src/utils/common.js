@@ -355,6 +355,27 @@ function sizeChange(bytes) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
 
+function byteStorage(limit) {
+  if (limit <= 0) {
+    return '0'
+  } else {
+    return (limit / (1024 * 1024 * 1024)).toFixed(2) //or 1000
+  }
+}
+
+function storageNumformat(data) {
+  if (!data) return
+  let dataList = data.split(' ')
+  dataList[0] = parseFloat(dataList[0]).toFixed(2)
+  return dataList[1] ? `${dataList[0]} ${dataList[1]}` : dataList[0]
+}
+
+function filNumformat(data) {
+  if (!data) return
+  const price_regular = data ? data.split(" ") : []
+  return `${replaceFormat(price_regular[0] * 365)} FIL/GiB/year` || '0 FIL/GiB/year'
+}
+
 async function getUnit(id) {
   let unit = 'ETH'
   let name = ''
@@ -439,6 +460,9 @@ export default {
   hiddAddress,
   expiredTime,
   sizeChange,
+  byteStorage,
+  storageNumformat,
+  filNumformat,
   getUnit,
   goLink,
   providerInit,

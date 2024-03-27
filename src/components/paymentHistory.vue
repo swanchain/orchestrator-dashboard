@@ -2,6 +2,18 @@
   <div id="payment">
     <div class="payment-history container-landing">
       <div class="title">Reward history</div>
+      <div class="status-style flex-row">
+        <el-radio-group v-model="statusRadio" class="ml-4" @change="radioFilterChange">
+          <el-radio value="" size="large">payment status</el-radio>
+          <el-radio value="Claim Failed" size="large">Claim Failed</el-radio>
+          <el-radio value="Rewardable" size="large">reward claimable</el-radio>
+          <el-radio value="Pending" size="large">Pending</el-radio>
+          <el-radio value="Cooling Down" size="large">Cooling Down</el-radio>
+          <el-radio value="Reward Claimed" size="large">Reward Claimed</el-radio>
+          <el-radio value="Terminate Failed" size="large">Terminate Failed</el-radio>
+        </el-radio-group>
+      </div>
+
       <el-table v-loading="paymentLoad" :data="paymentData" stripe style="width: 100%" @filter-change="handleFilterChange">
         <!-- <el-table-column prop="chain_id" label="chain id" min-width="110" /> -->
         <el-table-column prop="job" label="task uuid" min-width="100">
@@ -69,7 +81,7 @@
           <template #default="scope">
             <div>
               <span v-if="scope.row.task_status && scope.row.task_status.toLowerCase() === 'task failed'" class="flex-row center">
-                {{ scope.row.task_status }} &nbsp;
+                {{ scope.row.task_status }}
                 <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="The Task cannot be deployed or the contract cannot be retrieved after the user has initiated an Early Termination.">
                   <template #reference>
                     <div class="flex-row">
@@ -82,7 +94,7 @@
                 </el-popover>
               </span>
               <span v-else-if="scope.row.task_status && scope.row.task_status.toLowerCase() === 'task cancelled'" class="flex-row center">
-                {{ scope.row.task_status }} &nbsp;
+                {{ scope.row.task_status }}
                 <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Auction waited for more than thirty minutes and could not be assigned.">
                   <template #reference>
                     <div class="flex-row">
@@ -95,7 +107,7 @@
                 </el-popover>
               </span>
               <span v-else-if="scope.row.task_status && scope.row.task_status.toLowerCase() === 'task terminating'" class="flex-row center">
-                {{ scope.row.task_status }} &nbsp;
+                {{ scope.row.task_status }}
                 <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="The user initiated an early termination request and is waiting in the early termination queue for the task to be terminated">
                   <template #reference>
                     <div class="flex-row">
@@ -107,20 +119,19 @@
                   </template>
                 </el-popover>
               </span>
-              <el-button type="primary" v-else-if="scope.row.task_status && (scope.row.task_status.toLowerCase() === 'terminate_retry_stop' || scope.row.task_status.toLowerCase() === 'terminate retry stop')" plain @click="retryFun(scope.row)">Retry Terminate
-              </el-button>
               <span v-else>{{ scope.row.task_status }}</span>
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="payment status" min-width="130" column-key="status" filterable :filters="[
+        <el-table-column prop="status" label="payment status" min-width="135">
+          <!-- column-key="status" filterable :filters="[
         { text: 'Claim Failed', value: 'Claim Failed' },
         { text: 'Rewardable', value: 'Rewardable' },
         { text: 'Pending', value: 'Pending' },
         { text: 'Cooling Down', value: 'Cooling Down' },
         { text: 'Reward Claimed', value: 'Reward Claimed' },
         { text: 'Terminate Failed', value: 'Terminate Failed' },
-      ]" filter-placement="bottom-end" :filter-multiple="false">
+      ]" filter-placement="bottom-end" :filter-multiple="false" -->
           <template #default="scope">
             <div>
               <!-- <span v-if="scope.row.chain_id === 80001 && scope.row.order.updated_at < 1700508000 && scope.row.status.toLowerCase() === 'refundable'">Pending</span> -->
@@ -129,7 +140,7 @@
               <!--              <span v-else-if="scope.row.status && scope.row.status.toLowerCase() === 'pending'">Job Running</span>-->
               <!--              <span v-else-if="scope.row.status && scope.row.status.toLowerCase() === 'completed'">Reward Claimed</span>-->
               <span v-if="scope.row.status && scope.row.status.toLowerCase() === 'reward claimed'" class="flex-row center">
-                {{ scope.row.status }} &nbsp;
+                {{ scope.row.status }}
                 <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Rewards have been claimed or have been automatically distributed to the CP's wallet">
                   <template #reference>
                     <div class="flex-row">
@@ -142,7 +153,7 @@
                 </el-popover>
               </span>
               <span v-else-if="scope.row.status && scope.row.status.toLowerCase() === 'cooling down'" class="flex-row center">
-                {{ scope.row.status }} &nbsp;
+                {{ scope.row.status }}
                 <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Waiting for 3 day cooling down, you will be able to claim the reward if you pass the claim review">
                   <template #reference>
                     <div class="flex-row">
@@ -155,7 +166,7 @@
                 </el-popover>
               </span>
               <span v-else-if="scope.row.status && scope.row.status.toLowerCase() === 'pending'" class="flex-row center">
-                {{ scope.row.status }} &nbsp;
+                {{ scope.row.status }}
                 <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="This task is still running, you can get your reward after task finished ">
                   <template #reference>
                     <div class="flex-row">
@@ -168,7 +179,7 @@
                 </el-popover>
               </span>
               <span v-else-if="scope.row.status && scope.row.status.toLowerCase() === 'claim failed'" class="flex-row center">
-                {{ scope.row.status }} &nbsp;
+                {{ scope.row.status }}
                 <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Cannot claim this reward because of some reason">
                   <template #reference>
                     <div class="flex-row">
@@ -181,6 +192,8 @@
                 </el-popover>
               </span>
               <el-button type="primary" v-else-if="scope.row.status && scope.row.status.toLowerCase() === 'rewardable'" plain @click="rewardFun(scope.row, 1)">Claim Reward
+              </el-button>
+              <el-button type="primary" v-else-if="scope.row.status && scope.row.status.toLowerCase() === 'terminate failed'" plain @click="retryFun(scope.row)">Retry Terminate
               </el-button>
               <span v-else>{{ scope.row.status }}</span>
             </div>
@@ -273,6 +286,7 @@ export default defineComponent({
     })
     const small = ref(false)
     const background = ref(false)
+    const statusRadio = ref('')
     let biddingContractAddress = process.env.VUE_APP_OPSWAN_BIDDING_ADDRESS
     let biddingContract = new system.$commonFun.web3Init.eth.Contract(BiddingABI, biddingContractAddress)
 
@@ -445,7 +459,11 @@ export default defineComponent({
         else if (key === 'status') paramsFilter.data.status_filter = filters.status[0] || ''
       }
       init(paramsFilter.data)
-    };
+    }
+    const radioFilterChange = (filters) => {
+      paramsFilter.data.status_filter = filters || ''
+      init(paramsFilter.data)
+    }
 
     let getnetID = NaN
     onMounted(async () => {
@@ -469,8 +487,9 @@ export default defineComponent({
       rowAll,
       pagin,
       background,
-      small, bodyWidth,
-      rewardFun, reviewFun, checkFun, handleClose, handleSizeChange, handleCurrentChange, retryFun, handleFilterChange
+      small, bodyWidth, statusRadio,
+      rewardFun, reviewFun, checkFun, handleClose, handleSizeChange, handleCurrentChange,
+      retryFun, handleFilterChange, radioFilterChange
     }
   },
 })
@@ -491,11 +510,35 @@ export default defineComponent({
     text-align: left;
 
     .title {
-      margin: 0 0 0.4rem;
+      margin: 0;
       font-weight: bold;
       font-size: 0.24rem;
       color: @white-color;
       text-transform: capitalize;
+    }
+
+    :deep(.status-style) {
+      margin: 0.4rem 0 0.2rem;
+      .el-radio-group {
+        .el-radio {
+          color: #d1d1d1;
+          text-transform: capitalize;
+          .el-radio__input {
+            &.is-checked {
+              .el-radio__inner {
+                background-color: #409eff;
+              }
+              .el-radio__inner::after {
+                display: none;
+                transition: all 0s;
+              }
+            }
+            .el-radio__inner {
+              background-color: transparent;
+            }
+          }
+        }
+      }
     }
 
     :deep(.el-table) {
@@ -565,6 +608,10 @@ export default defineComponent({
                   color: @text-color;
                 }
               }
+            }
+
+            .el-tooltip__trigger {
+              margin: 0 0 0 4px;
             }
           }
         }
