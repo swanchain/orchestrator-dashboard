@@ -2,7 +2,7 @@
   <section id="container">
     <div class="swan-logo flex-row nowrap">
       <img :src="swanLogo" @click="system.$commonFun.goLink('https://www.swanchain.io/')" />
-      <div class="flex-row nowrap">
+      <div class="flex-row nowrap swan-right">
         <div class="nav">
           <router-link :to="{name: 'dashboard'}" :class="{'active': route.name === 'dashboard'}">Dashboard</router-link>
           <router-link :to="{ name: 'paymentHistory'}" :class="{'active': route.name === 'paymentHistory'}" v-if="accessToken !== ''">Reward History</router-link>
@@ -482,6 +482,9 @@ export default defineComponent({
   @media screen and (max-width: 1200px) {
     font-size: 14px;
   }
+  @media screen and (max-width: 768px) {
+    font-size: 12px;
+  }
   .flex {
     display: flex;
     align-items: center;
@@ -503,9 +506,23 @@ export default defineComponent({
     cursor: pointer;
     img {
       height: 0.42rem;
+      @media screen and (max-width: 767px) {
+        height: 35px;
+      }
+    }
+    .swan-right {
+      @media screen and (max-width: 767px) {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        margin: 6px 0 0;
+      }
     }
     .nav {
       color: @white-color;
+      @media screen and (max-width: 599px) {
+        width: 100%;
+        margin: 0 0 6px;
+      }
       a {
         padding: 6px;
         margin: 0 0.05rem;
@@ -515,6 +532,9 @@ export default defineComponent({
         &.active {
           background-color: rgb(21, 23, 28);
           color: @theme-color;
+        }
+        @media screen and (max-width: 599px) {
+          padding: 6px 2px;
         }
       }
     }

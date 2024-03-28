@@ -376,6 +376,12 @@ function filNumformat(data) {
   return `${replaceFormat(price_regular[0] * 365)} FIL/GiB/year` || '0 FIL/GiB/year'
 }
 
+function timeFormat(data) {
+  if (!data) return
+  const d = data / 60 / 60
+  return d < 0.001 ? 0 : d
+}
+
 async function getUnit(id) {
   let unit = 'ETH'
   let name = ''
@@ -463,6 +469,7 @@ export default {
   byteStorage,
   storageNumformat,
   filNumformat,
+  timeFormat,
   getUnit,
   goLink,
   providerInit,
