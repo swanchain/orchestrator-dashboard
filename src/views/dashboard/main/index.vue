@@ -75,6 +75,30 @@
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(system.$commonFun.timeFormat(providerBody.generalData.total_leading_job_duration)):'-'}}</b>
           </div>
         </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">
+              <span class="t">total computer providers</span>
+            </h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_computer_providers):'-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">
+              <span class="t">total GPU deployed jobs</span>
+            </h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_gpu_deployed_jobs):'-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">
+              <span class="t">total GPU hours</span>
+            </h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_gpu_hours):'-'}}</b>
+          </div>
+        </el-col>
       </el-row>
       <el-row :gutter="16" class="border-row">
         <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="flex-row">
@@ -365,7 +389,7 @@
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.providerData?system.$commonFun.replaceFormat(system.$commonFun.byteStorage(providerBody.providerData.total_sealed_storage))+' GiB':'-'}}</b>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+        <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">
               <span class="t">Average Regular Deal Price</span>
@@ -382,8 +406,8 @@
             </h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.storageData?system.$commonFun.filNumformat(providerBody.storageData.historical_average_price_regular):'-'}}</b>
           </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+        </el-col> -->
+        <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">
               <span class="t">Average Verified Deal Price</span>
@@ -400,9 +424,9 @@
             </h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.storageData?system.$commonFun.filNumformat(providerBody.storageData.historical_average_price_verified):'-'}}</b>
           </div>
-        </el-col>
+        </el-col> -->
 
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+        <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">
               <span class="t">Average Push Message Cost</span>
@@ -419,7 +443,7 @@
             </h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.storageData?system.$commonFun.storageNumformat(providerBody.storageData.average_cost_push_message):'-'}}</b>
           </div>
-        </el-col>
+        </el-col> -->
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">
@@ -438,7 +462,7 @@
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.storageData?system.$commonFun.storageNumformat(providerBody.storageData.average_data_cost_sealing_1TB):'-'}}</b>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+        <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">
               <span class="t">Cost of Sealing</span>
@@ -455,7 +479,7 @@
             </h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.storageData?system.$commonFun.storageNumformat(providerBody.storageData.average_gas_cost_sealing_1TB):'-'}}</b>
           </div>
-        </el-col>
+        </el-col> -->
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">
@@ -474,7 +498,7 @@
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.storageData?system.$commonFun.storageNumformat(providerBody.storageData.average_min_piece_size):'-'}}</b>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+        <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">
               <span class="t">Average Ask Price</span>
@@ -491,8 +515,8 @@
             </h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.storageData?system.$commonFun.storageNumformat(providerBody.storageData.average_price_per_GB_per_year):'-'}}</b>
           </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+        </el-col> -->
+        <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">
               <span class="t">Average Verified Deal Ask Price</span>
@@ -509,7 +533,7 @@
             </h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.storageData?system.$commonFun.storageNumformat(providerBody.storageData.average_verified_price_per_GB_per_year):'-'}}</b>
           </div>
-        </el-col>
+        </el-col> -->
       </el-row>
       <el-row :gutter="16" class="border-row">
         <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="flex-row">
