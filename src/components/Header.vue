@@ -2,8 +2,8 @@
   <section id="container">
     <div class="swan-logo flex-row nowrap">
       <img :src="swanLogo" @click="system.$commonFun.goLink('https://www.swanchain.io/')" />
-      <div class="flex-row nowrap">
-        <div class="nav">
+      <div class="flex-row nowrap swan-right">
+        <div class="nav pcShow">
           <router-link :to="{name: 'dashboard'}" :class="{'active': route.name === 'dashboard'}">Dashboard</router-link>
           <router-link :to="{ name: 'paymentHistory'}" :class="{'active': route.name === 'paymentHistory'}" v-if="accessToken !== ''">Reward History</router-link>
           <router-link :to="{ name: 'UBIHistory'}" :class="{'active': route.name === 'UBIHistory'}" v-if="accessToken !== ''">UBI Reward History</router-link>
@@ -18,11 +18,11 @@
           </div>
           <div class="set">
             <el-dropdown popper-class="menu-style" @command="handleSelect" placement="bottom-end" :hide-on-click="false">
-              <router-link to="/personal_center" class="el-dropdown-link setting-style loginImg flex-row">
+              <div class="el-dropdown-link setting-style loginImg flex-row">
                 <el-icon>
                   <Avatar />
                 </el-icon>
-              </router-link>
+              </div>
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item command="apiKey">
@@ -36,6 +36,39 @@
                   </el-dropdown-item>
                   <el-dropdown-item command="sign_out">
                     <span class="link">Sign Out</span>
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </div>
+          <div class="set mobileShow">
+            <el-dropdown popper-class="menu-style" placement="bottom-end" :hide-on-click="false">
+              <div class="el-dropdown-link setting-style loginImg flex-row">
+                <svg t="1711620409570" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2352" width="16" height="16">
+                  <path d="M133.310936 296.552327l757.206115 0c19.781623 0 35.950949-16.169326 35.950949-35.950949 0-19.781623-15.997312-35.950949-35.950949-35.950949L133.310936 224.650428c-19.781623 0-35.950949 16.169326-35.950949 35.950949C97.359987 280.383 113.529313 296.552327 133.310936 296.552327z"
+                    fill="#ffffff" p-id="2353"></path>
+                  <path d="M890.51705 476.135058 133.310936 476.135058c-19.781623 0-35.950949 16.169326-35.950949 35.950949 0 19.781623 16.169326 35.950949 35.950949 35.950949l757.206115 0c19.781623 0 35.950949-16.169326 35.950949-35.950949C926.467999 492.304384 910.298673 476.135058 890.51705 476.135058z"
+                    fill="#ffffff" p-id="2354"></path>
+                  <path d="M890.51705 727.447673 133.310936 727.447673c-19.781623 0-35.950949 15.997312-35.950949 35.950949s16.169326 35.950949 35.950949 35.950949l757.206115 0c19.781623 0 35.950949-15.997312 35.950949-35.950949S910.298673 727.447673 890.51705 727.447673z"
+                    fill="#ffffff" p-id="2355"></path>
+                </svg>
+              </div>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item>
+                    <div class="profile router-link b">
+                      <router-link :to="{name: 'dashboard'}" :class="{'active': route.name === 'dashboard'}">Dashboard</router-link>
+                    </div>
+                  </el-dropdown-item>
+                  <el-dropdown-item v-if="accessToken !== ''">
+                    <div class="profile router-link b">
+                      <router-link :to="{ name: 'paymentHistory'}" :class="{'active': route.name === 'paymentHistory'}">Reward History</router-link>
+                    </div>
+                  </el-dropdown-item>
+                  <el-dropdown-item v-if="accessToken !== ''">
+                    <div class="profile router-link b">
+                      <router-link :to="{ name: 'UBIHistory'}" :class="{'active': route.name === 'UBIHistory'}">UBI Reward History</router-link>
+                    </div>
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </template>
@@ -482,6 +515,9 @@ export default defineComponent({
   @media screen and (max-width: 1200px) {
     font-size: 14px;
   }
+  @media screen and (max-width: 768px) {
+    font-size: 12px;
+  }
   .flex {
     display: flex;
     align-items: center;
@@ -503,9 +539,35 @@ export default defineComponent({
     cursor: pointer;
     img {
       height: 0.42rem;
+      @media screen and (max-width: 767px) {
+        height: 35px;
+      }
+    }
+    .swan-right {
+      @media screen and (max-width: 767px) {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        margin: 6px 0 0;
+      }
+      .pcShow{
+        display: block;
+      @media screen and (max-width: 767px) {
+        display: none;
+      }
+      }
+      .mobileShow{
+        display: none;
+      @media screen and (max-width: 767px) {
+        display: block;
+      }
+      }
     }
     .nav {
       color: @white-color;
+      @media screen and (max-width: 599px) {
+        width: 100%;
+        margin: 0 0 6px;
+      }
       a {
         padding: 6px;
         margin: 0 0.05rem;
@@ -515,6 +577,9 @@ export default defineComponent({
         &.active {
           background-color: rgb(21, 23, 28);
           color: @theme-color;
+        }
+        @media screen and (max-width: 599px) {
+          padding: 6px 2px;
         }
       }
     }
