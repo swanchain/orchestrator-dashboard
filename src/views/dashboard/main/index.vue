@@ -9,72 +9,145 @@
 
     <div class="providers-overview mt-border">
       <div class="title">Providers Overview</div>
-      <el-row :gutter="26">
+      <el-row :gutter="16">
         <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="flex-row">
           <div class='chart' id='chart' v-loading="providersLoad" element-loading-background="rgba(0, 0, 0, 0)"></div>
         </el-col>
       </el-row>
-      <el-row :gutter="26" class="border-row">
+      <el-row :gutter="16" class="border-row">
         <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="flex-row">
           <div class="title top">Computing Provider</div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
-            <h6 class="flex-row">Network Providers</h6>
+            <h6 class="flex-row">
+              <span class="t">Network Providers</span>
+            </h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.data.total_providers ? system.$commonFun.replaceFormat(providerBody.data.total_providers):'-'}}</b>
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
-            <h6 class="flex-row">Active Applications</h6>
+            <h6 class="flex-row">
+              <span class="t">Active Applications</span>
+            </h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{system.$commonFun.replaceFormat(pagin.active_applications)}}</b>
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
-            <h6 class="flex-row">Total Deployments</h6>
+            <h6 class="flex-row">
+              <span class="t">Total Deployments</span>
+            </h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{system.$commonFun.replaceFormat(pagin.total_deployments)}}</b>
           </div>
         </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">
+              <span class="t">total jobs</span>
+            </h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_jobs):'-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">
+              <span class="t">total running jobs</span>
+            </h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_running_jobs):'-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">
+              <span class="t">total leading jobs</span>
+            </h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_leading_jobs):'-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">
+              <span class="t">leading job duration</span>
+              <small>(Hour)</small>
+            </h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(system.$commonFun.timeFormat(providerBody.generalData.total_leading_job_duration)):'-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">
+              <span class="t">total computer providers</span>
+            </h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_computer_providers):'-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">
+              <span class="t">total GPU deployed jobs</span>
+            </h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_gpu_deployed_jobs):'-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">
+              <span class="t">total GPU hours</span>
+            </h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_gpu_hours):'-'}}</b>
+          </div>
+        </el-col>
       </el-row>
-      <el-row :gutter="26" class="border-row">
+      <el-row :gutter="16" class="border-row">
         <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="flex-row">
           <div class="title top">ZK Provider</div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
-            <h6 class="flex-row">CP Numbers of UBI Task</h6>
+            <h6 class="flex-row">
+              <span class="t">CP Numbers of ZK Task</span>
+            </h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.providers?system.$commonFun.replaceFormat(providerBody.ubiData.providers.count):'-'}}</b>
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
-            <h6 class="flex-row">Total UBI Tasks</h6>
+            <h6 class="flex-row">
+              <span class="t">Total ZK Tasks</span>
+            </h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.sent ?system.$commonFun.replaceFormat(providerBody.ubiData.tasks.sent.count) : '-'}}</b>
           </div>
         </el-col>
 
         <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
-            <h6 class="flex-row">Total UBI Tasks Type</h6>
+            <h6 class="flex-row">Total ZK Tasks Type</h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.tasks?system.$commonFun.replaceFormat(providerBody.ubiData.tasks.zk_types):'-'}}</b>
           </div>
         </el-col> -->
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
-            <h6 class="flex-row">GPU UBI Tasks</h6>
+            <h6 class="flex-row">
+              <span class="t">GPU ZK Tasks</span>
+            </h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.sent ?system.$commonFun.replaceFormat(providerBody.ubiData.tasks.sent.count_gpu):'-'}}</b>
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
-            <h6 class="flex-row">CPU UBI Tasks</h6>
+            <h6 class="flex-row">
+              <span class="t">CPU ZK Tasks</span>
+            </h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.sent ?system.$commonFun.replaceFormat(providerBody.ubiData.tasks.sent.count_cpu) : '-'}}</b>
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
-            <h6 class="flex-row">Verified UBI Tasks</h6>
+            <h6 class="flex-row">
+              <span class="t">Verified ZK Tasks</span>
+            </h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.verified ?system.$commonFun.replaceFormat(providerBody.ubiData.tasks.verified.count):'-'}}</b>
           </div>
         </el-col>
@@ -82,8 +155,8 @@
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">
-              24h Average UBI Reward
-              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average UBI reward per CP over 24 hours">
+              <span class="t">24h Average ZK Reward</span>
+              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average ZK reward per CP over 24 hours">
                 <template #reference>
                   <div class="flex-row">
                     <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
@@ -102,8 +175,8 @@
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">
-              7d Average UBI Reward
-              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average UBI reward per CP per day over 7 days">
+              <span class="t">7d Average ZK Reward</span>
+              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average ZK reward per CP per day over 7 days">
                 <template #reference>
                   <div class="flex-row">
                     <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
@@ -122,8 +195,8 @@
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">
-              30d Average UBI Reward
-              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average UBI reward per CP per day over 30 days">
+              <span class="t">30d Average ZK Reward</span>
+              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average ZK reward per CP per day over 30 days">
                 <template #reference>
                   <div class="flex-row">
                     <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
@@ -142,8 +215,8 @@
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">
-              1y Average UBI Reward
-              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average UBI reward per CP per day over 1 year">
+              <span class="t">1y Average ZK Reward</span>
+              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average ZK reward per CP per day over 1 year">
                 <template #reference>
                   <div class="flex-row">
                     <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
@@ -161,85 +234,39 @@
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
-            <h6 class="flex-row">Total UBI Reward</h6>
+            <h6 class="flex-row">
+              <span class="t">Total ZK Reward</span>
+            </h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.rewards ? system.$commonFun.replaceFormat(providerBody.ubiData.rewards.total) : '-'}}
               <small>SWAN</small>
             </b>
           </div>
         </el-col>
       </el-row>
-      <el-row :gutter="26" class="border-row">
-        <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="flex-row">
-          <div class="title top">Saturn Chain</div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">Total Addresses</h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.total_addresses?system.$commonFun.replaceFormat(providerBody.totalData.total_addresses):'-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">Total Contracts
-              <small>(24H)</small>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">
-              {{providerBody.totalData.smart_contracts?system.$commonFun.replaceFormat(providerBody.totalData.smart_contracts):'-'}}
-              <span class="span" :class="{'up': providerBody.totalData.new_smart_contracts_24h&&providerBody.totalData.new_smart_contracts_24h>=0,'down': providerBody.totalData.new_smart_contracts_24h&&providerBody.totalData.new_smart_contracts_24h<0}">{{providerBody.totalData.new_smart_contracts_24h?providerBody.totalData.new_smart_contracts_24h>=0?'+':'-':''}}{{system.$commonFun.replaceFormat(providerBody.totalData.new_smart_contracts_24h)}}</span>
-            </b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">Transactions Today</h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.transactions_today?system.$commonFun.replaceFormat(providerBody.totalData.transactions_today):'-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">Total Transactions</h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.total_transactions?system.$commonFun.replaceFormat(providerBody.totalData.total_transactions):'-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">Gas Used Today</h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.gas_used_today?system.$commonFun.replaceFormat(providerBody.totalData.gas_used_today):'-'}}</b>
-          </div>
-        </el-col>
-        <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">Total Gas Used</h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.total_gas_used?system.$commonFun.replaceFormat(providerBody.totalData.total_gas_used):'-'}}</b>
-          </div>
-        </el-col> -->
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">Total Blocks</h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.total_blocks?system.$commonFun.replaceFormat(providerBody.totalData.total_blocks):'-'}}</b>
-          </div>
-        </el-col>
-      </el-row>
-      <el-row :gutter="26" class="border-row">
+      <el-row :gutter="16" class="border-row">
         <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="flex-row">
           <div class="title top">storage provider</div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
-            <h6 class="flex-row">active SP</h6>
+            <h6 class="flex-row">
+              <span class="t">active SP</span>
+            </h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.providerData?system.$commonFun.replaceFormat(providerBody.providerData.active_sp_quantity):'-'}}</b>
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
-            <h6 class="flex-row">daily sealed deals</h6>
+            <h6 class="flex-row">
+              <span class="t">daily sealed deals</span>
+            </h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.providerData?system.$commonFun.replaceFormat(providerBody.providerData.daily_sealed_deals):'-'}}</b>
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">
-              Storage Providers
+              <span class="t">Storage Providers</span>
               <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="The number of storage providers offering decentralized storage capacity.">
                 <template #reference>
                   <div class="flex-row">
@@ -257,7 +284,7 @@
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">
-              Daily Deals Processed
+              <span class="t">Daily Deals Processed</span>
               <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="The daily amount of all deals sent by swan client.">
                 <template #reference>
                   <div class="flex-row">
@@ -275,7 +302,7 @@
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">
-              Total Deals Processed
+              <span class="t">Total Deals Processed</span>
               <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Total deals sent by swan client.">
                 <template #reference>
                   <div class="flex-row">
@@ -293,7 +320,7 @@
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">
-              Data Transferred
+              <span class="t">Data Transferred</span>
               <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Aggregate data transferred through swan platform.">
                 <template #reference>
                   <div class="flex-row">
@@ -311,7 +338,7 @@
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">
-              Total CIDs
+              <span class="t">Total CIDs</span>
               <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="The total amount of payload CIDS.">
                 <template #reference>
                   <div class="flex-row">
@@ -329,7 +356,7 @@
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">
-              Total Files Archived
+              <span class="t">Total Files Archived</span>
               <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="The number of files archived on the Filecoin network.">
                 <template #reference>
                   <div class="flex-row">
@@ -347,7 +374,7 @@
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">
-              Storage Archived
+              <span class="t">Storage Archived</span>
               <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Total storage archived on the Filecoin network.">
                 <template #reference>
                   <div class="flex-row">
@@ -362,10 +389,10 @@
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.providerData?system.$commonFun.replaceFormat(system.$commonFun.byteStorage(providerBody.providerData.total_sealed_storage))+' GiB':'-'}}</b>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+        <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">
-              Average Regular Deal Price
+              <span class="t">Average Regular Deal Price</span>
               <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average storage price for the latest 100 deals per year per GB.">
                 <template #reference>
                   <div class="flex-row">
@@ -379,11 +406,11 @@
             </h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.storageData?system.$commonFun.filNumformat(providerBody.storageData.historical_average_price_regular):'-'}}</b>
           </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+        </el-col> -->
+        <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">
-              Average Verified Deal Price
+              <span class="t">Average Verified Deal Price</span>
               <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average storage price for the latest 100 verified deals per year per GB.">
                 <template #reference>
                   <div class="flex-row">
@@ -397,12 +424,12 @@
             </h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.storageData?system.$commonFun.filNumformat(providerBody.storageData.historical_average_price_verified):'-'}}</b>
           </div>
-        </el-col>
+        </el-col> -->
 
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+        <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">
-              Average Push Message Cost
+              <span class="t">Average Push Message Cost</span>
               <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average gas fee for sealing sectors on filecoin network.">
                 <template #reference>
                   <div class="flex-row">
@@ -416,11 +443,11 @@
             </h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.storageData?system.$commonFun.storageNumformat(providerBody.storageData.average_cost_push_message):'-'}}</b>
           </div>
-        </el-col>
+        </el-col> -->
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">
-              Pledge Collateral
+              <span class="t">Pledge Collateral</span>
               <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average pledge collateral price for sealing 1TB data cost on filecoin network.">
                 <template #reference>
                   <div class="flex-row">
@@ -435,10 +462,10 @@
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.storageData?system.$commonFun.storageNumformat(providerBody.storageData.average_data_cost_sealing_1TB):'-'}}</b>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+        <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">
-              Cost of Sealing
+              <span class="t">Cost of Sealing</span>
               <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average price for sealing 1TB sector gas fee & pledge collateral price on filecoin network.">
                 <template #reference>
                   <div class="flex-row">
@@ -452,11 +479,11 @@
             </h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.storageData?system.$commonFun.storageNumformat(providerBody.storageData.average_gas_cost_sealing_1TB):'-'}}</b>
           </div>
-        </el-col>
+        </el-col> -->
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">
-              Average Minimum Piece Size
+              <span class="t">Average Minimum Piece Size</span>
               <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average minimum piece size (accepting deal size) required by storage provider.">
                 <template #reference>
                   <div class="flex-row">
@@ -471,10 +498,10 @@
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.storageData?system.$commonFun.storageNumformat(providerBody.storageData.average_min_piece_size):'-'}}</b>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+        <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">
-              Average Ask Price
+              <span class="t">Average Ask Price</span>
               <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average asked price per year per GB by storage provider.">
                 <template #reference>
                   <div class="flex-row">
@@ -488,11 +515,11 @@
             </h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.storageData?system.$commonFun.storageNumformat(providerBody.storageData.average_price_per_GB_per_year):'-'}}</b>
           </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+        </el-col> -->
+        <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
             <h6 class="flex-row">
-              Average Verified Deal Ask Price
+              <span class="t">Average Verified Deal Ask Price</span>
               <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average asked verified deals price per year per GB by storage provider.">
                 <template #reference>
                   <div class="flex-row">
@@ -506,10 +533,73 @@
             </h6>
             <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.storageData?system.$commonFun.storageNumformat(providerBody.storageData.average_verified_price_per_GB_per_year):'-'}}</b>
           </div>
+        </el-col> -->
+      </el-row>
+      <el-row :gutter="16" class="border-row">
+        <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="flex-row">
+          <div class="title top">Saturn Chain</div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">
+              <span class="t">Total Addresses</span>
+            </h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.total_addresses?system.$commonFun.replaceFormat(providerBody.totalData.total_addresses):'-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">
+              <span class="t">Total Contracts</span>
+              <small>(24H)</small>
+            </h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">
+              {{providerBody.totalData.smart_contracts?system.$commonFun.replaceFormat(providerBody.totalData.smart_contracts):'-'}}
+              <span class="span" :class="{'up': providerBody.totalData.new_smart_contracts_24h&&providerBody.totalData.new_smart_contracts_24h>=0,'down': providerBody.totalData.new_smart_contracts_24h&&providerBody.totalData.new_smart_contracts_24h<0}">{{providerBody.totalData.new_smart_contracts_24h?providerBody.totalData.new_smart_contracts_24h>=0?'+':'-':''}}{{system.$commonFun.replaceFormat(providerBody.totalData.new_smart_contracts_24h)}}</span>
+            </b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">
+              <span class="t">Transactions Today</span>
+            </h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.transactions_today?system.$commonFun.replaceFormat(providerBody.totalData.transactions_today):'-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">
+              <span class="t">Total Transactions</span>
+            </h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.total_transactions?system.$commonFun.replaceFormat(providerBody.totalData.total_transactions):'-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">
+              <span class="t">Gas Used Today</span>
+            </h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.gas_used_today?system.$commonFun.replaceFormat(providerBody.totalData.gas_used_today):'-'}}</b>
+          </div>
+        </el-col>
+        <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">Total Gas Used</h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.total_gas_used?system.$commonFun.replaceFormat(providerBody.totalData.total_gas_used):'-'}}</b>
+          </div>
+        </el-col> -->
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">
+              <span class="t">Total Blocks</span>
+            </h6>
+            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.total_blocks?system.$commonFun.replaceFormat(providerBody.totalData.total_blocks):'-'}}</b>
+          </div>
         </el-col>
       </el-row>
 
-      <el-row :gutter="26" class="erchart-body">
+      <el-row :gutter="16" class="erchart-body">
         <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
           <div class="erchart">
             <div class="drain-time"></div>
@@ -769,7 +859,8 @@ export default defineComponent({
         new_smart_contracts_24h: ''
       },
       storageData: {},
-      providerData: {}
+      providerData: {},
+      generalData: {}
     })
     const networkInput = ref('')
     const small = ref(false)
@@ -862,6 +953,10 @@ export default defineComponent({
       const providerRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_FILSWANSTATS}stats/provider`, 'get')
       if (providerRes && providerRes.status === "success") providerBody.providerData = providerRes.data || {}
     }
+    async function getGeneralStats () {
+      const generalRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}stats/general`, 'get')
+      if (generalRes && generalRes.status === "success") providerBody.generalData = generalRes.data || {}
+    }
     async function searchProvider () {
       pagin.pageSize = 10
       pagin.pageNo = 1
@@ -900,6 +995,7 @@ export default defineComponent({
       getCounters()
       getStorageStats()
       getProviderStats()
+      getGeneralStats()
     }
     function drawChart (dataArr) {
       let chart = echarts.init(document.getElementById('chart'))
@@ -1170,30 +1266,50 @@ export default defineComponent({
             .el-tooltip__trigger {
               margin: 0 0 0 4px;
             }
+            .t {
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: normal;
+              display: -webkit-box;
+              -webkit-line-clamp: 2;
+              -webkit-box-orient: vertical;
+            }
             small {
               margin: 0 0 0 5px;
               font-family: "Montserrat-Regular";
               font-weight: normal;
               color: #a0a0a0;
-              font-size: 14px;
+              font-size: 0.13rem;
               @media screen and (min-width: 1800px) {
-                font-size: 16px;
+                font-size: 0.15rem;
+              }
+              @media screen and (max-width: 768px) {
+                font-size: 12px;
               }
             }
           }
           b {
             align-items: baseline;
             margin: 6px 0;
-            font-size: 20px;
+            font-size: 0.195rem;
             line-height: 1;
             @media screen and (min-width: 1800px) {
-              font-size: 22px;
+              font-size: 0.21rem;
+            }
+            @media screen and (max-width: 1440px) {
+              font-size: 0.19rem;
+            }
+            @media screen and (max-width: 768px) {
+              font-size: 16px;
             }
             .span {
               margin: 0 0 0 10px;
-              font-size: 16px;
+              font-size: 0.16rem;
               @media screen and (min-width: 1800px) {
-                font-size: 18px;
+                font-size: 0.18rem;
+              }
+              @media screen and (max-width: 768px) {
+                font-size: 15px;
               }
               &.up {
                 color: #38a169;
@@ -1206,17 +1322,23 @@ export default defineComponent({
                 font-family: "Montserrat-Regular";
                 font-weight: normal;
                 color: #a0a0a0;
-                font-size: 14px;
+                font-size: 0.14rem;
                 @media screen and (min-width: 1800px) {
-                  font-size: 16px;
+                  font-size: 0.16rem;
+                }
+                @media screen and (max-width: 768px) {
+                  font-size: 13px;
                 }
               }
             }
             small {
               margin: 0 0 0 4px;
-              font-size: 16px;
+              font-size: 0.16rem;
               @media screen and (min-width: 1800px) {
-                font-size: 18px;
+                font-size: 0.18rem;
+              }
+              @media screen and (max-width: 768px) {
+                font-size: 15px;
               }
             }
           }
