@@ -288,6 +288,23 @@ async function throttle() {
   return true
 }
 
+function debounce(fn, delay) {
+  if (typeof fn !== 'function') {
+    throw new TypeError('Fn is not a function')
+  }
+  let timer;
+  return function () {
+    var _this = this;
+    var args = arguments;
+    if (timer) {
+      clearTimeout(timer);
+    }
+    timer = setTimeout(function () {
+      fn.apply(_this, args);
+    }, delay);
+  };
+}
+
 async function sign(nonce) {
   const rightnow = (Date.now() / 1000).toFixed(0)
   const sortanow = rightnow - (rightnow % 600)
@@ -475,5 +492,6 @@ export default {
   providerInit,
   checkNetwork,
   NumFormat,
-  replaceFormat
+  replaceFormat,
+  debounce,
 }

@@ -698,7 +698,7 @@
     <div class="providers-network mt-border">
       <div class="title">Swan Network Providers</div>
       <div class="search-body flex">
-        <el-input v-model="networkInput" placeholder="Search Providers" />
+        <el-input v-model="networkInput" placeholder="Search Providers" @chang="searchProvider" @input="searchProvider" />
         <el-button type="primary" :disabled="!networkInput ? true:false" round @click="searchProvider">Search</el-button>
         <el-button type="info" :disabled="!networkInput ? true:false" round @click="clearProvider">Clear</el-button>
       </div>
@@ -821,6 +821,7 @@ import {
   CircleCheck, DocumentCopy, Avatar
 } from '@element-plus/icons-vue'
 import * as echarts from "echarts"
+
 export default defineComponent({
   components: {
     CircleCheck, DocumentCopy, Avatar
@@ -957,11 +958,11 @@ export default defineComponent({
       const generalRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}stats/general`, 'get')
       if (generalRes && generalRes.status === "success") providerBody.generalData = generalRes.data || {}
     }
-    async function searchProvider () {
+    const searchProvider = system.$commonFun.debounce(async function () {
       pagin.pageSize = 10
       pagin.pageNo = 1
       init()
-    }
+    }, 700)
     function clearProvider () {
       networkInput.value = ''
       pagin.pageSize = 10
