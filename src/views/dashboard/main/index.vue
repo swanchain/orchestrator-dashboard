@@ -599,216 +599,428 @@
         </el-col>
       </el-row>
 
-      <el-row :gutter="16" class="erchart-body">
-        <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
-          <div class="erchart">
-            <div class="drain-time"></div>
-            <div class="drain-time"></div>
-            <div class="drain-time"></div>
-            <div class="drain-time"></div>
-            <div class="title">VCPU</div>
-            <h6>Current VCPU usage</h6>
-            <div id="maychar-vcpu" class="maychar"></div>
-            <h6 class="background-free">
-              <i></i>
-              <b>{{providerBody.data.total_vcpu - providerBody.data.total_used_vcpu}}</b> vcpu Free
-            </h6>
-            <h6 class="background-used">
-              <i></i>
-              <b>{{providerBody.data.total_used_vcpu}}</b> vcpu Used
-            </h6>
-            <h6 class="background-total">
-              <i></i>
-              <b>{{providerBody.data.total_vcpu}}</b> Total
-            </h6>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
-          <div class="erchart">
-            <div class="drain-time"></div>
-            <div class="drain-time"></div>
-            <div class="drain-time"></div>
-            <div class="drain-time"></div>
-            <div class="title">Memory</div>
-            <h6>Current Memory usage</h6>
-            <div id="maychar-memory" class="maychar"></div>
-            <h6 class="background-free">
-              <i></i>
-              <b>{{system.$commonFun.sizeChange(providerBody.data.total_memory-providerBody.data.total_used_memory)}}</b> Free
-            </h6>
-            <h6 class="background-used">
-              <i></i>
-              <b>{{system.$commonFun.sizeChange(providerBody.data.total_used_memory)}}</b> Used
-            </h6>
-            <h6 class="background-total">
-              <i></i>
-              <b>{{system.$commonFun.sizeChange(providerBody.data.total_memory)}}</b> Total
-            </h6>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
-          <div class="erchart">
-            <div class="drain-time"></div>
-            <div class="drain-time"></div>
-            <div class="drain-time"></div>
-            <div class="drain-time"></div>
-            <div class="title">Storage</div>
-            <h6>Current Storage usage</h6>
-            <div id="maychar-storage" class="maychar"></div>
-            <h6 class="background-free">
-              <i></i>
-              <b>{{system.$commonFun.sizeChange(providerBody.data.total_storage-providerBody.data.total_used_storage)}}</b> Free
-            </h6>
-            <h6 class="background-used">
-              <i></i>
-              <b>{{system.$commonFun.sizeChange(providerBody.data.total_used_storage)}}</b> Used
-            </h6>
-            <h6 class="background-total">
-              <i></i>
-              <b>{{system.$commonFun.sizeChange(providerBody.data.total_storage)}}</b> Total
-            </h6>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
-          <div class="erchart">
-            <div class="drain-time"></div>
-            <div class="drain-time"></div>
-            <div class="drain-time"></div>
-            <div class="drain-time"></div>
-            <div class="title">GPU</div>
-            <h6>Current GPU usage</h6>
-            <div id="maychar-gpu" class="maychar"></div>
-            <h6 class="background-free">
-              <i></i>
-              <b>{{providerBody.data.total_gpu-providerBody.data.total_used_gpu}}</b> Free
-            </h6>
-            <h6 class="background-used">
-              <i></i>
-              <b>{{providerBody.data.total_used_gpu}}</b> Used
-            </h6>
-            <h6 class="background-total">
-              <i></i>
-              <b>{{providerBody.data.total_gpu}}</b> Total
-            </h6>
-          </div>
-        </el-col>
-      </el-row>
+      <div class="tabs-container">
+        <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
+          <el-tab-pane name="CP" label="Swan Network Providers"></el-tab-pane>
+          <el-tab-pane name="ZK-CP" label="ECP (Edge Computing Provider)"></el-tab-pane>
+
+          <el-row :gutter="16" v-if="activeName === 'CP'" class="erchart-body" v-loading="cpLoad">
+            <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
+              <div class="erchart">
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="title">VCPU</div>
+                <h6>Current VCPU usage</h6>
+                <div id="maychar-vcpu" class="maychar"></div>
+                <h6 class="background-free">
+                  <i></i>
+                  <b>{{providerBody.data.total_vcpu - providerBody.data.total_used_vcpu}}</b> vcpu Free
+                </h6>
+                <h6 class="background-used">
+                  <i></i>
+                  <b>{{providerBody.data.total_used_vcpu}}</b> vcpu Used
+                </h6>
+                <h6 class="background-total">
+                  <i></i>
+                  <b>{{providerBody.data.total_vcpu}}</b> Total
+                </h6>
+              </div>
+            </el-col>
+            <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
+              <div class="erchart">
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="title">Memory</div>
+                <h6>Current Memory usage</h6>
+                <div id="maychar-memory" class="maychar"></div>
+                <h6 class="background-free">
+                  <i></i>
+                  <b>{{system.$commonFun.sizeChange(providerBody.data.total_memory-providerBody.data.total_used_memory)}}</b> Free
+                </h6>
+                <h6 class="background-used">
+                  <i></i>
+                  <b>{{system.$commonFun.sizeChange(providerBody.data.total_used_memory)}}</b> Used
+                </h6>
+                <h6 class="background-total">
+                  <i></i>
+                  <b>{{system.$commonFun.sizeChange(providerBody.data.total_memory)}}</b> Total
+                </h6>
+              </div>
+            </el-col>
+            <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
+              <div class="erchart">
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="title">Storage</div>
+                <h6>Current Storage usage</h6>
+                <div id="maychar-storage" class="maychar"></div>
+                <h6 class="background-free">
+                  <i></i>
+                  <b>{{system.$commonFun.sizeChange(providerBody.data.total_storage-providerBody.data.total_used_storage)}}</b> Free
+                </h6>
+                <h6 class="background-used">
+                  <i></i>
+                  <b>{{system.$commonFun.sizeChange(providerBody.data.total_used_storage)}}</b> Used
+                </h6>
+                <h6 class="background-total">
+                  <i></i>
+                  <b>{{system.$commonFun.sizeChange(providerBody.data.total_storage)}}</b> Total
+                </h6>
+              </div>
+            </el-col>
+            <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
+              <div class="erchart">
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="title">GPU</div>
+                <h6>Current GPU usage</h6>
+                <div id="maychar-gpu" class="maychar"></div>
+                <h6 class="background-free">
+                  <i></i>
+                  <b>{{providerBody.data.total_gpu-providerBody.data.total_used_gpu}}</b> Free
+                </h6>
+                <h6 class="background-used">
+                  <i></i>
+                  <b>{{providerBody.data.total_used_gpu}}</b> Used
+                </h6>
+                <h6 class="background-total">
+                  <i></i>
+                  <b>{{providerBody.data.total_gpu}}</b> Total
+                </h6>
+              </div>
+            </el-col>
+          </el-row>
+          <el-row :gutter="16" v-if="activeName === 'ZK-CP'" class="erchart-body" v-loading="cpLoad">
+            <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
+              <div class="erchart">
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="title">VCPU</div>
+                <h6>Current VCPU usage</h6>
+                <div id="maychar-zk-vcpu" class="maychar"></div>
+                <h6 class="background-free">
+                  <i></i>
+                  <b v-if="providerBody.ubiData.providers">{{providerBody.ubiData.providers.vcpu.free}}</b> vcpu Free
+                </h6>
+                <h6 class="background-used">
+                  <i></i>
+                  <b v-if="providerBody.ubiData.providers">{{providerBody.ubiData.providers.vcpu.total - providerBody.ubiData.providers.vcpu.free}}</b> vcpu Used
+                </h6>
+                <h6 class="background-total">
+                  <i></i>
+                  <b v-if="providerBody.ubiData.providers">{{providerBody.ubiData.providers.vcpu.total}}</b> Total
+                </h6>
+              </div>
+            </el-col>
+            <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
+              <div class="erchart">
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="title">Memory</div>
+                <h6>Current Memory usage</h6>
+                <div id="maychar-zk-memory" class="maychar"></div>
+                <h6 class="background-free">
+                  <i></i>
+                  <b v-if="providerBody.ubiData.providers">{{system.$commonFun.sizeChange(providerBody.ubiData.providers.memory.free)}}</b> Free
+                </h6>
+                <h6 class="background-used">
+                  <i></i>
+                  <b v-if="providerBody.ubiData.providers">{{system.$commonFun.sizeChange(providerBody.ubiData.providers.memory.total-providerBody.ubiData.providers.memory.free)}}</b> Used
+                </h6>
+                <h6 class="background-total">
+                  <i></i>
+                  <b v-if="providerBody.ubiData.providers">{{system.$commonFun.sizeChange(providerBody.ubiData.providers.memory.total)}}</b> Total
+                </h6>
+              </div>
+            </el-col>
+            <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
+              <div class="erchart">
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="title">Storage</div>
+                <h6>Current Storage usage</h6>
+                <div id="maychar-zk-storage" class="maychar"></div>
+                <h6 class="background-free">
+                  <i></i>
+                  <b v-if="providerBody.ubiData.providers">{{system.$commonFun.sizeChange(providerBody.ubiData.providers.storage.free)}}</b> Free
+                </h6>
+                <h6 class="background-used">
+                  <i></i>
+                  <b v-if="providerBody.ubiData.providers">{{system.$commonFun.sizeChange(providerBody.ubiData.providers.storage.total-providerBody.ubiData.providers.storage.free)}}</b> Used
+                </h6>
+                <h6 class="background-total">
+                  <i></i>
+                  <b v-if="providerBody.ubiData.providers">{{system.$commonFun.sizeChange(providerBody.ubiData.providers.storage.total)}}</b> Total
+                </h6>
+              </div>
+            </el-col>
+            <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
+              <div class="erchart">
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="title">GPU</div>
+                <h6>Current GPU usage</h6>
+                <div id="maychar-zk-gpu" class="maychar"></div>
+                <h6 class="background-free">
+                  <i></i>
+                  <b v-if="providerBody.ubiData.providers">{{providerBody.ubiData.providers.gpu.free}}</b> Free
+                </h6>
+                <h6 class="background-used">
+                  <i></i>
+                  <b v-if="providerBody.ubiData.providers">{{providerBody.ubiData.providers.gpu.total-providerBody.ubiData.providers.gpu.free}}</b> Used
+                </h6>
+                <h6 class="background-total">
+                  <i></i>
+                  <b v-if="providerBody.ubiData.providers">{{providerBody.ubiData.providers.gpu.total}}</b> Total
+                </h6>
+              </div>
+            </el-col>
+          </el-row>
+        </el-tabs>
+      </div>
     </div>
 
-    <div class="providers-network mt-border">
-      <div class="title">Swan Network Providers</div>
-      <div class="search-body flex">
-        <el-input v-model="networkInput" placeholder="Search Providers" @chang="searchProvider" @input="searchProvider" />
-        <el-button type="primary" :disabled="!networkInput ? true:false" round @click="searchProvider">Search</el-button>
-        <el-button type="info" :disabled="!networkInput ? true:false" round @click="clearProvider">Clear</el-button>
-      </div>
-      <el-table :data="providersData" @expand-change="expandChange" :row-key="getRowKeys" :expand-row-keys="expands" style="width: 100%" empty-text="No Data" v-loading="providersTableLoad">
-        <el-table-column type="expand" width="40">
-          <template #default="props">
-            <div class="service-body" v-if="props.row.computer_provider">
-              <div v-for="n in props.row.computer_provider.machines" :key="n" class="list">
-                <div class="li-title">Machine ID: {{n.machine_id}}</div>
-                <ul>
-                  <li v-for="(child, vcpuKeys, k) in n.specs" :key="k" v-show="vcpuKeys === 'vcpu'">
-                    <div class="li-body">
-                      <p :class="{'t':true, 't-capitalize': vcpuKeys === 'vcpu'}">{{vcpuKeys}}</p>
-                      <p>
-                        <strong>{{child.free}}</strong>free</p>
-                      <p>
-                        <strong>{{child.total}}</strong>total</p>
-                      <p>
-                        <strong>{{child.used}}</strong>used</p>
-                    </div>
-                  </li>
-                  <li v-for="(child, memoryKeys, k) in n.specs" :key="k" v-show="memoryKeys === 'memory'">
-                    <div class="li-body">
-                      <p :class="{'t':true, 't-capitalize': memoryKeys === 'vcpu'}">{{memoryKeys}}</p>
-                      <p>
-                        <strong>{{child.free}}</strong>free</p>
-                      <p>
-                        <strong>{{child.total}}</strong>total</p>
-                      <p>
-                        <strong>{{child.used}}</strong>used</p>
-                    </div>
-                  </li>
-                  <li v-for="(child, storageKeys, k) in n.specs" :key="k" v-show="storageKeys === 'storage'">
-                    <div class="li-body">
-                      <p :class="{'t':true, 't-capitalize': storageKeys === 'vcpu'}">{{storageKeys}}</p>
-                      <p>
-                        <strong>{{child.free}}</strong>free</p>
-                      <p>
-                        <strong>{{child.total}}</strong>total</p>
-                      <p>
-                        <strong>{{child.used}}</strong>used</p>
-                    </div>
-                  </li>
-                </ul>
-                <div class="li-title">GPU Source</div>
-                <ul>
-                  <li class="m-r" v-for="(child, gpuKeys, k) in n.specs" :key="k" v-show="gpuKeys === 'gpu'" style="width:100%;">
-                    <div class="flex-row">
-                      <div v-for="g in child.details" :key="g" :class="{'li-body':true}">
-                        <p :class="{'t':true, 't-capitalize': gpuKeys === 'gpu'}">{{g.product_name}} ({{gpuKeys}})</p>
+    <div class="providers-network">
+      <div class="providers-cp" v-if="activeName === 'CP'">
+        <div class="search-body flex">
+          <el-input v-model="networkInput" placeholder="Search Providers" @chang="searchProvider" @input="searchProvider" />
+          <el-button type="primary" :disabled="!networkInput ? true:false" round @click="searchProvider">Search</el-button>
+          <el-button type="info" :disabled="!networkInput ? true:false" round @click="clearProvider">Clear</el-button>
+        </div>
+        <el-table :data="providersData" @expand-change="expandChange" :row-key="getRowKeys" :expand-row-keys="expands" style="width: 100%" empty-text="No Data" v-loading="providersTableLoad">
+          <el-table-column type="expand" width="40">
+            <template #default="props">
+              <div class="service-body" v-if="props.row.computer_provider">
+                <div v-for="n in props.row.computer_provider.machines" :key="n" class="list">
+                  <div class="li-title">Machine ID: {{n.machine_id}}</div>
+                  <ul>
+                    <li v-for="(child, vcpuKeys, k) in n.specs" :key="k" v-show="vcpuKeys === 'vcpu'">
+                      <div class="li-body">
+                        <p :class="{'t':true, 't-capitalize': vcpuKeys === 'vcpu'}">{{vcpuKeys}}</p>
                         <p>
-                          <strong>{{g.fb_memory_usage.free}}</strong>free</p>
+                          <strong>{{child.free}}</strong>free</p>
                         <p>
-                          <strong>{{g.fb_memory_usage.total}}</strong>total</p>
+                          <strong>{{child.total}}</strong>total</p>
                         <p>
-                          <strong>{{g.fb_memory_usage.used}}</strong>used</p>
-                        <p>Status:
-                          <strong>{{g.status}}</strong>
-                        </p>
+                          <strong>{{child.used}}</strong>used</p>
                       </div>
-                    </div>
-                  </li>
-                </ul>
+                    </li>
+                    <li v-for="(child, memoryKeys, k) in n.specs" :key="k" v-show="memoryKeys === 'memory'">
+                      <div class="li-body">
+                        <p :class="{'t':true, 't-capitalize': memoryKeys === 'vcpu'}">{{memoryKeys}}</p>
+                        <p>
+                          <strong>{{child.free}}</strong>free</p>
+                        <p>
+                          <strong>{{child.total}}</strong>total</p>
+                        <p>
+                          <strong>{{child.used}}</strong>used</p>
+                      </div>
+                    </li>
+                    <li v-for="(child, storageKeys, k) in n.specs" :key="k" v-show="storageKeys === 'storage'">
+                      <div class="li-body">
+                        <p :class="{'t':true, 't-capitalize': storageKeys === 'vcpu'}">{{storageKeys}}</p>
+                        <p>
+                          <strong>{{child.free}}</strong>free</p>
+                        <p>
+                          <strong>{{child.total}}</strong>total</p>
+                        <p>
+                          <strong>{{child.used}}</strong>used</p>
+                      </div>
+                    </li>
+                  </ul>
+                  <div class="li-title">GPU Source</div>
+                  <ul>
+                    <li class="m-r" v-for="(child, gpuKeys, k) in n.specs" :key="k" v-show="gpuKeys === 'gpu'" style="width:100%;">
+                      <div class="flex-row">
+                        <div v-for="g in child.details" :key="g" :class="{'li-body':true}">
+                          <p :class="{'t':true, 't-capitalize': gpuKeys === 'gpu'}">{{g.product_name}} ({{gpuKeys}})</p>
+                          <p>
+                            <strong>{{g.fb_memory_usage.free}}</strong>free</p>
+                          <p>
+                            <strong>{{g.fb_memory_usage.total}}</strong>total</p>
+                          <p>
+                            <strong>{{g.fb_memory_usage.used}}</strong>used</p>
+                          <p>Status:
+                            <strong>{{g.status}}</strong>
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
               </div>
-            </div>
-            <div class="service-body" v-else>No Data</div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="name" label="Name" min-width="120">
-          <template #default="scope">
-            <div class="badge">
-              <img v-if="scope.$index < 2 && pagin.pageNo <= 1" :src="badgeIcon01" alt="">
-              <img v-else :src="badgeIcon02" alt=""> {{scope.row.name}}
-            </div>
-          </template>
-        </el-table-column>
-        <!-- <el-table-column prop="country" label="Country" /> -->
-        <el-table-column prop="computer_provider.active_deployment" label="Active deployment" width="130" />
-        <el-table-column prop="computer_provider.score" label="Score" width="120" />
-        <el-table-column prop="gpu_list" label="GPU" min-width="140">
-          <template #default="scope">
-            <div class="badge">
-              <div class="flex-row machines-style">
-                <span v-for="(gpu, g) in scope.row.gpu_list" :key="g">
-                  {{gpu}}
-                </span>
+              <div class="service-body" v-else>No Data</div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="name" label="Name" min-width="120">
+            <template #default="scope">
+              <div class="badge">
+                <img v-if="scope.$index < 2 && pagin.pageNo <= 1" :src="badgeIcon01" alt="">
+                <img v-else :src="badgeIcon02" alt=""> {{scope.row.name}}
               </div>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="region" label="Region" min-width="100" />
-        <el-table-column prop="uptime" label="Uptime">
-          <template #default="scope">
-            <div>
-              {{unifyNumber(scope.row.uptime)}}%
-            </div>
-          </template>
-        </el-table-column>
-        <!--        <el-table-column prop="" label="5 minutes Interval Status" min-width="110">-->
-        <!--          <template #default="scope">-->
-        <!--            <div class="flex-row">-->
-        <!--              <el-icon v-for="n in 5" :key="n">-->
-        <!--                <CircleCheck />-->
-        <!--              </el-icon>-->
-        <!--            </div>-->
-        <!--          </template>-->
-        <!--        </el-table-column>-->
-      </el-table>
-      <el-pagination hide-on-single-page :page-size="pagin.pageSize" :current-page="pagin.pageNo" :pager-count="5" :small="small" :background="background" layout="total, prev, pager, next" :total="pagin.total" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-      />
+            </template>
+          </el-table-column>
+          <!-- <el-table-column prop="country" label="Country" /> -->
+          <el-table-column prop="computer_provider.active_deployment" label="Active deployment" width="130" />
+          <el-table-column prop="computer_provider.score" label="Score" width="120" />
+          <el-table-column prop="gpu_list" label="GPU" min-width="140">
+            <template #default="scope">
+              <div class="badge">
+                <div class="flex-row machines-style">
+                  <span v-for="(gpu, g) in scope.row.gpu_list" :key="g">
+                    {{gpu}}
+                  </span>
+                </div>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="region" label="Region" min-width="100" />
+          <el-table-column prop="uptime" label="Uptime">
+            <template #default="scope">
+              <div>
+                {{unifyNumber(scope.row.uptime)}}%
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-pagination hide-on-single-page :page-size="pagin.pageSize" :current-page="pagin.pageNo" :pager-count="5" :small="small" :background="background" layout="total, prev, pager, next" :total="pagin.total" @size-change="handleSizeChange" @current-change="handleCurrentChange"
+        />
+      </div>
+      <div class="providers-cp" v-if="activeName === 'ZK-CP'">
+        <div class="search-body flex">
+          <el-input class="zk-input" v-model="networkZK.owner_addr" placeholder="Owner Addr" @chang="searchZKProvider" @input="searchZKProvider" />
+          <el-input class="zk-input" v-model="networkZK.node_id" placeholder="Node ID" @chang="searchZKProvider" @input="searchZKProvider" />
+          <el-button type="primary" :disabled="!networkZK.owner_addr && !networkZK.node_id ? true:false" round @click="searchZKProvider">Search</el-button>
+          <el-button type="info" :disabled="!networkZK.owner_addr && !networkZK.node_id  ? true:false" round @click="clearProvider">Clear</el-button>
+        </div>
+        <el-table :data="providerBody.ubiTableData" @expand-change="expandChange" :row-key="getRowKeys" :expand-row-keys="expands" style="width: 100%" empty-text="No Data" v-loading="providersTableLoad">
+          <el-table-column type="expand" width="40">
+            <template #default="props">
+              <div class="service-body" v-if="props.row.resources">
+                <div v-for="n in props.row.resources" :key="n" class="list">
+                  <div class="li-title">Machine ID: {{n.machine_id}}</div>
+                  <ul>
+                    <li>
+                      <div class="li-body">
+                        <p :class="{'t':true, 't-capitalize': true}">vcpu</p>
+                        <p>
+                          <strong>{{n.vcpu.free}}</strong>free</p>
+                        <p>
+                          <strong>{{n.vcpu.total}}</strong>total</p>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="li-body">
+                        <p :class="{'t':true}">memory</p>
+                        <p>
+                          <strong>{{n.memory.free}}</strong>free</p>
+                        <p>
+                          <strong>{{n.memory.total}}</strong>total</p>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="li-body">
+                        <p :class="{'t':true}">storage</p>
+                        <p>
+                          <strong>{{n.storage.free}}</strong>free</p>
+                        <p>
+                          <strong>{{n.storage.total}}</strong>total</p>
+                      </div>
+                    </li>
+                  </ul>
+                  <div class="li-title">GPU Source</div>
+                  <ul>
+                    <li class="m-r" style="width:100%;">
+                      <div class="flex-row">
+                        <div v-for="g in n.gpu.gpus" :key="g" :class="{'li-body':true}">
+                          <p :class="{'t':true, 't-capitalize': true}">{{g.model}} (gpu)</p>
+                          <p>
+                            <strong>{{g.free}}</strong>free</p>
+                          <p>
+                            <strong>{{g.total}}</strong>total</p>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="service-body" v-else>No Data</div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="name" label="Name" min-width="120">
+            <template #default="scope">
+              <div class="badge">
+                {{scope.row.name}}
+              </div>
+            </template>
+          </el-table-column>
+          <!-- <el-table-column prop="country" label="Country" /> -->
+          <el-table-column prop="node_id" label="nodeID" min-width="120">
+            <template #default="scope">
+              <div class="flex-row copy-style" @click="system.$commonFun.copyContent(scope.row.node_id, 'Copied')">
+                {{system.$commonFun.hiddAddress(scope.row.node_id)}}
+                <svg t="1706499607741" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2309" width="18" height="18">
+                  <path d="M720 192h-544A80.096 80.096 0 0 0 96 272v608C96 924.128 131.904 960 176 960h544c44.128 0 80-35.872 80-80v-608C800 227.904 764.128 192 720 192z m16 688c0 8.8-7.2 16-16 16h-544a16 16 0 0 1-16-16v-608a16 16 0 0 1 16-16h544a16 16 0 0 1 16 16v608z"
+                    p-id="2310" fill="#b5b7c8"></path>
+                  <path d="M848 64h-544a32 32 0 0 0 0 64h544a16 16 0 0 1 16 16v608a32 32 0 1 0 64 0v-608C928 99.904 892.128 64 848 64z" p-id="2311" fill="#b5b7c8"></path>
+                  <path d="M608 360H288a32 32 0 0 0 0 64h320a32 32 0 1 0 0-64zM608 520H288a32 32 0 1 0 0 64h320a32 32 0 1 0 0-64zM480 678.656H288a32 32 0 1 0 0 64h192a32 32 0 1 0 0-64z" p-id="2312" fill="#b5b7c8"></path>
+                </svg>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="gpu_list" label="GPU" min-width="140">
+            <template #default="scope">
+              <div class="badge">
+                <div class="flex-row machines-style">
+                  <span v-for="(gpu, g) in scope.row.gpu_list" :key="g">
+                    {{gpu}}
+                  </span>
+                </div>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="region" label="Region" min-width="100" />
+          <el-table-column prop="task" label="Total Task">
+            <template #default="scope">
+              <div>
+                {{scope.row.task?scope.row.task.total : ''}}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="task" label="Completed(%)" min-width="100">
+            <template #default="scope">
+              <div>
+                {{scope.row.task ? `${system.$commonFun.fixedformat(scope.row.task.done,scope.row.task.total)}%` : '-'}}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="reward" label="Rewards">
+            <template #default="scope">
+              <div>
+                {{scope.row.reward?scope.row.reward.done : ''}}
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-pagination hide-on-single-page :page-size="paginZK.pageSize" :current-page="paginZK.pageNo" :pager-count="5" :small="small" :background="background" layout="total, prev, pager, next" :total="paginZK.total" @size-change="handleSizeChange"
+          @current-change="handleZKCurrentChange" />
+      </div>
     </div>
   </section>
 </template>
@@ -846,9 +1058,17 @@ export default defineComponent({
       total_deployments: 0,
       active_applications: 0
     })
+    const paginZK = reactive({
+      pageSize: 10,
+      pageNo: 1,
+      total: 0,
+      total_deployments: 0,
+      active_applications: 0
+    })
     const providerBody = reactive({
       data: {},
       ubiData: {},
+      ubiTableData: {},
       totalData: {
         gas_used_today: '',
         total_addresses: '',
@@ -864,15 +1084,25 @@ export default defineComponent({
       generalData: {}
     })
     const networkInput = ref('')
+    const networkZK = reactive({
+      owner_addr: '',
+      node_id: ''
+    })
     const small = ref(false)
     const background = ref(false)
     const dataArr = ref([])
     const expands = ref([])
+    const activeName = ref('CP')
+    const cpLoad = ref(false)
 
     function handleSizeChange (val) { }
     async function handleCurrentChange (currentPage) {
       pagin.pageNo = currentPage
       init()
+    }
+    async function handleZKCurrentChange (currentPage) {
+      paginZK.pageNo = currentPage
+      getUBITable()
     }
     async function init () {
       providersTableLoad.value = true
@@ -889,6 +1119,25 @@ export default defineComponent({
       } else {
         providersData.value = []
         if (providerRes.status) system.$commonFun.messageTip(providerRes.status, providerRes.message)
+      }
+      providersTableLoad.value = false
+    }
+    async function getUBITable () {
+      providersTableLoad.value = true
+      const page = paginZK.pageNo > 0 ? paginZK.pageNo - 1 : 0
+      const params = {
+        page_size: paginZK.pageSize,
+        page_no: page * paginZK.pageSize,
+        owner_addr: networkZK.owner_addr,
+        node_id: networkZK.node_id
+      }
+      const providerRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_UBI}providers?${system.$Qs.stringify(params)}`, 'get')
+      if (providerRes && providerRes.code === 0) {
+        paginZK.total = providerRes.data.total || 0
+        providerBody.ubiTableData = await getZKList(providerRes.data.list)
+      } else {
+        providerBody.ubiTableData = []
+        if (providerRes.msg) system.$commonFun.messageTip('error', providerRes.msg)
       }
       providersTableLoad.value = false
     }
@@ -910,10 +1159,30 @@ export default defineComponent({
       })
       return l
     }
+    async function getZKList (list) {
+      let l = list || []
+      l.forEach((element) => {
+        element.gpu_list = []
+        try {
+          if (element.resources && element.resources.length > 0) {
+            element.resources.forEach((machines) => {
+              if (machines.gpu.gpus && machines.gpu.gpus.length > 0) {
+                machines.gpu.gpus.forEach((gpu) => {
+                  if (element.gpu_list.indexOf(gpu.model) < 0) element.gpu_list.push(gpu.model)
+                })
+              }
+            })
+          }
+        } catch{ }
+      })
+      return l
+    }
     async function getUBITotal () {
       const statsRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_UBI}stats`, 'get')
-      if (statsRes && statsRes.code === 0) providerBody.ubiData = statsRes.data || {}
-      else providersData.ubiData = {}
+      if (statsRes && statsRes.code === 0) {
+        providerBody.ubiData = statsRes.data || {}
+        // changeZKtype()
+      } else providerBody.ubiData = {}
     }
     async function getTotal () {
       const statsRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_STATS}v2/stats`, 'get')
@@ -963,11 +1232,22 @@ export default defineComponent({
       pagin.pageNo = 1
       init()
     }, 700)
+    const searchZKProvider = system.$commonFun.debounce(async function () {
+      paginZK.pageNo = 1
+      getUBITable()
+    }, 700)
     function clearProvider () {
       networkInput.value = ''
-      pagin.pageSize = 10
-      pagin.pageNo = 1
-      init()
+      networkZK.owner_addr = ''
+      networkZK.node_id = ''
+      if (activeName.value === 'ZK-CP') {
+        paginZK.pageNo = 1
+        getUBITable()
+      } else {
+        pagin.pageSize = 10
+        pagin.pageNo = 1
+        init()
+      }
     }
     function expandChange (row, expandedRows) {
       // console.log(row, expandedRows)
@@ -986,12 +1266,16 @@ export default defineComponent({
       pagin.pageSize = 10
       pagin.pageNo = 1
       providersData.value = []
+      providerBody.ubiTableData = []
       providersLoad.value = false
       providersTableLoad.value = false
       networkInput.value = ''
+      networkZK.owner_addr = ''
+      networkZK.node_id = ''
       if (type) init()
       getOverview()
       getUBITotal()
+      getUBITable()
       getTotal()
       getCounters()
       getStorageStats()
@@ -1159,6 +1443,91 @@ export default defineComponent({
         machart_storage.resize();
         machart_vcpu.resize();
       })
+      cpLoad.value = false
+    }
+    const changeZKtype = () => {
+      const machart_zk_gpu = echarts.init(document.getElementById("maychar-zk-gpu"));
+      const machart_zk_memory = echarts.init(document.getElementById("maychar-zk-memory"));
+      const machart_zk_storage = echarts.init(document.getElementById("maychar-zk-storage"));
+      const machart_zk_vcpu = echarts.init(document.getElementById("maychar-zk-vcpu"));
+      const option = {
+        tooltip: {
+          trigger: 'item',
+          triggerOn: 'none'
+        },
+        color: ['#4db470', '#00b4ff'],
+        series: [
+          {
+            name: 'Total',
+            type: 'pie',
+            radius: ['50%', '70%'],
+            center: ['50%', '50%'],
+            avoidLabelOverlap: false,
+            itemStyle: {
+              borderRadius: 3,
+              borderColor: 'transparent',
+              borderWidth: 5
+            },
+            label: {
+              show: false,
+              position: 'center'
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: 11,
+                borderColor: 'transparent',
+                color: '#fff'
+              }
+            },
+            labelLine: {
+              show: false
+            }
+          }
+        ]
+      }
+      const option2 = JSON.parse(JSON.stringify(option))
+      const option3 = JSON.parse(JSON.stringify(option))
+      const option4 = JSON.parse(JSON.stringify(option))
+      const option5 = JSON.parse(JSON.stringify(option))
+
+      try {
+        option2.series[0].data = [
+          { value: providerBody.ubiData.providers.gpu.total - providerBody.ubiData.providers.gpu.free, name: providerBody.ubiData.providers.gpu.total - providerBody.ubiData.providers.gpu.free },
+          { value: providerBody.ubiData.providers.gpu.free, name: providerBody.ubiData.providers.gpu.free },
+        ]
+        option3.series[0].data = [
+          { value: providerBody.ubiData.providers.memory.total - providerBody.ubiData.providers.memory.free, name: system.$commonFun.sizeChange(providerBody.ubiData.providers.memory.total - providerBody.ubiData.providers.memory.free) + ' ' },
+          { value: providerBody.ubiData.providers.memory.free, name: system.$commonFun.sizeChange(providerBody.ubiData.providers.memory.free) },
+        ]
+        option4.series[0].data = [
+          { value: providerBody.ubiData.providers.storage.total - providerBody.ubiData.providers.storage.free, name: system.$commonFun.sizeChange(providerBody.ubiData.providers.storage.total - providerBody.ubiData.providers.storage.free) + ' ' },
+          { value: providerBody.ubiData.providers.storage.free, name: system.$commonFun.sizeChange(providerBody.ubiData.providers.storage.free) },
+        ]
+        option5.series[0].data = [
+          { value: providerBody.ubiData.providers.vcpu.total - providerBody.ubiData.providers.vcpu.free, name: `${providerBody.ubiData.providers.vcpu.total - providerBody.ubiData.providers.vcpu.free} vcpu ` },
+          { value: providerBody.ubiData.providers.vcpu.free, name: `${providerBody.ubiData.providers.vcpu.free} vcpu` },
+        ]
+      } catch{ }
+      machart_zk_gpu.setOption(option2);
+      machart_zk_memory.setOption(option3);
+      machart_zk_storage.setOption(option4);
+      machart_zk_vcpu.setOption(option5);
+      window.addEventListener("resize", function () {
+        machart_zk_gpu.resize();
+        machart_zk_memory.resize();
+        machart_zk_storage.resize();
+        machart_zk_vcpu.resize();
+      })
+      cpLoad.value = false
+    }
+    const handleClick = async (tab, event) => {
+      activeName.value = tab.props.name || 'CP'
+      cpLoad.value = true
+      networkInput.value = ''
+      await system.$commonFun.timeout(500)
+      if (activeName.value === 'ZK-CP') changeZKtype()
+      else changetype()
     }
     onActivated(async () => {
       reset('init')
@@ -1172,14 +1541,16 @@ export default defineComponent({
       providersTableLoad,
       providersData,
       networkInput,
+      networkZK,
       pagin,
+      paginZK,
       small,
       background,
       providerBody,
       badgeIcon01,
       badgeIcon02,
-      accessToken, expands,
-      handleSizeChange, handleCurrentChange, searchProvider, clearProvider, expandChange, unifyNumber, getRowKeys
+      accessToken, expands, activeName, cpLoad,
+      handleSizeChange, handleCurrentChange, handleZKCurrentChange, searchProvider, searchZKProvider, clearProvider, expandChange, unifyNumber, getRowKeys, handleClick
     }
   }
 })
@@ -1218,6 +1589,7 @@ export default defineComponent({
   :deep(.providers-network) {
     padding: 0.4rem 0;
     &.providers-overview {
+      padding: 0.4rem 0 0;
       @media screen and (max-width: 992px) {
         padding: 0.4rem 0.5rem;
       }
@@ -1238,6 +1610,41 @@ export default defineComponent({
         font-weight: 600;
         text-transform: capitalize;
         // border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+      }
+    }
+    .tabs-container {
+      margin: 0.8rem 0 0;
+      .el-tabs {
+        .el-tabs__header {
+          margin: 0 0 0.2rem;
+          .el-tabs__nav {
+            display: flex;
+            align-items: stretch;
+            width: 100%;
+            border-top: 1px solid #868688;
+            border-bottom-left-radius: 0.15rem;
+            border-bottom-right-radius: 0.15rem;
+            overflow: hidden;
+            .el-tabs__item {
+              width: 50%;
+              height: auto;
+              padding: 0.2rem 0;
+              background-color: #26272a;
+              font-size: 0.18rem;
+              font-weight: 600;
+              color: #fff;
+              text-align: center;
+              line-height: 1;
+              &.is-active {
+                background-color: #447dff;
+              }
+            }
+          }
+        }
+        .el-tabs__nav-wrap::after,
+        .el-tabs__active-bar {
+          display: none;
+        }
       }
     }
     .el-row {
@@ -1354,7 +1761,7 @@ export default defineComponent({
         }
       }
       &.erchart-body {
-        margin: 0.7rem 0 0;
+        margin: 0;
         .el-col {
           margin: 0.3rem 0 0;
           .erchart {
@@ -1446,7 +1853,7 @@ export default defineComponent({
               }
             }
             .title {
-              font-size: 0.22rem;
+              font-size: 0.18rem;
             }
             h6 {
               display: flex;
@@ -1512,6 +1919,9 @@ export default defineComponent({
       .el-input {
         width: 50%;
         margin: 0 0.2rem 0 0;
+        &.zk-input{
+width: 30%;
+        }
         .el-input__wrapper {
           background-color: rgb(21, 23, 28);
           border: 1px solid rgb(38, 39, 47);
@@ -1720,6 +2130,12 @@ export default defineComponent({
             }
             .el-divider--horizontal {
               margin: 0.1rem 0;
+            }
+          }
+          .copy-style {
+            cursor: pointer;
+            svg {
+              margin: 0 0 0 0.05rem;
             }
           }
           .badge {
