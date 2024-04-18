@@ -387,6 +387,12 @@ function storageNumformat(data) {
   return dataList[1] ? `${dataList[0]} ${dataList[1]}` : dataList[0]
 }
 
+function fixedformat(num1, num2) {
+  if (!num1 || !num2) return 0
+  let dataList = num1 / num2 * 100
+  return parseFloat(dataList).toFixed(2)
+}
+
 function filNumformat(data) {
   if (!data) return
   const price_regular = data ? data.split(" ") : []
@@ -485,6 +491,7 @@ export default {
   sizeChange,
   byteStorage,
   storageNumformat,
+  fixedformat,
   filNumformat,
   timeFormat,
   getUnit,
