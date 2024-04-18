@@ -920,27 +920,27 @@
                       <div class="li-body">
                         <p :class="{'t':true, 't-capitalize': true}">vcpu</p>
                         <p>
-                          <strong>{{n.vcpu.free}}</strong>free</p>
+                          <strong>{{system.$commonFun.replaceFormat(n.vcpu.free)}}</strong>free</p>
                         <p>
-                          <strong>{{n.vcpu.total}}</strong>total</p>
+                          <strong>{{system.$commonFun.replaceFormat(n.vcpu.total)}}</strong>total</p>
                       </div>
                     </li>
                     <li>
                       <div class="li-body">
                         <p :class="{'t':true}">memory</p>
                         <p>
-                          <strong>{{n.memory.free}}</strong>free</p>
+                          <strong>{{system.$commonFun.replaceFormat(n.memory.free)}}</strong>free</p>
                         <p>
-                          <strong>{{n.memory.total}}</strong>total</p>
+                          <strong>{{system.$commonFun.replaceFormat(n.memory.total)}}</strong>total</p>
                       </div>
                     </li>
                     <li>
                       <div class="li-body">
                         <p :class="{'t':true}">storage</p>
                         <p>
-                          <strong>{{n.storage.free}}</strong>free</p>
+                          <strong>{{system.$commonFun.replaceFormat(n.storage.free)}}</strong>free</p>
                         <p>
-                          <strong>{{n.storage.total}}</strong>total</p>
+                          <strong>{{system.$commonFun.replaceFormat(n.storage.total)}}</strong>total</p>
                       </div>
                     </li>
                   </ul>
@@ -951,9 +951,9 @@
                         <div v-for="g in n.gpu.gpus" :key="g" :class="{'li-body':true}">
                           <p :class="{'t':true, 't-capitalize': true}">{{g.model}} (gpu)</p>
                           <p>
-                            <strong>{{g.free}}</strong>free</p>
+                            <strong>{{system.$commonFun.replaceFormat(g.free)}}</strong>free</p>
                           <p>
-                            <strong>{{g.total}}</strong>total</p>
+                            <strong>{{system.$commonFun.replaceFormat(g.total)}}</strong>total</p>
                         </div>
                       </div>
                     </li>
@@ -984,11 +984,11 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="gpu_list" label="GPU" min-width="140">
+          <el-table-column prop="gpu_tags" label="GPU" min-width="140">
             <template #default="scope">
               <div class="badge">
                 <div class="flex-row machines-style">
-                  <span v-for="(gpu, g) in scope.row.gpu_list" :key="g">
+                  <span v-for="(gpu, g) in scope.row.gpu_tags" :key="g">
                     {{gpu}}
                   </span>
                 </div>
@@ -1006,7 +1006,7 @@
           <el-table-column prop="task" label="Completed(%)" min-width="100">
             <template #default="scope">
               <div>
-                {{scope.row.task ? `${system.$commonFun.fixedformat(scope.row.task.done,scope.row.task.total)}%` : '-'}}
+                {{system.$commonFun.fixedformat(scope.row.completion_rate,10000)}}%
               </div>
             </template>
           </el-table-column>
@@ -1134,7 +1134,7 @@ export default defineComponent({
       const providerRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_UBI}providers?${system.$Qs.stringify(params)}`, 'get')
       if (providerRes && providerRes.code === 0) {
         paginZK.total = providerRes.data.total || 0
-        providerBody.ubiTableData = await getZKList(providerRes.data.list)
+        providerBody.ubiTableData = providerRes.data.list || []
       } else {
         providerBody.ubiTableData = []
         if (providerRes.msg) system.$commonFun.messageTip('error', providerRes.msg)
@@ -1151,24 +1151,6 @@ export default defineComponent({
               if (machines.specs.gpu.details && machines.specs.gpu.details.length > 0) {
                 machines.specs.gpu.details.forEach((gpu) => {
                   if (element.gpu_list.indexOf(gpu.product_name) < 0) element.gpu_list.push(gpu.product_name)
-                })
-              }
-            })
-          }
-        } catch{ }
-      })
-      return l
-    }
-    async function getZKList (list) {
-      let l = list || []
-      l.forEach((element) => {
-        element.gpu_list = []
-        try {
-          if (element.resources && element.resources.length > 0) {
-            element.resources.forEach((machines) => {
-              if (machines.gpu.gpus && machines.gpu.gpus.length > 0) {
-                machines.gpu.gpus.forEach((gpu) => {
-                  if (element.gpu_list.indexOf(gpu.model) < 0) element.gpu_list.push(gpu.model)
                 })
               }
             })
@@ -1524,7 +1506,6 @@ export default defineComponent({
     const handleClick = async (tab, event) => {
       activeName.value = tab.props.name || 'CP'
       cpLoad.value = true
-      networkInput.value = ''
       await system.$commonFun.timeout(500)
       if (activeName.value === 'ZK-CP') changeZKtype()
       else changetype()
@@ -1919,8 +1900,8 @@ export default defineComponent({
       .el-input {
         width: 50%;
         margin: 0 0.2rem 0 0;
-        &.zk-input{
-width: 30%;
+        &.zk-input {
+          width: 30%;
         }
         .el-input__wrapper {
           background-color: rgb(21, 23, 28);
