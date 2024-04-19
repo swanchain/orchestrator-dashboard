@@ -703,13 +703,14 @@ export default defineComponent({
   align-items: center;
 
   .wrongNet {
+    padding: 0;
     margin: auto !important;
     box-shadow: 0 0 13px rgba(128, 128, 128, 0.8);
     border-radius: 0.2rem;
     text-align: left;
 
     .el-dialog__header {
-      padding: 0.2rem 0.4rem;
+      padding: 0.1rem 0.4rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -749,7 +750,7 @@ export default defineComponent({
 
     .el-dialog__body {
       position: relative;
-      padding: 0.3rem 0.4rem 0.4rem;
+      padding: 0.2rem 0.4rem 0.3rem;
       font-size: 0.16rem;
       @media screen and (max-width: 540px) {
         padding: 0.2rem;
