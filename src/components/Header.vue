@@ -79,7 +79,7 @@
       </div>
     </div>
 
-    <el-dialog v-model="centerDialogVisible" title="API Keys" custom-class="apikey_body">
+    <el-dialog v-model="centerDialogVisible" title="API Keys" custom-class="apikey_body" class="apikey_body">
       <div class="cont" v-loading="tokenShow">
         <el-button type="primary" class="add-button" @click="createCom">New API Key</el-button>
         <el-input v-show="toolData !== ''" v-model="toolData" type="text" readonly placeholder=" ">
@@ -88,10 +88,10 @@
               <!-- <i class="icon" @click="tokenShow=!tokenShow">
                 <View />
               </i> -->
-              <i class="icon" @click="system.$commonFun.copyContent(toolData, 'Copied')">
+              <i class="icon flex-row" @click="system.$commonFun.copyContent(toolData, 'Copied')">
                 <DocumentCopy />
               </i>
-              <i class="icon" @click="deleteToken(toolData)">
+              <i class="icon flex-row" @click="deleteToken(toolData)">
                 <Delete />
               </i>
             </div>
@@ -105,7 +105,7 @@
       </template>
     </el-dialog>
 
-    <el-dialog title="Account" v-model="wrongVisible" :append-to-body="false" :width="bodyWidth" custom-class="wrongNet">
+    <el-dialog title="Account" v-model="wrongVisible" :append-to-body="false" :width="bodyWidth" custom-class="wrongNet" class="wrongNet">
       <label>Connected with MetaMask</label>
       <div class="address">{{system.$commonFun.hiddAddress(metaAddress)}}</div>
       <div class="area flex-row">
@@ -143,7 +143,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="CP Collateral" v-model="cpCollateralCont.diagle" :append-to-body="false" :width="bodyWidth" custom-class="wrongNet">
+    <el-dialog title="CP Collateral" v-model="cpCollateralCont.diagle" :append-to-body="false" :width="bodyWidth" custom-class="wrongNet" class="wrongNet">
       <div v-loading="cpCollateralCont.show">
         <label v-if="cpCollateralCont.tx_hash !== ''">TransactionHash:
           <b @click="system.$commonFun.goLink(`${txLink}/tx/${cpCollateralCont.tx_hash}`)">{{cpCollateralCont.tx_hash}}</b>
@@ -171,7 +171,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="CP Collateral Check" v-model="cpCheckCont.diagle" :append-to-body="false" :width="bodyWidth" custom-class="wrongNet">
+    <el-dialog title="CP Collateral Check" v-model="cpCheckCont.diagle" :append-to-body="false" :width="bodyWidth" custom-class="wrongNet" class="wrongNet">
       <div class="area flex-row" v-loading="cpCheckCont.show">
         <div class="fast width">
           <label>Balance</label>
@@ -549,17 +549,17 @@ export default defineComponent({
         justify-content: flex-end;
         margin: 6px 0 0;
       }
-      .pcShow{
+      .pcShow {
         display: block;
-      @media screen and (max-width: 767px) {
+        @media screen and (max-width: 767px) {
+          display: none;
+        }
+      }
+      .mobileShow {
         display: none;
-      }
-      }
-      .mobileShow{
-        display: none;
-      @media screen and (max-width: 767px) {
-        display: block;
-      }
+        @media screen and (max-width: 767px) {
+          display: block;
+        }
       }
     }
     .nav {
@@ -676,12 +676,13 @@ export default defineComponent({
   display: flex;
   align-items: center;
   .wrongNet {
+    padding: 0;
     margin: auto !important;
     box-shadow: 0 0 13px rgba(128, 128, 128, 0.8);
     border-radius: 0.2rem;
     text-align: left;
     .el-dialog__header {
-      padding: 0.2rem 0.4rem;
+      padding: 0.1rem 0.4rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -715,7 +716,7 @@ export default defineComponent({
     }
     .el-dialog__body {
       position: relative;
-      padding: 0.3rem 0.4rem 0.4rem;
+      padding: 0.2rem 0.4rem 0.3rem;
       font-size: 0.16rem;
       @media screen and (max-width: 540px) {
         padding: 0.2rem;
@@ -942,7 +943,6 @@ export default defineComponent({
         height: 100%;
       }
       .icon {
-        display: inline-block;
         width: 16px;
         height: 16px;
         margin: 0 3px;
