@@ -253,7 +253,7 @@
       />
     </div>
 
-    <el-dialog v-model="txhashVisible" title="Payment Detail" :width="bodyWidth" :append-to-body="false" custom-class="wrongNet" :before-close="handleClose">
+    <el-dialog v-model="txhashVisible" title="Payment Detail" :width="bodyWidth" :append-to-body="false" custom-class="wrongNet" class="wrongNet" :before-close="handleClose">
       <div class="cont">
         <div class="area flex-row">
           <div class="fast width">
