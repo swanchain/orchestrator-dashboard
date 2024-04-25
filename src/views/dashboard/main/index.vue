@@ -929,18 +929,18 @@
                       <div class="li-body">
                         <p :class="{'t':true}">memory</p>
                         <p>
-                          <strong>{{system.$commonFun.replaceFormat(n.memory.free)}}</strong>free</p>
+                          <strong>{{system.$commonFun.sizeChange(n.memory.free)}}</strong>free</p>
                         <p>
-                          <strong>{{system.$commonFun.replaceFormat(n.memory.total)}}</strong>total</p>
+                          <strong>{{system.$commonFun.sizeChange(n.memory.total)}}</strong>total</p>
                       </div>
                     </li>
                     <li>
                       <div class="li-body">
                         <p :class="{'t':true}">storage</p>
                         <p>
-                          <strong>{{system.$commonFun.replaceFormat(n.storage.free)}}</strong>free</p>
+                          <strong>{{system.$commonFun.sizeChange(n.storage.free)}}</strong>free</p>
                         <p>
-                          <strong>{{system.$commonFun.replaceFormat(n.storage.total)}}</strong>total</p>
+                          <strong>{{system.$commonFun.sizeChange(n.storage.total)}}</strong>total</p>
                       </div>
                     </li>
                   </ul>
@@ -1013,7 +1013,7 @@
           <el-table-column prop="reward" label="Rewards">
             <template #default="scope">
               <div>
-                {{scope.row.reward?scope.row.reward.done : ''}}
+                {{scope.row.reward?system.$commonFun.replaceFormat(scope.row.reward.done) : ''}}
               </div>
             </template>
           </el-table-column>
