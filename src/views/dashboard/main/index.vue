@@ -2115,6 +2115,7 @@ export default defineComponent({
           }
           .copy-style {
             cursor: pointer;
+            flex-wrap: wrap;
             svg {
               margin: 0 0 0 0.05rem;
             }
@@ -2122,6 +2123,8 @@ export default defineComponent({
           .badge {
             display: flex;
             align-items: center;
+            white-space: normal;
+            word-break: break-word;
             img {
               width: 30px;
               height: 30px;
