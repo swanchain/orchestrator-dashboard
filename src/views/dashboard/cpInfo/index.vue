@@ -2,69 +2,57 @@
   <section id="container">
     <div class="providers-overview">
       <div class="title">Basic Information</div>
-      <el-row :gutter="16" class="border-row">
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Total Number Of Node</span>
-            </h6>
-            <b v-loading="providersTableLoad" class="flex-row font-bold color">{{system.$commonFun.replaceFormat(pagin.total)}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Total CPU</span>
-            </h6>
-            <b v-loading="providersTableLoad" class="flex-row font-bold color">{{system.$commonFun.replaceFormat(ringGraphData.data.cpu_total)}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Total GPU</span>
-            </h6>
-            <b v-loading="providersTableLoad" class="flex-row font-bold color">{{system.$commonFun.replaceFormat(ringGraphData.data.gpu_total)}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Total Memory (GiB)</span>
-            </h6>
-            <b v-loading="providersTableLoad" class="flex-row font-bold color">{{system.$commonFun.replaceFormat(ringGraphData.data.memory_total)}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Total Storage (GiB)</span>
-            </h6>
-            <b v-loading="providersTableLoad" class="flex-row font-bold color">{{system.$commonFun.replaceFormat(ringGraphData.data.storage_total)}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">average score</span>
-            </h6>
-            <b v-loading="providersTableLoad" class="flex-row font-bold color">{{ringGraphData.data.average_score_total || '-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">total claimed amount</span>
-            </h6>
-            <b v-loading="providersTableLoad" class="flex-row font-bold color">{{ringGraphData.data.claimed_amount_total || '-'}}</b>
-          </div>
-        </el-col>
-      </el-row>
 
       <div class="tabs-container">
-        <el-row :gutter="16" justify="center" class="erchart-body" v-loading="cpLoad">
-          <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
-            <div class="erchart">
+        <el-row :gutter="16" justify="space-between" class="erchart-body">
+          <el-col :xs="24" :sm="12" :md="10" :lg="10" :xl="10">
+            <el-row :gutter="0" class="border-row" v-loading="cpLoad">
+              <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                <div class="grid-list flex-row space-between">
+                  <h6>Total Number Of Node</h6>
+                  <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(pagin.total)}}</b>
+                </div>
+              </el-col>
+              <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                <div class="grid-list flex-row space-between">
+                  <h6>Total CPU</h6>
+                  <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(ringGraphData.data.cpu_total)}}</b>
+                </div>
+              </el-col>
+              <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                <div class="grid-list flex-row space-between">
+                  <h6>Total GPU</h6>
+                  <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(ringGraphData.data.gpu_total)}}</b>
+                </div>
+              </el-col>
+              <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                <div class="grid-list flex-row space-between">
+                  <h6>Total Memory (GiB)</h6>
+                  <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(ringGraphData.data.memory_total)}}</b>
+                </div>
+              </el-col>
+              <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                <div class="grid-list flex-row space-between">
+                  <h6>Total Storage (GiB)</h6>
+                  <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(ringGraphData.data.storage_total)}}</b>
+                </div>
+              </el-col>
+              <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                <div class="grid-list flex-row space-between">
+                  <h6>average score</h6>
+                  <b class="flex-row font-bold color">{{ringGraphData.data.average_score_total || '-'}}</b>
+                </div>
+              </el-col>
+              <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                <div class="grid-list flex-row space-between">
+                  <h6>total claimed amount (swan token)</h6>
+                  <b class="flex-row font-bold color">{{ringGraphData.data.claimed_amount_total || '-'}}</b>
+                </div>
+              </el-col>
+            </el-row>
+          </el-col>
+          <el-col :xs="24" :sm="12" :md="7" :lg="7" :xl="7">
+            <div class="erchart" v-loading="cpLoad">
               <div class="drain-time"></div>
               <div class="drain-time"></div>
               <div class="drain-time"></div>
@@ -73,11 +61,11 @@
               <div id="maychar-job" class="maychar"></div>
               <h6 class="background-free">
                 <i></i>
-                <b>{{ringGraphData.data.total_failed}}</b> Failed
-              </h6>
-              <h6 class="background-total">
-                <i></i>
                 <b>{{ringGraphData.data.total_success}}</b> Success
+              </h6>
+              <h6 class="background-used">
+                <i></i>
+                <b>{{ringGraphData.data.total_failed}}</b> Failed
               </h6>
               <h6 class="background-total">
                 <i></i>
@@ -85,8 +73,8 @@
               </h6>
             </div>
           </el-col>
-          <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
-            <div class="erchart">
+          <el-col :xs="24" :sm="12" :md="7" :lg="7" :xl="7">
+            <div class="erchart" v-loading="cpLoad">
               <div class="drain-time"></div>
               <div class="drain-time"></div>
               <div class="drain-time"></div>
@@ -289,6 +277,7 @@ export default defineComponent({
       init()
     }
     async function init () {
+      cpLoad.value = true
       providersTableLoad.value = true
       const page = pagin.pageNo > 0 ? pagin.pageNo - 1 : 0
       const params = {
@@ -751,6 +740,7 @@ export default defineComponent({
         changetype()
       } else {
         providersData.value = []
+        cpLoad.value = false
         if (providerRes.status) system.$commonFun.messageTip(providerRes.status, providerRes.message)
       }
       providersTableLoad.value = false
@@ -1031,8 +1021,6 @@ export default defineComponent({
         padding: 0.4rem 0.5rem;
       }
     }
-    .border-row {
-    }
     .title {
       margin: 0;
       font-size: 0.24rem;
@@ -1046,7 +1034,7 @@ export default defineComponent({
       }
     }
     .tabs-container {
-      margin: 0.3rem 0;
+      margin: 0;
       .el-tabs {
         .el-tabs__header {
           margin: 0 0 0.2rem;
@@ -1085,9 +1073,87 @@ export default defineComponent({
         &.flex-row {
           display: flex;
         }
-        .grid-content {
+        .border-row {
+          position: relative;
+          height: calc(100% - 0.3rem);
           padding: 0.15rem;
           margin: 0.3rem 0 0;
+          border-radius: 0.15rem;
+          overflow: hidden;
+          text-align: center;
+          background: #26272a;
+          border: 1px solid #3a67cf;
+          .el-col {
+            .grid-list {
+              h6 {
+                padding: 0 6px 0 0;
+                font-size: 12px;
+                text-transform: capitalize;
+                text-align: left;
+                @media screen and (min-width: 1800px) {
+                  font-size: 14px;
+                }
+                @media screen and (max-width: 768px) {
+                  font-size: 0.22rem;
+                }
+              }
+              b {
+                align-items: baseline;
+                margin: 6px 0;
+                font-size: 14px;
+                line-height: 1;
+                @media screen and (min-width: 1800px) {
+                  font-size: 16px;
+                }
+                @media screen and (max-width: 768px) {
+                  font-size: 0.24rem;
+                }
+                .span {
+                  margin: 0 0 0 10px;
+                  font-size: 0.16rem;
+                  @media screen and (min-width: 1800px) {
+                    font-size: 0.18rem;
+                  }
+                  @media screen and (max-width: 768px) {
+                    font-size: 15px;
+                  }
+                  &.up {
+                    color: #38a169;
+                  }
+                  &.down {
+                    color: #e53e3e;
+                  }
+                  small {
+                    margin: 0;
+                    font-family: "Montserrat-Regular";
+                    font-weight: normal;
+                    color: #a0a0a0;
+                    font-size: 0.14rem;
+                    @media screen and (min-width: 1800px) {
+                      font-size: 0.16rem;
+                    }
+                    @media screen and (max-width: 768px) {
+                      font-size: 13px;
+                    }
+                  }
+                }
+                small {
+                  margin: 0 0 0 4px;
+                  font-size: 0.16rem;
+                  @media screen and (min-width: 1800px) {
+                    font-size: 0.18rem;
+                  }
+                  @media screen and (max-width: 768px) {
+                    font-size: 15px;
+                  }
+                }
+              }
+            }
+          }
+        }
+        .grid-content {
+          padding: 0.15rem;
+          margin: 0;
           background: #26272a;
           // backdrop-filter: blur(5px);
           border: 1px solid #3a67cf;
@@ -1196,7 +1262,7 @@ export default defineComponent({
       &.erchart-body {
         margin: 0;
         .el-col {
-          margin: 0.3rem 0 0;
+          margin: 0.1rem 0;
           .erchart {
             position: relative;
             padding: 0.15rem;
