@@ -5,7 +5,7 @@
 
       <div class="tabs-container">
         <el-row :gutter="16" justify="space-between" class="erchart-body">
-          <el-col :xs="24" :sm="12" :md="10" :lg="10" :xl="10">
+          <el-col :xs="24" :sm="24" :md="10" :lg="10" :xl="10">
             <el-row :gutter="0" class="border-row" v-loading="cpLoad">
               <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
                 <div class="grid-list flex-row space-between">
@@ -57,7 +57,7 @@
               <div class="drain-time"></div>
               <div class="drain-time"></div>
               <div class="drain-time"></div>
-              <h6>Job completion in the last seven days</h6>
+              <h6 class="title-graph">Job completion in the last seven days</h6>
               <div id="maychar-job" class="maychar"></div>
               <h6 class="background-free">
                 <i></i>
@@ -79,7 +79,7 @@
               <div class="drain-time"></div>
               <div class="drain-time"></div>
               <div class="drain-time"></div>
-              <h6>Reward claims in the last seven days</h6>
+              <h6 class="title-graph">Reward claims in the last seven days</h6>
               <div id="maychar-reward" class="maychar"></div>
               <h6 class="background-free">
                 <i></i>
@@ -1265,6 +1265,7 @@ export default defineComponent({
           margin: 0.1rem 0;
           .erchart {
             position: relative;
+            height: calc(100% - 0.6rem);
             padding: 0.15rem;
             margin: 0.3rem 0 0;
             border-radius: 0.15rem;
@@ -1361,6 +1362,14 @@ export default defineComponent({
               margin: 0 0 0.1rem;
               font-size: 0.14rem;
               font-weight: 100;
+              &.title-graph {
+                min-height: 0.36rem;
+                line-height: 0.18rem;
+                @media screen and (max-width: 768px) {
+                  min-height: 0.48rem;
+                  line-height: 0.24rem;
+                }
+              }
               @media screen and (max-width: 768px) {
                 font-size: 0.22rem;
               }
