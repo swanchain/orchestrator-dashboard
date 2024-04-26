@@ -1265,6 +1265,7 @@ export default defineComponent({
           margin: 0.1rem 0;
           .erchart {
             position: relative;
+            height: calc(100% - 0.6rem);
             padding: 0.15rem;
             margin: 0.3rem 0 0;
             border-radius: 0.15rem;
