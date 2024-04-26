@@ -601,7 +601,7 @@
 
       <div class="tabs-container">
         <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
-          <el-tab-pane name="CP" label="Swan Network Providers"></el-tab-pane>
+          <el-tab-pane name="CP" label="FCP (Fog Computing Provider)"></el-tab-pane>
           <el-tab-pane name="ZK-CP" label="ECP (Edge Computing Provider)"></el-tab-pane>
 
           <el-row :gutter="16" v-if="activeName === 'CP'" class="erchart-body" v-loading="cpLoad">
