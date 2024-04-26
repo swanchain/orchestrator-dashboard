@@ -1127,7 +1127,7 @@ export default defineComponent({
       const page = paginZK.pageNo > 0 ? paginZK.pageNo - 1 : 0
       const params = {
         page_size: paginZK.pageSize,
-        page_no: page * paginZK.pageSize,
+        page_no: page,
         owner_addr: networkZK.owner_addr,
         node_id: networkZK.node_id
       }
@@ -2115,6 +2115,7 @@ export default defineComponent({
           }
           .copy-style {
             cursor: pointer;
+            flex-wrap: wrap;
             svg {
               margin: 0 0 0 0.05rem;
             }
@@ -2122,6 +2123,8 @@ export default defineComponent({
           .badge {
             display: flex;
             align-items: center;
+            white-space: normal;
+            word-break: break-word;
             img {
               width: 30px;
               height: 30px;
