@@ -1127,7 +1127,7 @@ export default defineComponent({
       const page = paginZK.pageNo > 0 ? paginZK.pageNo - 1 : 0
       const params = {
         page_size: paginZK.pageSize,
-        page_no: page * paginZK.pageSize,
+        page_no: page,
         owner_addr: networkZK.owner_addr,
         node_id: networkZK.node_id
       }
