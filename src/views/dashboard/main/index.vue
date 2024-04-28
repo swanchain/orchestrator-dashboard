@@ -1003,17 +1003,10 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="task" label="Completed(%)" min-width="100">
+          <el-table-column prop="task" label="Completed(%)" min-width="140">
             <template #default="scope">
               <div>
                 {{system.$commonFun.fixedformat(scope.row.completion_rate,10000)}}%
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="reward" label="Rewards">
-            <template #default="scope">
-              <div>
-                {{scope.row.reward?system.$commonFun.replaceFormat(scope.row.reward.done) : ''}}
               </div>
             </template>
           </el-table-column>
