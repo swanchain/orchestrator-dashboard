@@ -2,98 +2,150 @@
   <section id="container">
     <div class="providers-overview">
       <div class="title">Basic Information</div>
+      <el-row :gutter="16" class="border-row" v-loading="cpLoad">
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">Total Number Of Node</h6>
+            <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(pagin.total)}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">Total CPU</h6>
+            <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(ringGraphData.data.cpu_total)}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">Total GPU</h6>
+            <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(ringGraphData.data.gpu_total)}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">Total Memory (GiB)</h6>
+            <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(ringGraphData.data.memory_total)}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">Total Storage (GiB)</h6>
+            <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(ringGraphData.data.storage_total)}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">average score</h6>
+            <b class="flex-row font-bold color">{{ringGraphData.data.average_score_total || '-'}}</b>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <div class="grid-content">
+            <h6 class="flex-row">total claimed amount (swan token)</h6>
+            <b class="flex-row font-bold color">{{ringGraphData.data.claimed_amount_total || '-'}}</b>
+          </div>
+        </el-col>
+      </el-row>
 
       <div class="tabs-container">
         <el-row :gutter="16" justify="space-between" class="erchart-body">
-          <el-col :xs="24" :sm="24" :md="10" :lg="10" :xl="10">
-            <el-row :gutter="0" class="border-row" v-loading="cpLoad">
-              <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-                <div class="grid-list flex-row space-between">
-                  <h6>Total Number Of Node</h6>
-                  <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(pagin.total)}}</b>
-                </div>
-              </el-col>
-              <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-                <div class="grid-list flex-row space-between">
-                  <h6>Total CPU</h6>
-                  <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(ringGraphData.data.cpu_total)}}</b>
-                </div>
-              </el-col>
-              <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-                <div class="grid-list flex-row space-between">
-                  <h6>Total GPU</h6>
-                  <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(ringGraphData.data.gpu_total)}}</b>
-                </div>
-              </el-col>
-              <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-                <div class="grid-list flex-row space-between">
-                  <h6>Total Memory (GiB)</h6>
-                  <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(ringGraphData.data.memory_total)}}</b>
-                </div>
-              </el-col>
-              <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-                <div class="grid-list flex-row space-between">
-                  <h6>Total Storage (GiB)</h6>
-                  <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(ringGraphData.data.storage_total)}}</b>
-                </div>
-              </el-col>
-              <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-                <div class="grid-list flex-row space-between">
-                  <h6>average score</h6>
-                  <b class="flex-row font-bold color">{{ringGraphData.data.average_score_total || '-'}}</b>
-                </div>
-              </el-col>
-              <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-                <div class="grid-list flex-row space-between">
-                  <h6>total claimed amount (swan token)</h6>
-                  <b class="flex-row font-bold color">{{ringGraphData.data.claimed_amount_total || '-'}}</b>
-                </div>
-              </el-col>
-            </el-row>
-          </el-col>
-          <el-col :xs="24" :sm="12" :md="7" :lg="7" :xl="7">
+          <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
             <div class="erchart" v-loading="cpLoad">
               <div class="drain-time"></div>
               <div class="drain-time"></div>
               <div class="drain-time"></div>
               <div class="drain-time"></div>
               <h6 class="title-graph">Job completion in the last seven days</h6>
-              <div id="maychar-job" class="maychar"></div>
-              <h6 class="background-free">
-                <i></i>
-                <b>{{ringGraphData.data.total_success}}</b> Success
-              </h6>
-              <h6 class="background-used">
-                <i></i>
-                <b>{{ringGraphData.data.total_failed}}</b> Failed
-              </h6>
-              <h6 class="background-total">
-                <i></i>
-                <b>{{ringGraphData.data.total_submit}}</b> Total
-              </h6>
+              <div class="flex-row">
+                <div id="maychar-job" class="maychar"></div>
+                <div class="right">
+                  <h6 class="flex-row background-free">
+                    <i></i>
+                    <b>{{ringGraphData.data.total_success}}</b> Success
+                  </h6>
+                  <h6 class="flex-row background-used">
+                    <i></i>
+                    <b>{{ringGraphData.data.total_failed}}</b> Failed
+                  </h6>
+                  <h6 class="flex-row background-total">
+                    <i></i>
+                    <b>{{ringGraphData.data.total_submit}}</b> Total
+                  </h6>
+                </div>
+              </div>
             </div>
           </el-col>
-          <el-col :xs="24" :sm="12" :md="7" :lg="7" :xl="7">
+          <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
             <div class="erchart" v-loading="cpLoad">
               <div class="drain-time"></div>
               <div class="drain-time"></div>
               <div class="drain-time"></div>
               <div class="drain-time"></div>
               <h6 class="title-graph">Reward claims in the last seven days</h6>
-              <div id="maychar-reward" class="maychar"></div>
-              <h6 class="background-free">
-                <i></i>
-                <b>{{ringGraphData.data.claimed_count_total}}</b> Claimed Count
-              </h6>
-              <h6 class="background-used">
-                <i></i>
-                <b>{{ringGraphData.data.waitng_total}}</b> Waiting
-              </h6>
-              <h6 class="background-total">
-                <i></i>
-                <b>{{ringGraphData.data.claim_total}}</b> Total
-              </h6>
+              <div class="flex-row">
+                <div id="maychar-reward" class="maychar"></div>
+                <div class="right">
+                  <h6 class="flex-row background-free">
+                    <i></i>
+                    <b>{{ringGraphData.data.claimed_count_total}}</b> Claimed Count
+                  </h6>
+                  <h6 class="flex-row background-used">
+                    <i></i>
+                    <b>{{ringGraphData.data.waitng_total}}</b> Waiting
+                  </h6>
+                  <h6 class="flex-row background-total">
+                    <i></i>
+                    <b>{{ringGraphData.data.claim_total}}</b> Total
+                  </h6>
+                </div>
+              </div>
             </div>
+          </el-col>
+        </el-row>
+      </div>
+
+      <div class="title t-margin">Competition Score</div>
+      <div class="tabs-container">
+        <el-row :gutter="16" justify="space-between" class="erchart-body">
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+            <h6 class="subtitle">Job completion in the last seven days</h6>
+            <el-row :gutter="16" v-loading="cpLoad">
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <div class="grid-content small-margin">
+                  <h6 class="flex-row">ECP (Edge Computing Provider) Reward</h6>
+                  <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(35)}}</b>
+                </div>
+              </el-col>
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <div class="grid-content small-margin">
+                  <h6 class="flex-row">FCP (Fog Computing Provider) Reward</h6>
+                  <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(23)}}</b>
+                </div>
+              </el-col>
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <div class="grid-content small-margin">
+                  <h6 class="flex-row">MCP (Market Computing Provider) Reward</h6>
+                  <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(14)}}</b>
+                </div>
+              </el-col>
+            </el-row>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+            <h6 class="subtitle">Transaction Drive Program</h6>
+            <el-row :gutter="16" v-loading="cpLoad">
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <div class="grid-content small-margin">
+                  <h6 class="flex-row">Wallet Address Contribution Score</h6>
+                  <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(67)}}</b>
+                </div>
+              </el-col>
+              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                <div class="grid-content small-margin">
+                  <h6 class="flex-row">Reward</h6>
+                  <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(78)}}</b>
+                </div>
+              </el-col>
+            </el-row>
           </el-col>
         </el-row>
       </div>
@@ -1014,13 +1066,7 @@ export default defineComponent({
   }
   :deep(.providers-overview),
   :deep(.providers-network) {
-    padding: 0.4rem 0;
-    &.providers-overview {
-      padding: 0.4rem 0 0;
-      @media screen and (max-width: 992px) {
-        padding: 0.4rem 0.5rem;
-      }
-    }
+    padding: 0.4rem 0 0;
     .title {
       margin: 0;
       font-size: 0.24rem;
@@ -1032,9 +1078,15 @@ export default defineComponent({
         text-transform: capitalize;
         // border-bottom: 2px solid rgba(255, 255, 255, 0.3);
       }
+      &.t-margin {
+        margin: 0.64rem 0 0;
+      }
     }
     .tabs-container {
       margin: 0;
+      &.m {
+        margin: 0.3rem 0;
+      }
       .el-tabs {
         .el-tabs__header {
           margin: 0 0 0.2rem;
@@ -1094,7 +1146,7 @@ export default defineComponent({
                   font-size: 14px;
                 }
                 @media screen and (max-width: 768px) {
-                  font-size: 0.22rem;
+                  font-size: 12px;
                 }
               }
               b {
@@ -1106,7 +1158,7 @@ export default defineComponent({
                   font-size: 16px;
                 }
                 @media screen and (max-width: 768px) {
-                  font-size: 0.24rem;
+                  font-size: 14px;
                 }
                 .span {
                   margin: 0 0 0 10px;
@@ -1151,15 +1203,27 @@ export default defineComponent({
             }
           }
         }
+        .subtitle {
+          margin: 0.1rem 0;
+          text-align: left;
+          font-size: 0.14rem;
+          font-weight: 100;
+          @media screen and (max-width: 768px) {
+            font-size: 12px;
+          }
+        }
         .grid-content {
           padding: 0.15rem;
-          margin: 0;
+          margin: 0.3rem 0 0;
           background: #26272a;
           // backdrop-filter: blur(5px);
           border: 1px solid #3a67cf;
           border-radius: 0.14rem;
           // animation: glow 1s ease-in-out infinite alternate;
           overflow: hidden;
+          &.small-margin {
+            margin: 0;
+          }
           h6 {
             min-height: 34px;
             font-size: 12px;
@@ -1207,7 +1271,7 @@ export default defineComponent({
               font-size: 0.19rem;
             }
             @media screen and (max-width: 768px) {
-              font-size: 16px;
+              font-size: 13px;
             }
             .span {
               margin: 0 0 0 10px;
@@ -1356,10 +1420,7 @@ export default defineComponent({
               font-size: 0.18rem;
             }
             h6 {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              margin: 0 0 0.1rem;
+              margin: 0.1rem 0 0;
               font-size: 0.14rem;
               font-weight: 100;
               &.title-graph {
@@ -1371,7 +1432,7 @@ export default defineComponent({
                 }
               }
               @media screen and (max-width: 768px) {
-                font-size: 0.22rem;
+                font-size: 12px;
               }
               &.background-free {
                 i {
@@ -1403,20 +1464,35 @@ export default defineComponent({
                 height: 8px;
                 margin: auto 0.05rem auto 0;
                 border-radius: 5px;
+                @media screen and (max-width: 768px) {
+                  margin: auto 6px auto 0;
+                }
               }
               b {
                 padding: 0 5px 0 0;
                 font-size: 0.15rem;
                 font-weight: normal;
+                @media screen and (max-width: 768px) {
+                  font-size: 13px;
+                }
               }
             }
             .maychar {
-              width: 100%;
-              height: 220px;
+              width: 50%;
+              height: 200px;
+              @media screen and (min-width: 2100px) {
+                height: 260px;
+              }
+              @media screen and (min-width: 1800px) {
+                height: 230px;
+              }
+              @media screen and (max-width: 768px) {
+                width: 45%;
+                height: 170px;
+              }
               @media screen and (max-width: 599px) {
                 max-width: 250px;
-                height: 150px;
-                margin: auto;
+                height: 130px;
               }
             }
           }
@@ -1467,7 +1543,7 @@ export default defineComponent({
       }
     }
     .el-table {
-      margin: 0.24rem auto;
+      margin: 0.24rem auto 0.4rem;
       background-color: transparent;
       border-radius: 0.1rem;
       border: 1px solid rgb(30, 32, 39);
