@@ -1002,8 +1002,8 @@ export default defineComponent({
         { value: ringGraphData.data.waitng_total, name: ringGraphData.data.waitng_total },
       ]
       option3.series[0].data = [
-        { value: ringGraphData.data.total_failed, name: system.$commonFun.sizeChange(ringGraphData.data.total_failed) + ' ' },
-        { value: ringGraphData.data.total_success, name: system.$commonFun.sizeChange(ringGraphData.data.total_success) },
+        { value: ringGraphData.data.total_failed, name: ringGraphData.data.total_failed },
+        { value: ringGraphData.data.total_success, name: ringGraphData.data.total_success },
       ]
       machart_reward.setOption(option2);
       machart_job.setOption(option3);
