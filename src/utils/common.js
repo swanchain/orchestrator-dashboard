@@ -475,6 +475,27 @@ function replaceFormat(value) {
   }
 }
 
+function floorFormat(num) {
+  try {
+    if (num) return Math.floor(parseFloat(num))
+    else return '-'
+  } catch {
+    return '-'
+  }
+}
+
+function unifyNumber(num) {
+  if (!num) return 0
+  const handleNum = parseFloat(num * 100)
+  const isToFixed = handleNum.toString().includes('.') && handleNum.toString().split('.')[1].length > 2
+  if (isToFixed) {
+    const handleArray = handleNum.toString().split('.')
+    const decimal = handleArray[1].substr(0, 2)
+    if (decimal === "00") return handleNum.toFixed(0)
+    else return `${handleArray[0]}.${decimal}`
+  } else return handleNum
+}
+
 export default {
   sendRequest,
   timeout,
@@ -501,4 +522,6 @@ export default {
   NumFormat,
   replaceFormat,
   debounce,
+  floorFormat,
+  unifyNumber
 }

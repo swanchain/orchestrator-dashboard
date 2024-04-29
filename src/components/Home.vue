@@ -154,6 +154,9 @@ export default defineComponent({
   &.nowrap {
     flex-wrap: nowrap;
   }
+  &.baseline {
+    align-items: baseline;
+  }
 }
 
 .el-popper {
