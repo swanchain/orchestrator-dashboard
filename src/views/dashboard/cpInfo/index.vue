@@ -1,158 +1,206 @@
 <template>
   <section id="container">
     <div class="providers-overview">
-      <div class="title">Basic Information</div>
-      <el-row :gutter="16" class="border-row" v-loading="cpLoad">
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">Total Number Of Node</h6>
-            <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(pagin.total)}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">Total CPU</h6>
-            <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(ringGraphData.data.cpu_total)}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">Total GPU</h6>
-            <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(ringGraphData.data.gpu_total)}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">Total Memory (GiB)</h6>
-            <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(ringGraphData.data.memory_total)}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">Total Storage (GiB)</h6>
-            <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(ringGraphData.data.storage_total)}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">average score</h6>
-            <b class="flex-row font-bold color">{{ringGraphData.data.average_score_total || '-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">total claimed amount (swan token)</h6>
-            <b class="flex-row font-bold color">{{ringGraphData.data.claimed_amount_total || '-'}}</b>
-          </div>
-        </el-col>
-      </el-row>
-
       <div class="tabs-container">
-        <el-row :gutter="16" justify="space-between" class="erchart-body">
-          <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-            <div class="erchart" v-loading="cpLoad">
-              <div class="drain-time"></div>
-              <div class="drain-time"></div>
-              <div class="drain-time"></div>
-              <div class="drain-time"></div>
-              <h6 class="title-graph">Job completion in the last seven days</h6>
-              <div class="flex-row">
+        <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
+          <el-tab-pane name="Basic" label="Basic Information"></el-tab-pane>
+          <el-tab-pane name="Competition" label="My Competition Information"></el-tab-pane>
+
+          <el-row v-if="activeName === 'Basic'" :gutter="16" justify="space-between" :class="{'erchart-body':true, 'fade-in':activeName === 'Basic', 'fade-out': activeName !== 'Basic'}">
+            <el-col :xs="24" :sm="24" :md="10" :lg="10" :xl="10">
+              <el-row :gutter="0" class="border-row" v-loading="cpLoad">
+                <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                  <div class="grid-list flex-row space-between">
+                    <h6>Total Number Of Node</h6>
+                    <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(pagin.total)}}</b>
+                  </div>
+                </el-col>
+                <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                  <div class="grid-list flex-row space-between">
+                    <h6>Total CPU</h6>
+                    <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(ringGraphData.data.cpu_total)}}</b>
+                  </div>
+                </el-col>
+                <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                  <div class="grid-list flex-row space-between">
+                    <h6>Total GPU</h6>
+                    <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(ringGraphData.data.gpu_total)}}</b>
+                  </div>
+                </el-col>
+                <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                  <div class="grid-list flex-row space-between">
+                    <h6>Total Memory (GiB)</h6>
+                    <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(ringGraphData.data.memory_total)}}</b>
+                  </div>
+                </el-col>
+                <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                  <div class="grid-list flex-row space-between">
+                    <h6>Total Storage (GiB)</h6>
+                    <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(ringGraphData.data.storage_total)}}</b>
+                  </div>
+                </el-col>
+                <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                  <div class="grid-list flex-row space-between">
+                    <h6>average score</h6>
+                    <b class="flex-row font-bold color">{{ringGraphData.data.average_score_total || '-'}}</b>
+                  </div>
+                </el-col>
+                <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                  <div class="grid-list flex-row space-between">
+                    <h6>total claimed amount (swan token)</h6>
+                    <b class="flex-row font-bold color">{{ringGraphData.data.claimed_amount_total || '-'}}</b>
+                  </div>
+                </el-col>
+              </el-row>
+            </el-col>
+            <el-col :xs="24" :sm="12" :md="7" :lg="7" :xl="7">
+              <div class="erchart" v-loading="cpLoad">
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <h6 class="title-graph">Job completion in the last seven days</h6>
                 <div id="maychar-job" class="maychar"></div>
-                <div class="right">
-                  <h6 class="flex-row background-free">
-                    <i></i>
-                    <b>{{ringGraphData.data.total_success}}</b> Success
-                  </h6>
-                  <h6 class="flex-row background-used">
-                    <i></i>
-                    <b>{{ringGraphData.data.total_failed}}</b> Failed
-                  </h6>
-                  <h6 class="flex-row background-total">
-                    <i></i>
-                    <b>{{ringGraphData.data.total_submit}}</b> Total
-                  </h6>
-                </div>
+                <h6 class="flex-row center background-free">
+                  <i></i>
+                  <b>{{ringGraphData.data.total_success}}</b> Success
+                </h6>
+                <h6 class="flex-row center background-used">
+                  <i></i>
+                  <b>{{ringGraphData.data.total_failed}}</b> Failed
+                </h6>
+                <h6 class="flex-row center background-total">
+                  <i></i>
+                  <b>{{ringGraphData.data.total_submit}}</b> Total
+                </h6>
               </div>
-            </div>
-          </el-col>
-          <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-            <div class="erchart" v-loading="cpLoad">
-              <div class="drain-time"></div>
-              <div class="drain-time"></div>
-              <div class="drain-time"></div>
-              <div class="drain-time"></div>
-              <h6 class="title-graph">Reward claims in the last seven days</h6>
-              <div class="flex-row">
+            </el-col>
+            <el-col :xs="24" :sm="12" :md="7" :lg="7" :xl="7">
+              <div class="erchart" v-loading="cpLoad">
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <div class="drain-time"></div>
+                <h6 class="title-graph">Reward claims in the last seven days</h6>
                 <div id="maychar-reward" class="maychar"></div>
-                <div class="right">
-                  <h6 class="flex-row background-free">
-                    <i></i>
-                    <b>{{ringGraphData.data.claimed_count_total}}</b> Claimed Count
-                  </h6>
-                  <h6 class="flex-row background-used">
-                    <i></i>
-                    <b>{{ringGraphData.data.waitng_total}}</b> Waiting
-                  </h6>
-                  <h6 class="flex-row background-total">
-                    <i></i>
-                    <b>{{ringGraphData.data.claim_total}}</b> Total
-                  </h6>
-                </div>
+                <h6 class="flex-row center background-free">
+                  <i></i>
+                  <b>{{ringGraphData.data.claimed_count_total}}</b> Claimed Count
+                </h6>
+                <h6 class="flex-row center background-used">
+                  <i></i>
+                  <b>{{ringGraphData.data.waitng_total}}</b> Waiting
+                </h6>
+                <h6 class="flex-row center background-total">
+                  <i></i>
+                  <b>{{ringGraphData.data.claim_total}}</b> Total
+                </h6>
               </div>
-            </div>
-          </el-col>
-        </el-row>
-      </div>
+            </el-col>
+          </el-row>
 
-      <div class="title t-margin">Competition Score</div>
-      <div class="tabs-container">
-        <el-row :gutter="16" justify="space-between" class="erchart-body">
-          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <h6 class="subtitle">Job completion in the last seven days</h6>
-            <el-row :gutter="16" v-loading="cpLoad">
-              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <div class="grid-content small-margin">
-                  <h6 class="flex-row">ECP (Edge Computing Provider) Reward</h6>
-                  <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(35)}}</b>
-                </div>
-              </el-col>
-              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <div class="grid-content small-margin">
-                  <h6 class="flex-row">FCP (Fog Computing Provider) Reward</h6>
-                  <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(23)}}</b>
-                </div>
-              </el-col>
-              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <div class="grid-content small-margin">
-                  <h6 class="flex-row">MCP (Market Computing Provider) Reward</h6>
-                  <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(14)}}</b>
-                </div>
-              </el-col>
-            </el-row>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <h6 class="subtitle">Transaction Drive Program</h6>
-            <el-row :gutter="16" v-loading="cpLoad">
-              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <div class="grid-content small-margin">
-                  <h6 class="flex-row">Wallet Address Contribution Score</h6>
-                  <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(67)}}</b>
-                </div>
-              </el-col>
-              <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <div class="grid-content small-margin">
-                  <h6 class="flex-row">Reward</h6>
-                  <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(78)}}</b>
-                </div>
-              </el-col>
-            </el-row>
-          </el-col>
-        </el-row>
+          <el-row v-if="activeName === 'Competition'" :gutter="16" :class="{'erchart-body flex-row baseline':true, 'fade-in':activeName !== 'Basic', 'fade-out': activeName === 'Basic'}">
+            <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+              <el-row :gutter="0" class="border-row m" v-loading="providersLoad">
+                <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                  <div class="grid-list flex-row space-between">
+                    <h6>Total Contribution Score</h6>
+                    <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(system.$commonFun.floorFormat(ringGraphData.providersTotal.contribution_score))}}</b>
+                  </div>
+                </el-col>
+                <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                  <div class="grid-list flex-row space-between">
+                    <h6>Total Job</h6>
+                    <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(system.$commonFun.floorFormat(ringGraphData.providersTotal.task_job_count))}}</b>
+                  </div>
+                </el-col>
+              </el-row>
+            </el-col>
+            <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+              <h6 class="subtitle">Job completion in the last seven days</h6>
+              <el-carousel v-if="ringGraphData.cpScore && ringGraphData.cpScore.length>0" height="380px" :interval="6000" indicator-position="outside">
+                <el-carousel-item v-for="item in ringGraphData.cpScore" :key="item">
+                  <el-row :gutter="0" class="border-row m" v-loading="providersLoad">
+                    <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                      <div class="grid-list flex-row space-between">
+                        <h6>node ID</h6>
+                        <b class="flex-row font-bold color copy-style" :title="item.node_id">
+                          {{system.$commonFun.hiddAddress(item.node_id)}}
+                          <svg @click="system.$commonFun.copyContent(item.node_id, 'Copied')" t="1706499607741" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2309" width="18" height="18">
+                            <path d="M720 192h-544A80.096 80.096 0 0 0 96 272v608C96 924.128 131.904 960 176 960h544c44.128 0 80-35.872 80-80v-608C800 227.904 764.128 192 720 192z m16 688c0 8.8-7.2 16-16 16h-544a16 16 0 0 1-16-16v-608a16 16 0 0 1 16-16h544a16 16 0 0 1 16 16v608z"
+                              p-id="2310" fill="#ffffff"></path>
+                            <path d="M848 64h-544a32 32 0 0 0 0 64h544a16 16 0 0 1 16 16v608a32 32 0 1 0 64 0v-608C928 99.904 892.128 64 848 64z" p-id="2311" fill="#ffffff"></path>
+                            <path d="M608 360H288a32 32 0 0 0 0 64h320a32 32 0 1 0 0-64zM608 520H288a32 32 0 1 0 0 64h320a32 32 0 1 0 0-64zM480 678.656H288a32 32 0 1 0 0 64h192a32 32 0 1 0 0-64z" p-id="2312" fill="#ffffff"></path>
+                          </svg>
+                        </b>
+                      </div>
+                    </el-col>
+                    <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                      <div class="grid-list flex-row space-between">
+                        <h6>contribution percertage</h6>
+                        <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(system.$commonFun.floorFormat(item.contribution_percertage))}}</b>
+                      </div>
+                    </el-col>
+                    <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                      <div class="grid-list flex-row space-between">
+                        <h6>contribution score</h6>
+                        <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(system.$commonFun.floorFormat(item.contribution_score))}}</b>
+                      </div>
+                    </el-col>
+                    <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                      <div class="grid-list flex-row space-between">
+                        <h6>reward boost</h6>
+                        <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(system.$commonFun.floorFormat(item.reward_boost))}}</b>
+                      </div>
+                    </el-col>
+                    <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                      <div class="grid-list flex-row space-between">
+                        <h6>task job count</h6>
+                        <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(system.$commonFun.floorFormat(item.task_job_count))}}</b>
+                      </div>
+                    </el-col>
+                    <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                      <div class="grid-list flex-row space-between">
+                        <h6>task job percentage</h6>
+                        <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(system.$commonFun.floorFormat(item.task_job_percentage))}}</b>
+                      </div>
+                    </el-col>
+                    <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                      <div class="grid-list flex-row space-between">
+                        <h6>uptime</h6>
+                        <b class="flex-row font-bold color">{{system.$commonFun.unifyNumber(item.uptime)}}%</b>
+                      </div>
+                    </el-col>
+                  </el-row>
+                </el-carousel-item>
+              </el-carousel>
+              <small v-else>No Data</small>
+            </el-col>
+            <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+              <h6 class="subtitle">Transaction Drive Program</h6>
+              <el-row :gutter="0" class="border-row m" v-loading="providersLoad">
+                <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                  <div class="grid-list flex-row space-between">
+                    <h6>Wallet Address Contribution Score</h6>
+                    <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(system.$commonFun.floorFormat(ringGraphData.transactionDriveProgram.wallet_address_contribution))}}</b>
+                  </div>
+                </el-col>
+                <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                  <div class="grid-list flex-row space-between">
+                    <h6>Reward</h6>
+                    <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(system.$commonFun.floorFormat(ringGraphData.transactionDriveProgram.reward))}}</b>
+                  </div>
+                </el-col>
+              </el-row>
+            </el-col>
+          </el-row>
+
+        </el-tabs>
       </div>
     </div>
 
     <div class="providers-network">
-      <div class="providers-cp">
+      <div class="providers-cp" v-if="activeName === 'Basic'">
         <!-- <div class="search-body flex">
           <el-input v-model="networkInput" placeholder="Search Providers" @chang="searchProvider" @input="searchProvider" />
           <el-button type="primary" :disabled="!networkInput ? true:false" round @click="searchProvider">Search</el-button>
@@ -317,16 +365,76 @@ export default defineComponent({
     const background = ref(false)
     const dataArr = ref([])
     const expands = ref([])
-    const activeName = ref('CP')
+    const activeName = ref('Basic')
     const cpLoad = ref(false)
+    const providersLoad = ref(false)
     const ringGraphData = reactive({
-      data: {}
+      data: {},
+      cpScore: {},
+      transactionDriveProgram: {},
+      providersTotal: {}
     })
 
     function handleSizeChange (val) { }
     async function handleCurrentChange (currentPage) {
       pagin.pageNo = currentPage
       init()
+    }
+    async function getCpscore () {
+      providersLoad.value = true
+      try {
+        const cpscoreRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}stats/cpscore/${metaAddress.value}`, 'get')
+        const cpscoreRes_test = {
+          "data": {
+            "providers_program": [
+              {
+                "node_id": "04543210dae542a3f5d3c2b865f353f867b0ba5dc57eee6a98a2ee6c51fddf86b9971039492bd278293fe8f02c0f6043fa364a7ea59978c0ecc60105589dfdda18",
+                "contribution_percertage": 0.06753770292901944,
+                "contribution_score": 203910.40000000002,
+                "reward_boost": 4,
+                "task_job_count": 5337,
+                "task_job_percentage": 0.0017676818864176458,
+                "uptime": 0.9998883180701362
+              },
+              {
+                "node_id": "04543210dae542a3f5d3c2b865f353f867b0ba5dc57eee6a98a2ee6c51fddf86b9971039492bd278293fe8f02c0f6043fa364a7ea59978c0ecc60105589dfdda19",
+                "contribution_percertage": 0.06753770292901944,
+                "contribution_score": 203910.40000000002,
+                "reward_boost": 4,
+                "task_job_count": 5337,
+                "task_job_percentage": 0.0017676818864176458,
+                "uptime": 0.9998883180701362
+              }
+            ],
+            "transaction_drive_program": {
+              "wallet_address_contribution": 0.06753770292901944,
+              "reward": 1
+            }
+          },
+          "message": "fetching scoring factor for cp returns successfully",
+          "status": "success"
+        }
+        if (cpscoreRes && cpscoreRes.status === 'success') {
+          ringGraphData.cpScore = cpscoreRes.data.providers_program || []
+          ringGraphData.transactionDriveProgram = cpscoreRes.data.transaction_drive_program || {}
+          ringGraphData.providersTotal = await providersNodeTree(ringGraphData.cpScore)
+        } else if (cpscoreRes.message) system.$commonFun.messageTip('error', cpscoreRes.message)
+      } catch { }
+      providersLoad.value = false
+    }
+    function providersNodeTree (nodeData) {
+      const res = {
+        contribution_score: 0,
+        task_job_count: 0
+      }
+      let data = nodeData || []
+      let memoryUnit = ''
+      let storageUnit = ''
+      data.forEach((item) => {
+        res.contribution_score += Number(item.contribution_score || 0)
+        res.task_job_count += Number(item.task_job_count || 0)
+      })
+      return res
     }
     async function init () {
       cpLoad.value = true
@@ -942,6 +1050,7 @@ export default defineComponent({
       providersData.value = []
       providerBody.ubiTableData = []
       providersTableLoad.value = false
+      providersLoad.value = false
       networkInput.value = ''
       if (type) init()
     }
@@ -1013,8 +1122,17 @@ export default defineComponent({
       })
       cpLoad.value = false
     }
+    const handleClick = async (tab, event) => {
+      activeName.value = tab.props.name || 'Basic'
+      if (activeName.value === 'Basic') {
+        cpLoad.value = true
+        await system.$commonFun.timeout(100)
+        changetype()
+      }
+    }
     onActivated(async () => {
       reset('init')
+      getCpscore()
     })
     return {
       system,
@@ -1028,8 +1146,8 @@ export default defineComponent({
       small,
       background,
       providerBody,
-      accessToken, expands, activeName, cpLoad, ringGraphData,
-      handleSizeChange, handleCurrentChange, searchProvider, clearProvider, expandChange, unifyNumber, getRowKeys
+      accessToken, expands, activeName, cpLoad, ringGraphData, providersLoad,
+      handleSizeChange, handleCurrentChange, searchProvider, clearProvider, expandChange, unifyNumber, getRowKeys, handleClick
     }
   }
 })
@@ -1135,6 +1253,9 @@ export default defineComponent({
           text-align: center;
           background: #26272a;
           border: 1px solid #3a67cf;
+          &.m {
+            margin: 0.2rem 0 0;
+          }
           .el-col {
             .grid-list {
               h6 {
@@ -1159,6 +1280,13 @@ export default defineComponent({
                 }
                 @media screen and (max-width: 768px) {
                   font-size: 14px;
+                }
+                &.copy-style {
+                  align-items: center;
+                  cursor: pointer;
+                  svg {
+                    margin: 0 0 0 0.05rem;
+                  }
                 }
                 .span {
                   margin: 0 0 0 10px;
@@ -1478,25 +1606,34 @@ export default defineComponent({
               }
             }
             .maychar {
-              width: 50%;
-              height: 200px;
+              width: 100%;
+              height: 220px;
               @media screen and (min-width: 2100px) {
-                height: 260px;
+                height: 280px;
               }
               @media screen and (min-width: 1800px) {
-                height: 230px;
+                height: 250px;
               }
               @media screen and (max-width: 768px) {
-                width: 45%;
-                height: 170px;
+                height: 190px;
               }
               @media screen and (max-width: 599px) {
                 max-width: 250px;
-                height: 130px;
+                height: 150px;
+                margin: auto;
               }
             }
           }
+          .el-carousel__arrow {
+            display: none;
+          }
         }
+      }
+      &.fade-in {
+        animation: fadeIn 0.8s ease-in-out 1 normal;
+      }
+      &.fade-out {
+        animation: fadeOut 0.8s ease-in-out 1 normal;
       }
     }
     .search-body {
