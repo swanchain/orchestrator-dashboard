@@ -203,6 +203,19 @@ async function walletChain(chainId) {
         blockExplorerUrls: [process.env.VUE_APP_SATURNBLOCKURL]
       }
       break
+    case 20241133:
+      text = {
+        chainId: web3Init.utils.numberToHex(20241133),
+        chainName: 'Swan Proxima Chain',
+        nativeCurrency: {
+          name: 'sETH',
+          symbol: 'sETH', // 2-6 characters long
+          decimals: 18
+        },
+        rpcUrls: [process.env.VUE_APP_ATOMURL],
+        blockExplorerUrls: [process.env.VUE_APP_ATOMBLOCKURL]
+      }
+      break
       // case 80001:
       //   text = {
       //     chainId: web3Init.utils.numberToHex(80001),
@@ -264,7 +277,6 @@ async function walletChain(chainId) {
 }
 
 async function login() {
-  // if (chain_id !== 2024) return
   const chain_id = await web3Init.eth.net.getId()
   if (!store.state.metaAddress || store.state.metaAddress === undefined) {
     const accounts = await providerInit.request({
@@ -427,6 +439,12 @@ async function getUnit(id) {
       url = `${process.env.VUE_APP_SATURNBLOCKURL}/address/`
       url_tx = `${process.env.VUE_APP_SATURNBLOCKURL}/tx/`
       break
+    case 20241133:
+      unit = 'sETH'
+      name = 'Swan Proxima Chain '
+      url = `${process.env.VUE_APP_ATOMBLOCKURL}/address/`
+      url_tx = `${process.env.VUE_APP_ATOMBLOCKURL}/tx/`
+      break
     default:
       unit = '-'
       name = `Chain ${id}`
@@ -446,8 +464,8 @@ function goLink(link) {
 
 async function checkNetwork() {
   const getnetID = await web3Init.eth.net.getId()
-  if (getnetID !== 2024) {
-    walletChain(2024)
+  if (getnetID !== 20241133) {
+    walletChain(20241133)
     return true
   } else return false
 }
