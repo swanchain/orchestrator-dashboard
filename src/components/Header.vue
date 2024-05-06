@@ -253,7 +253,7 @@ export default defineComponent({
       amount: NaN,
       tx_hash: ''
     })
-    const txLink = process.env.VUE_APP_OPSWANURL
+    const txLink = process.env.VUE_APP_ATOMBLOCKURL
     const tokenAddress = process.env.VUE_APP_OPSWAN_SWANTOKEN_ADDRESS
     const tokenContract = new system.$commonFun.web3Init.eth.Contract(SpaceTokenABI, tokenAddress)
     const collateralAddress = process.env.VUE_APP_COLLATERAL_CONTACT

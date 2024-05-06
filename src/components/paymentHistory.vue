@@ -367,8 +367,8 @@ export default defineComponent({
     }
 
     async function retryFun (row) {
-      if (getnetID.toString() !== '2024') {
-        await system.$commonFun.walletChain(2024)
+      if (getnetID.toString() !== '20241133') {
+        await system.$commonFun.walletChain(20241133)
         return
       }
       paymentLoad.value = true
@@ -380,8 +380,8 @@ export default defineComponent({
     }
 
     async function rewardFun (row, type) {
-      if (getnetID.toString() !== '2024') {
-        await system.$commonFun.walletChain(2024)
+      if (getnetID.toString() !== '20241133') {
+        await system.$commonFun.walletChain(20241133)
         return
       }
       paymentLoad.value = true

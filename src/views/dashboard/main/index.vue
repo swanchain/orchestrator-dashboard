@@ -537,7 +537,7 @@
       </el-row>
       <el-row :gutter="16" class="border-row">
         <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="flex-row">
-          <div class="title top">Saturn Chain</div>
+          <div class="title top">Swan Proxima Chain</div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
           <div class="grid-content">
