@@ -180,8 +180,16 @@
     <el-dialog title="CP Collateral Check" v-model="cpCheckCont.diagle" :append-to-body="false" :width="bodyWidth" custom-class="wrongNet" class="wrongNet">
       <div class="area flex-row" v-loading="cpCheckCont.show">
         <div class="fast width">
-          <label>Balance</label>
+          <label>Available Collateral </label>
           <div class="address">{{cpCheckCont.balance}} sETH</div>
+        </div>
+        <div class="fast width">
+          <label>Hold Collateral</label>
+          <div class="address">{{cpCheckCont.taskBalance}} sETH</div>
+        </div>
+        <div class="fast width">
+          <label>Total Collateral</label>
+          <div class="address">{{system.$commonFun.AddFormat(cpCheckCont.balance, cpCheckCont.taskBalance)}} sETH</div>
         </div>
       </div>
     </el-dialog>
@@ -242,7 +250,8 @@ export default defineComponent({
       show: true,
       tip: '',
       status: 'success',
-      balance: 0
+      balance: 0,
+      taskBalance: 0,
     })
     const cpCollateralCont = reactive({
       diagle: false,
@@ -326,7 +335,7 @@ export default defineComponent({
       })
     }
     async function signIn () {
-      // if (getnetID.value !== 2024) system.$commonFun.walletChain(2024)
+      // if (getnetID.value !== 20241133) system.$commonFun.walletChain(20241133)
       // else system.$commonFun.login()
     }
     async function signSetIn (t) {
@@ -442,13 +451,19 @@ export default defineComponent({
       if (net) return
       cpCheckCont.diagle = true
       cpCheckCont.show = true
-      const cpRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}cp/collateral/${metaAddress.value}`, 'get')
-      if (cpRes) {
-        system.$commonFun.messageTip(cpRes.status, cpRes.message)
-        cpCheckCont.tip = cpRes.message
-        cpCheckCont.balance = cpRes.data.balance ? system.$commonFun.web3Init.utils.fromWei(String(cpRes.data.balance), 'ether') : 0
-        cpCheckCont.status = cpRes.status
-      }
+      try {
+        const taskBalance = await collateralContract.methods.frozenBalance(metaAddress.value).call()
+        const balances = await collateralContract.methods.balances(metaAddress.value).call()
+        cpCheckCont.balance = system.$commonFun.web3Init.utils.fromWei(String(balances), 'ether') || 0
+        cpCheckCont.taskBalance = system.$commonFun.web3Init.utils.fromWei(String(taskBalance), 'ether') || 0
+      } catch{ }
+      // const cpRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}cp/collateral/${metaAddress.value}`, 'get')
+      // if (cpRes) {
+      //   system.$commonFun.messageTip(cpRes.status, cpRes.message)
+      //   cpCheckCont.tip = cpRes.message
+      //   cpCheckCont.balance = cpRes.data.balance ? system.$commonFun.web3Init.utils.fromWei(String(cpRes.data.balance), 'ether') : 0
+      //   cpCheckCont.status = cpRes.status
+      // }
       cpCheckCont.show = false
     }
     async function activeMenu (row) {
@@ -809,6 +824,7 @@ export default defineComponent({
         }
       }
       .area {
+        flex-wrap: wrap;
         justify-content: space-between;
         .fast {
           width: 48%;

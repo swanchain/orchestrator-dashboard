@@ -1,10 +1,11 @@
 <template>
   <section id="container">
     <div class="providers-overview">
+      <div class="title">Basic Information</div>
       <div class="tabs-container">
-        <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
-          <el-tab-pane name="Basic" label="Basic Information"></el-tab-pane>
-          <el-tab-pane name="Competition" label="My Competition Information"></el-tab-pane>
+        <!-- <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick"> -->
+          <!-- <el-tab-pane name="Basic" label="Basic Information"></el-tab-pane>
+          <el-tab-pane name="Competition" label="My Competition Information"></el-tab-pane> -->
 
           <el-row v-if="activeName === 'Basic'" :gutter="16" justify="space-between" :class="{'erchart-body':true, 'fade-in':activeName === 'Basic', 'fade-out': activeName !== 'Basic'}">
             <el-col :xs="24" :sm="24" :md="10" :lg="10" :xl="10">
@@ -195,7 +196,7 @@
             </el-col>
           </el-row>
 
-        </el-tabs>
+        <!-- </el-tabs> -->
       </div>
     </div>
 
@@ -383,37 +384,9 @@ export default defineComponent({
     async function getCpscore () {
       providersLoad.value = true
       try {
-        const cpscoreRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}stats/cpscore/${metaAddress.value}`, 'get')
-        const cpscoreRes_test = {
-          "data": {
-            "providers_program": [
-              {
-                "node_id": "04543210dae542a3f5d3c2b865f353f867b0ba5dc57eee6a98a2ee6c51fddf86b9971039492bd278293fe8f02c0f6043fa364a7ea59978c0ecc60105589dfdda18",
-                "contribution_percertage": 0.06753770292901944,
-                "contribution_score": 203910.40000000002,
-                "reward_boost": 4,
-                "task_job_count": 5337,
-                "task_job_percentage": 0.0017676818864176458,
-                "uptime": 0.9998883180701362
-              },
-              {
-                "node_id": "04543210dae542a3f5d3c2b865f353f867b0ba5dc57eee6a98a2ee6c51fddf86b9971039492bd278293fe8f02c0f6043fa364a7ea59978c0ecc60105589dfdda19",
-                "contribution_percertage": 0.06753770292901944,
-                "contribution_score": 203910.40000000002,
-                "reward_boost": 4,
-                "task_job_count": 5337,
-                "task_job_percentage": 0.0017676818864176458,
-                "uptime": 0.9998883180701362
-              }
-            ],
-            "transaction_drive_program": {
-              "wallet_address_contribution": 0.06753770292901944,
-              "reward": 1
-            }
-          },
-          "message": "fetching scoring factor for cp returns successfully",
-          "status": "success"
-        }
+        let formData = new FormData()
+        formData.append('wallet_address', metaAddress.value)
+        const cpscoreRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}stats/cpscores`, 'post', formData)       
         if (cpscoreRes && cpscoreRes.status === 'success') {
           ringGraphData.cpScore = cpscoreRes.data.providers_program || []
           ringGraphData.transactionDriveProgram = cpscoreRes.data.transaction_drive_program || {}
@@ -1132,7 +1105,7 @@ export default defineComponent({
     }
     onActivated(async () => {
       reset('init')
-      getCpscore()
+      // getCpscore()
     })
     return {
       system,

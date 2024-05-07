@@ -177,32 +177,6 @@ async function walletChain(chainId) {
   let text = {}
   const currentID = await web3Init.eth.net.getId()
   switch (chainId) {
-    case 8598668088:
-      text = {
-        chainId: web3Init.utils.numberToHex(8598668088),
-        chainName: 'OpSwan',
-        // nativeCurrency: {
-        //   name: 'SWAN',
-        //   symbol: 'SWAN', // 2-6 characters long
-        //   decimals: 18
-        // },
-        rpcUrls: [process.env.VUE_APP_OPSWANRPCURL],
-        blockExplorerUrls: [process.env.VUE_APP_OPSWANURL]
-      }
-      break
-    case 2024:
-      text = {
-        chainId: web3Init.utils.numberToHex(2024),
-        chainName: 'Saturn Testnet',
-        nativeCurrency: {
-          name: 'sETH',
-          symbol: 'sETH', // 2-6 characters long
-          decimals: 18
-        },
-        rpcUrls: [process.env.VUE_APP_SATURNURL],
-        blockExplorerUrls: [process.env.VUE_APP_SATURNBLOCKURL]
-      }
-      break
     case 20241133:
       text = {
         chainId: web3Init.utils.numberToHex(20241133),
@@ -427,18 +401,6 @@ async function getUnit(id) {
       unit = 'ETH'
       name = 'Ethereum Mainnet '
       break
-    case 8598668088:
-      unit = 'SwanETH'
-      name = 'OpSwan '
-      url = `${process.env.VUE_APP_OPSWANURL}/address/`
-      url_tx = `${process.env.VUE_APP_OPSWANURL}/tx/`
-      break
-    case 2024:
-      unit = 'sETH'
-      name = 'Saturn Testnet '
-      url = `${process.env.VUE_APP_SATURNBLOCKURL}/address/`
-      url_tx = `${process.env.VUE_APP_SATURNBLOCKURL}/tx/`
-      break
     case 20241133:
       unit = 'sETH'
       name = 'Swan Proxima Chain '
@@ -514,6 +476,14 @@ function unifyNumber(num) {
   } else return handleNum
 }
 
+function AddFormat(num1, num2) {
+  try {
+    return parseFloat(num1) + parseFloat(num2)
+  } catch {
+    return 0
+  }
+}
+
 export default {
   sendRequest,
   timeout,
@@ -541,5 +511,6 @@ export default {
   replaceFormat,
   debounce,
   floorFormat,
-  unifyNumber
+  unifyNumber,
+  AddFormat
 }
