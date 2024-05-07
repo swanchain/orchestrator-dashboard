@@ -475,7 +475,7 @@ export default defineComponent({
       const paymentsRes = await system.$commonFun.sendRequest(`${requestURL}?${system.$Qs.stringify(paramsOption)}`, 'get') //?public_address=${store.state.metaAddress}
       if (paymentsRes && paymentsRes.status === 'success') {
         for (let p = 0; p < paymentsRes.data.payments.length; p++) {
-          let { url_tx } = await system.$commonFun.getUnit(2024)
+          let { url_tx } = await system.$commonFun.getUnit(20241133)
           paymentsRes.data.payments[p].url_tx = url_tx
         }
         paymentData.value = paymentsRes.data.payments || []
