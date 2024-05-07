@@ -185,12 +185,12 @@
                     <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(system.$commonFun.floorFormat(ringGraphData.transactionDriveProgram.wallet_address_contribution))}}</b>
                   </div>
                 </el-col>
-                <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                <!-- <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
                   <div class="grid-list flex-row space-between">
                     <h6>Reward</h6>
                     <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(system.$commonFun.floorFormat(ringGraphData.transactionDriveProgram.reward))}}</b>
                   </div>
-                </el-col>
+                </el-col> -->
               </el-row>
             </el-col>
           </el-row>
@@ -383,58 +383,41 @@ export default defineComponent({
     async function getCpscore () {
       providersLoad.value = true
       try {
-        const cpscoreRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}stats/cpscore/${metaAddress.value}`, 'get')
-        const cpscoreRes_test = {
-          "data": {
-            "providers_program": [
-              {
-                "node_id": "04543210dae542a3f5d3c2b865f353f867b0ba5dc57eee6a98a2ee6c51fddf86b9971039492bd278293fe8f02c0f6043fa364a7ea59978c0ecc60105589dfdda18",
-                "contribution_percertage": 0.06753770292901944,
-                "contribution_score": 203910.40000000002,
-                "reward_boost": 4,
-                "task_job_count": 5337,
-                "task_job_percentage": 0.0017676818864176458,
-                "uptime": 0.9998883180701362
-              },
-              {
-                "node_id": "04543210dae542a3f5d3c2b865f353f867b0ba5dc57eee6a98a2ee6c51fddf86b9971039492bd278293fe8f02c0f6043fa364a7ea59978c0ecc60105589dfdda19",
-                "contribution_percertage": 0.06753770292901944,
-                "contribution_score": 203910.40000000002,
-                "reward_boost": 4,
-                "task_job_count": 5337,
-                "task_job_percentage": 0.0017676818864176458,
-                "uptime": 0.9998883180701362
-              }
-            ],
-            "transaction_drive_program": {
-              "wallet_address_contribution": 0.06753770292901944,
-              "reward": 1
-            }
-          },
-          "message": "fetching scoring factor for cp returns successfully",
-          "status": "success"
-        }
-        if (cpscoreRes && cpscoreRes.status === 'success') {
+        let formData = new FormData()
+        formData.append('wallet_address', metaAddress.value)
+        const cpscoreRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}stats/cpscores`, 'post', formData)
+        if (cpscoreRes && cpscoreRes.status === 'success' && cpscoreRes.data) {
           ringGraphData.cpScore = cpscoreRes.data.providers_program || []
-          ringGraphData.transactionDriveProgram = cpscoreRes.data.transaction_drive_program || {}
-          ringGraphData.providersTotal = await providersNodeTree(ringGraphData.cpScore)
+          ringGraphData.providersTotal.contribution_score = cpscoreRes.data.total_contribution_score || 0
+          ringGraphData.providersTotal.task_job_count = cpscoreRes.data.total_task_job_count || 0
         } else if (cpscoreRes.message) system.$commonFun.messageTip('error', cpscoreRes.message)
       } catch { }
       providersLoad.value = false
     }
-    function providersNodeTree (nodeData) {
-      const res = {
-        contribution_score: 0,
-        task_job_count: 0
-      }
-      let data = nodeData || []
-      let memoryUnit = ''
-      let storageUnit = ''
-      data.forEach((item) => {
-        res.contribution_score += Number(item.contribution_score || 0)
-        res.task_job_count += Number(item.task_job_count || 0)
-      })
-      return res
+    async function getTotalscore () {
+      try {
+        const cpscoreRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}stats/get_tx_count?chain_id=20241133&wallet_address=${metaAddress.value}`, 'get')
+        const cpscoreRes_test = {
+          "data": {
+            "chain_id": 20241133,
+            "last_scanned_block": 605569,
+            "total_score": 53281,
+            "tx_count": {
+              "bridge_count": 0,
+              "contract_interaction_count": 0,
+              "deploy_count": 0,
+              "transfer_count": 53281
+            },
+            "wallet_address": "0xa0Be98C3a0c918E1922955888FBC6cc5f81f6FFb"
+          },
+          "message": "getting wallet transaction data successfully",
+          "status": "success"
+        }
+
+        if (cpscoreRes && cpscoreRes.status === 'success') {
+          ringGraphData.transactionDriveProgram.wallet_address_contribution = cpscoreRes.data.total_score || 0
+        }
+      } catch { }
     }
     async function init () {
       cpLoad.value = true
@@ -1133,6 +1116,7 @@ export default defineComponent({
     onActivated(async () => {
       reset('init')
       getCpscore()
+      getTotalscore()
     })
     return {
       system,
