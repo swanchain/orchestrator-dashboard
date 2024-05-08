@@ -1457,20 +1457,20 @@ export default defineComponent({
 
       try {
         option2.series[0].data = [
-          { value: providerBody.ubiData.providers.gpu.total - providerBody.ubiData.providers.gpu.free, name: providerBody.ubiData.providers.gpu.total - providerBody.ubiData.providers.gpu.free },
           { value: providerBody.ubiData.providers.gpu.free, name: providerBody.ubiData.providers.gpu.free },
+          { value: providerBody.ubiData.providers.gpu.total - providerBody.ubiData.providers.gpu.free, name: providerBody.ubiData.providers.gpu.total - providerBody.ubiData.providers.gpu.free },
         ]
         option3.series[0].data = [
-          { value: providerBody.ubiData.providers.memory.total - providerBody.ubiData.providers.memory.free, name: system.$commonFun.sizeChange(providerBody.ubiData.providers.memory.total - providerBody.ubiData.providers.memory.free) + ' ' },
-          { value: providerBody.ubiData.providers.memory.free, name: system.$commonFun.sizeChange(providerBody.ubiData.providers.memory.free) },
+          { value: providerBody.ubiData.providers.memory.free, name: system.$commonFun.sizeChange(providerBody.ubiData.providers.memory.free) + ' ' },
+          { value: providerBody.ubiData.providers.memory.total - providerBody.ubiData.providers.memory.free, name: system.$commonFun.sizeChange(providerBody.ubiData.providers.memory.total - providerBody.ubiData.providers.memory.free) },
         ]
         option4.series[0].data = [
-          { value: providerBody.ubiData.providers.storage.total - providerBody.ubiData.providers.storage.free, name: system.$commonFun.sizeChange(providerBody.ubiData.providers.storage.total - providerBody.ubiData.providers.storage.free) + ' ' },
-          { value: providerBody.ubiData.providers.storage.free, name: system.$commonFun.sizeChange(providerBody.ubiData.providers.storage.free) },
+          { value: providerBody.ubiData.providers.storage.free, name: system.$commonFun.sizeChange(providerBody.ubiData.providers.storage.free) + ' ' },
+          { value: providerBody.ubiData.providers.storage.total - providerBody.ubiData.providers.storage.free, name: system.$commonFun.sizeChange(providerBody.ubiData.providers.storage.total - providerBody.ubiData.providers.storage.free) },
         ]
         option5.series[0].data = [
-          { value: providerBody.ubiData.providers.vcpu.total - providerBody.ubiData.providers.vcpu.free, name: `${providerBody.ubiData.providers.vcpu.total - providerBody.ubiData.providers.vcpu.free} vcpu ` },
-          { value: providerBody.ubiData.providers.vcpu.free, name: `${providerBody.ubiData.providers.vcpu.free} vcpu` },
+          { value: providerBody.ubiData.providers.vcpu.free, name: `${providerBody.ubiData.providers.vcpu.free} vcpu ` },
+          { value: providerBody.ubiData.providers.vcpu.total - providerBody.ubiData.providers.vcpu.free, name: `${providerBody.ubiData.providers.vcpu.total - providerBody.ubiData.providers.vcpu.free} vcpu` },
         ]
       } catch{ }
       machart_zk_gpu.setOption(option2);
