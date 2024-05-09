@@ -401,6 +401,10 @@ async function getUnit(id) {
       unit = 'ETH'
       name = 'Ethereum Mainnet '
       break
+    case 2024:
+      unit = 'sETH'
+      name = 'Saturn Testnet '
+      break
     case 20241133:
       unit = 'sETH'
       name = 'Swan Proxima Chain '

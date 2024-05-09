@@ -185,12 +185,6 @@
                     <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(system.$commonFun.floorFormat(ringGraphData.transactionDriveProgram.wallet_address_contribution))}}</b>
                   </div>
                 </el-col>
-                <!-- <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-                  <div class="grid-list flex-row space-between">
-                    <h6>Reward</h6>
-                    <b class="flex-row font-bold color">{{system.$commonFun.replaceFormat(system.$commonFun.floorFormat(ringGraphData.transactionDriveProgram.reward))}}</b>
-                  </div>
-                </el-col> -->
               </el-row>
             </el-col>
           </el-row>
@@ -397,23 +391,6 @@ export default defineComponent({
     async function getTotalscore () {
       try {
         const cpscoreRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}stats/get_tx_count?chain_id=20241133&wallet_address=${metaAddress.value}`, 'get')
-        const cpscoreRes_test = {
-          "data": {
-            "chain_id": 20241133,
-            "last_scanned_block": 605569,
-            "total_score": 53281,
-            "tx_count": {
-              "bridge_count": 0,
-              "contract_interaction_count": 0,
-              "deploy_count": 0,
-              "transfer_count": 53281
-            },
-            "wallet_address": "0xa0Be98C3a0c918E1922955888FBC6cc5f81f6FFb"
-          },
-          "message": "getting wallet transaction data successfully",
-          "status": "success"
-        }
-
         if (cpscoreRes && cpscoreRes.status === 'success') {
           ringGraphData.transactionDriveProgram.wallet_address_contribution = cpscoreRes.data.total_score || 0
         }
