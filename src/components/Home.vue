@@ -159,6 +159,34 @@ export default defineComponent({
   }
 }
 
+.width-icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  color: #fff;
+  fill: #fff;
+  &.small {
+    width: 20px;
+    height: 20px;
+  }
+  &.min-small {
+    width: 16px !important;
+    height: 16px;
+  }
+  &.minimum-small {
+    width: 14px;
+    height: 14px;
+  }
+  &.big {
+    width: 35px;
+    height: 35px;
+  }
+  svg {
+    width: inherit;
+    height: inherit;
+  }
+}
+
 .el-popper {
   .el-table-filter__list {
     .el-table-filter__list-item {
