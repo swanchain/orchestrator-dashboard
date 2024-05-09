@@ -404,6 +404,8 @@ async function getUnit(id) {
     case 2024:
       unit = 'sETH'
       name = 'Saturn Testnet '
+      url = `${process.env.VUE_APP_SATURNBLOCKURL}/address/`
+      url_tx = `${process.env.VUE_APP_SATURNBLOCKURL}/tx/`
       break
     case 20241133:
       unit = 'sETH'
