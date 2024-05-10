@@ -69,7 +69,7 @@ const routes = [{
                 }
             },
             {
-                path: '/my-cp-info',
+                path: '/cp-profile',
                 name: 'myCPInfo',
                 component: myCPInfo,
                 meta: {
