@@ -14,590 +14,492 @@
           <div class='chart' id='chart' v-loading="providersLoad" element-loading-background="rgba(0, 0, 0, 0)"></div>
         </el-col>
       </el-row>
-      <el-row :gutter="16" class="border-row">
-        <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="flex-row">
-          <div class="title top">Computing Provider</div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Network Providers</span>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.data.total_providers ? system.$commonFun.replaceFormat(providerBody.data.total_providers):'-'}}</b>
+      <div class="border-row">
+        <div class="title top flex-row space-between" @click="providerBody.collapse.general=!providerBody.collapse.general">
+          Computing Provider
+          <div class="button width-icon" :class="{'button-transform': providerBody.collapse.general}">
+            <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="ExpandMoreIcon">
+              <path d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>
+            </svg>
           </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Active Applications</span>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{system.$commonFun.replaceFormat(pagin.active_applications)}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Total Deployments</span>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{system.$commonFun.replaceFormat(pagin.total_deployments)}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">total jobs</span>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_jobs):'-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">total running jobs</span>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_running_jobs):'-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">total leading jobs</span>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_leading_jobs):'-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">leading job duration</span>
-              <small>(Hour)</small>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(system.$commonFun.timeFormat(providerBody.generalData.total_leading_job_duration)):'-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">total computer providers</span>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_computer_providers):'-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">total GPU deployed jobs</span>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_gpu_deployed_jobs):'-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">total GPU hours</span>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_gpu_hours):'-'}}</b>
-          </div>
-        </el-col>
-      </el-row>
-      <el-row :gutter="16" class="border-row">
-        <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="flex-row">
-          <div class="title top">ZK Provider</div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">CP Numbers of ZK Task</span>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.providers?system.$commonFun.replaceFormat(providerBody.ubiData.providers.count):'-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Total ZK Tasks</span>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.sent ?system.$commonFun.replaceFormat(providerBody.ubiData.tasks.sent.count) : '-'}}</b>
-          </div>
-        </el-col>
+        </div>
+        <el-row :gutter="16" :class="{'hide': providerBody.collapse.general}">
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">Network Providers</span>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.data.total_providers ? system.$commonFun.replaceFormat(providerBody.data.total_providers):'-'}}</b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">Active Applications</span>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{system.$commonFun.replaceFormat(pagin.active_applications)}}</b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">Total Deployments</span>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{system.$commonFun.replaceFormat(pagin.total_deployments)}}</b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">total jobs</span>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_jobs):'-'}}</b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">total running jobs</span>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_running_jobs):'-'}}</b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">total leading jobs</span>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_leading_jobs):'-'}}</b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">leading job duration</span>
+                <small>(Hour)</small>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(system.$commonFun.timeFormat(providerBody.generalData.total_leading_job_duration)):'-'}}</b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">total GPU deployed jobs</span>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_gpu_deployed_jobs):'-'}}</b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">total GPU hours</span>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_gpu_hours):'-'}}</b>
+            </div>
+          </el-col>
+        </el-row>
+      </div>
 
-        <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">Total ZK Tasks Type</h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.tasks?system.$commonFun.replaceFormat(providerBody.ubiData.tasks.zk_types):'-'}}</b>
+      <div class="border-row">
+        <div class="title top flex-row space-between" @click="providerBody.collapse.zk=!providerBody.collapse.zk">
+          ZK Provider
+          <div class="button width-icon" :class="{'button-transform': providerBody.collapse.zk}">
+            <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="ExpandMoreIcon">
+              <path d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>
+            </svg>
           </div>
-        </el-col> -->
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">GPU ZK Tasks</span>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.sent ?system.$commonFun.replaceFormat(providerBody.ubiData.tasks.sent.count_gpu):'-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">CPU ZK Tasks</span>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.sent ?system.$commonFun.replaceFormat(providerBody.ubiData.tasks.sent.count_cpu) : '-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Verified ZK Tasks</span>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.verified ?system.$commonFun.replaceFormat(providerBody.ubiData.tasks.verified.count):'-'}}</b>
-          </div>
-        </el-col>
+        </div>
+        <el-row :gutter="16" :class="{'hide': providerBody.collapse.zk}">
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">CP Numbers of ZK Task</span>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.providers?system.$commonFun.replaceFormat(providerBody.ubiData.providers.count):'-'}}</b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">Total ZK Tasks</span>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.sent ?system.$commonFun.replaceFormat(providerBody.ubiData.tasks.sent.count) : '-'}}</b>
+            </div>
+          </el-col>
 
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">24h Average ZK Reward</span>
-              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average ZK reward per CP over 24 hours">
-                <template #reference>
-                  <div class="flex-row">
-                    <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
-                      <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
-                        fill="#ffffff" p-id="7202"></path>
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.rewards?system.$commonFun.replaceFormat(providerBody.ubiData.rewards.avg_24h):'-'}}
-              <small>SWAN/CP</small>
-            </b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">7d Average ZK Reward</span>
-              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average ZK reward per CP per day over 7 days">
-                <template #reference>
-                  <div class="flex-row">
-                    <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
-                      <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
-                        fill="#ffffff" p-id="7202"></path>
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.rewards?system.$commonFun.replaceFormat(providerBody.ubiData.rewards.avg_7d):'-'}}
-              <small>SWAN/CP</small>
-            </b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">30d Average ZK Reward</span>
-              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average ZK reward per CP per day over 30 days">
-                <template #reference>
-                  <div class="flex-row">
-                    <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
-                      <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
-                        fill="#ffffff" p-id="7202"></path>
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.rewards?system.$commonFun.replaceFormat(providerBody.ubiData.rewards.avg_30d):'-'}}
-              <small>SWAN/CP</small>
-            </b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">1y Average ZK Reward</span>
-              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average ZK reward per CP per day over 1 year">
-                <template #reference>
-                  <div class="flex-row">
-                    <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
-                      <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
-                        fill="#ffffff" p-id="7202"></path>
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.rewards?system.$commonFun.replaceFormat(providerBody.ubiData.rewards.avg_1y):'-'}}
-              <small>SWAN/CP</small>
-            </b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Total ZK Reward</span>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.rewards ? system.$commonFun.replaceFormat(providerBody.ubiData.rewards.total) : '-'}}
-              <small>SWAN</small>
-            </b>
-          </div>
-        </el-col>
-      </el-row>
-      <el-row :gutter="16" class="border-row">
-        <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="flex-row">
-          <div class="title top">storage provider</div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">active SP</span>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.providerData?system.$commonFun.replaceFormat(providerBody.providerData.active_sp_quantity):'-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">daily sealed deals</span>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.providerData?system.$commonFun.replaceFormat(providerBody.providerData.daily_sealed_deals):'-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Storage Providers</span>
-              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="The number of storage providers offering decentralized storage capacity.">
-                <template #reference>
-                  <div class="flex-row">
-                    <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
-                      <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
-                        fill="#ffffff" p-id="7202"></path>
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.providerData?system.$commonFun.replaceFormat(providerBody.providerData.sp_quantity):'-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Daily Deals Processed</span>
-              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="The daily amount of all deals sent by swan client.">
-                <template #reference>
-                  <div class="flex-row">
-                    <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
-                      <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
-                        fill="#ffffff" p-id="7202"></path>
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.providerData?system.$commonFun.replaceFormat(providerBody.providerData.daily_upload):'-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Total Deals Processed</span>
-              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Total deals sent by swan client.">
-                <template #reference>
-                  <div class="flex-row">
-                    <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
-                      <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
-                        fill="#ffffff" p-id="7202"></path>
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.providerData?system.$commonFun.replaceFormat(providerBody.providerData.total_upload):'-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Data Transferred</span>
-              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Aggregate data transferred through swan platform.">
-                <template #reference>
-                  <div class="flex-row">
-                    <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
-                      <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
-                        fill="#ffffff" p-id="7202"></path>
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.providerData?system.$commonFun.replaceFormat(system.$commonFun.byteStorage(providerBody.providerData.data_transfered))+' GiB':'-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Total CIDs</span>
-              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="The total amount of payload CIDS.">
-                <template #reference>
-                  <div class="flex-row">
-                    <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
-                      <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
-                        fill="#ffffff" p-id="7202"></path>
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.providerData?system.$commonFun.replaceFormat(providerBody.providerData.total_cid):'-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Total Files Archived</span>
-              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="The number of files archived on the Filecoin network.">
-                <template #reference>
-                  <div class="flex-row">
-                    <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
-                      <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
-                        fill="#ffffff" p-id="7202"></path>
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.providerData?system.$commonFun.replaceFormat(providerBody.providerData.active_storage_deals):'-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Storage Archived</span>
-              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Total storage archived on the Filecoin network.">
-                <template #reference>
-                  <div class="flex-row">
-                    <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
-                      <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
-                        fill="#ffffff" p-id="7202"></path>
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.providerData?system.$commonFun.replaceFormat(system.$commonFun.byteStorage(providerBody.providerData.total_sealed_storage))+' GiB':'-'}}</b>
-          </div>
-        </el-col>
-        <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Average Regular Deal Price</span>
-              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average storage price for the latest 100 deals per year per GB.">
-                <template #reference>
-                  <div class="flex-row">
-                    <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
-                      <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
-                        fill="#ffffff" p-id="7202"></path>
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.storageData?system.$commonFun.filNumformat(providerBody.storageData.historical_average_price_regular):'-'}}</b>
-          </div>
-        </el-col> -->
-        <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Average Verified Deal Price</span>
-              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average storage price for the latest 100 verified deals per year per GB.">
-                <template #reference>
-                  <div class="flex-row">
-                    <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
-                      <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
-                        fill="#ffffff" p-id="7202"></path>
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.storageData?system.$commonFun.filNumformat(providerBody.storageData.historical_average_price_verified):'-'}}</b>
-          </div>
-        </el-col> -->
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">GPU ZK Tasks</span>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.sent ?system.$commonFun.replaceFormat(providerBody.ubiData.tasks.sent.count_gpu):'-'}}</b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">CPU ZK Tasks</span>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.sent ?system.$commonFun.replaceFormat(providerBody.ubiData.tasks.sent.count_cpu) : '-'}}</b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">Verified ZK Tasks</span>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.tasks && providerBody.ubiData.tasks.verified ?system.$commonFun.replaceFormat(providerBody.ubiData.tasks.verified.count):'-'}}</b>
+            </div>
+          </el-col>
 
-        <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Average Push Message Cost</span>
-              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average gas fee for sealing sectors on filecoin network.">
-                <template #reference>
-                  <div class="flex-row">
-                    <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
-                      <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
-                        fill="#ffffff" p-id="7202"></path>
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.storageData?system.$commonFun.storageNumformat(providerBody.storageData.average_cost_push_message):'-'}}</b>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">24h Average ZK Reward</span>
+                <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average ZK reward per CP over 24 hours">
+                  <template #reference>
+                    <div class="flex-row">
+                      <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
+                        <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
+                          fill="#ffffff" p-id="7202"></path>
+                      </svg>
+                    </div>
+                  </template>
+                </el-popover>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.rewards?system.$commonFun.replaceFormat(providerBody.ubiData.rewards.avg_24h):'-'}}
+                <small>SWAN/CP</small>
+              </b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">7d Average ZK Reward</span>
+                <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average ZK reward per CP per day over 7 days">
+                  <template #reference>
+                    <div class="flex-row">
+                      <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
+                        <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
+                          fill="#ffffff" p-id="7202"></path>
+                      </svg>
+                    </div>
+                  </template>
+                </el-popover>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.rewards?system.$commonFun.replaceFormat(providerBody.ubiData.rewards.avg_7d):'-'}}
+                <small>SWAN/CP</small>
+              </b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">30d Average ZK Reward</span>
+                <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average ZK reward per CP per day over 30 days">
+                  <template #reference>
+                    <div class="flex-row">
+                      <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
+                        <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
+                          fill="#ffffff" p-id="7202"></path>
+                      </svg>
+                    </div>
+                  </template>
+                </el-popover>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.rewards?system.$commonFun.replaceFormat(providerBody.ubiData.rewards.avg_30d):'-'}}
+                <small>SWAN/CP</small>
+              </b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">1y Average ZK Reward</span>
+                <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average ZK reward per CP per day over 1 year">
+                  <template #reference>
+                    <div class="flex-row">
+                      <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
+                        <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
+                          fill="#ffffff" p-id="7202"></path>
+                      </svg>
+                    </div>
+                  </template>
+                </el-popover>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.rewards?system.$commonFun.replaceFormat(providerBody.ubiData.rewards.avg_1y):'-'}}
+                <small>SWAN/CP</small>
+              </b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">Total ZK Reward</span>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.ubiData.rewards ? system.$commonFun.replaceFormat(providerBody.ubiData.rewards.total) : '-'}}
+                <small>SWAN</small>
+              </b>
+            </div>
+          </el-col>
+        </el-row>
+      </div>
+
+      <div class="border-row">
+        <div class="title top flex-row space-between" @click="providerBody.collapse.provider=!providerBody.collapse.provider">
+          storage provider
+          <div class="button width-icon" :class="{'button-transform': providerBody.collapse.provider}">
+            <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="ExpandMoreIcon">
+              <path d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>
+            </svg>
           </div>
-        </el-col> -->
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Pledge Collateral</span>
-              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average pledge collateral price for sealing 1TB data cost on filecoin network.">
-                <template #reference>
-                  <div class="flex-row">
-                    <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
-                      <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
-                        fill="#ffffff" p-id="7202"></path>
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.storageData?system.$commonFun.storageNumformat(providerBody.storageData.average_data_cost_sealing_1TB):'-'}}</b>
+        </div>
+        <el-row :gutter="16" :class="{'hide': providerBody.collapse.provider}">
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">active SP</span>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.providerData?system.$commonFun.replaceFormat(providerBody.providerData.active_sp_quantity):'-'}}</b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">daily sealed deals</span>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.providerData?system.$commonFun.replaceFormat(providerBody.providerData.daily_sealed_deals):'-'}}</b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">Storage Providers</span>
+                <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="The number of storage providers offering decentralized storage capacity.">
+                  <template #reference>
+                    <div class="flex-row">
+                      <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
+                        <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
+                          fill="#ffffff" p-id="7202"></path>
+                      </svg>
+                    </div>
+                  </template>
+                </el-popover>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.providerData?system.$commonFun.replaceFormat(providerBody.providerData.sp_quantity):'-'}}</b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">Daily Deals Processed</span>
+                <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="The daily amount of all deals sent by swan client.">
+                  <template #reference>
+                    <div class="flex-row">
+                      <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
+                        <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
+                          fill="#ffffff" p-id="7202"></path>
+                      </svg>
+                    </div>
+                  </template>
+                </el-popover>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.providerData?system.$commonFun.replaceFormat(providerBody.providerData.daily_upload):'-'}}</b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">Total Deals Processed</span>
+                <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Total deals sent by swan client.">
+                  <template #reference>
+                    <div class="flex-row">
+                      <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
+                        <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
+                          fill="#ffffff" p-id="7202"></path>
+                      </svg>
+                    </div>
+                  </template>
+                </el-popover>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.providerData?system.$commonFun.replaceFormat(providerBody.providerData.total_upload):'-'}}</b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">Data Transferred</span>
+                <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Aggregate data transferred through swan platform.">
+                  <template #reference>
+                    <div class="flex-row">
+                      <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
+                        <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
+                          fill="#ffffff" p-id="7202"></path>
+                      </svg>
+                    </div>
+                  </template>
+                </el-popover>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.providerData?system.$commonFun.replaceFormat(system.$commonFun.byteStorage(providerBody.providerData.data_transfered))+' GiB':'-'}}</b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">Total CIDs</span>
+                <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="The total amount of payload CIDS.">
+                  <template #reference>
+                    <div class="flex-row">
+                      <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
+                        <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
+                          fill="#ffffff" p-id="7202"></path>
+                      </svg>
+                    </div>
+                  </template>
+                </el-popover>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.providerData?system.$commonFun.replaceFormat(providerBody.providerData.total_cid):'-'}}</b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">Total Files Archived</span>
+                <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="The number of files archived on the Filecoin network.">
+                  <template #reference>
+                    <div class="flex-row">
+                      <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
+                        <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
+                          fill="#ffffff" p-id="7202"></path>
+                      </svg>
+                    </div>
+                  </template>
+                </el-popover>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.providerData?system.$commonFun.replaceFormat(providerBody.providerData.active_storage_deals):'-'}}</b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">Storage Archived</span>
+                <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Total storage archived on the Filecoin network.">
+                  <template #reference>
+                    <div class="flex-row">
+                      <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
+                        <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
+                          fill="#ffffff" p-id="7202"></path>
+                      </svg>
+                    </div>
+                  </template>
+                </el-popover>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.providerData?system.$commonFun.replaceFormat(system.$commonFun.byteStorage(providerBody.providerData.total_sealed_storage))+' GiB':'-'}}</b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">Pledge Collateral</span>
+                <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average pledge collateral price for sealing 1TB data cost on filecoin network.">
+                  <template #reference>
+                    <div class="flex-row">
+                      <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
+                        <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
+                          fill="#ffffff" p-id="7202"></path>
+                      </svg>
+                    </div>
+                  </template>
+                </el-popover>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.storageData?system.$commonFun.storageNumformat(providerBody.storageData.average_data_cost_sealing_1TB):'-'}}</b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">Average Minimum Piece Size</span>
+                <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average minimum piece size (accepting deal size) required by storage provider.">
+                  <template #reference>
+                    <div class="flex-row">
+                      <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
+                        <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
+                          fill="#ffffff" p-id="7202"></path>
+                      </svg>
+                    </div>
+                  </template>
+                </el-popover>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.storageData?system.$commonFun.storageNumformat(providerBody.storageData.average_min_piece_size):'-'}}</b>
+            </div>
+          </el-col>
+        </el-row>
+      </div>
+
+      <div class="border-row">
+        <div class="title top flex-row space-between" @click="providerBody.collapse.total=!providerBody.collapse.total">
+          Swan Proxima Chain
+          <div class="button width-icon" :class="{'button-transform': providerBody.collapse.total}">
+            <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="ExpandMoreIcon">
+              <path d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>
+            </svg>
           </div>
-        </el-col>
-        <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Cost of Sealing</span>
-              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average price for sealing 1TB sector gas fee & pledge collateral price on filecoin network.">
-                <template #reference>
-                  <div class="flex-row">
-                    <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
-                      <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
-                        fill="#ffffff" p-id="7202"></path>
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.storageData?system.$commonFun.storageNumformat(providerBody.storageData.average_gas_cost_sealing_1TB):'-'}}</b>
-          </div>
-        </el-col> -->
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Average Minimum Piece Size</span>
-              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average minimum piece size (accepting deal size) required by storage provider.">
-                <template #reference>
-                  <div class="flex-row">
-                    <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
-                      <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
-                        fill="#ffffff" p-id="7202"></path>
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.storageData?system.$commonFun.storageNumformat(providerBody.storageData.average_min_piece_size):'-'}}</b>
-          </div>
-        </el-col>
-        <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Average Ask Price</span>
-              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average asked price per year per GB by storage provider.">
-                <template #reference>
-                  <div class="flex-row">
-                    <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
-                      <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
-                        fill="#ffffff" p-id="7202"></path>
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.storageData?system.$commonFun.storageNumformat(providerBody.storageData.average_price_per_GB_per_year):'-'}}</b>
-          </div>
-        </el-col> -->
-        <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Average Verified Deal Ask Price</span>
-              <el-popover placement="top" :width="200" effect="dark" popper-style="word-break: break-word; text-align: left;font-size:12px;" trigger="hover" content="Average asked verified deals price per year per GB by storage provider.">
-                <template #reference>
-                  <div class="flex-row">
-                    <svg t="1708417763428" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7201" width="14" height="14">
-                      <path d="M512 64a448 448 0 1 1 0 896A448 448 0 0 1 512 64z m0 71.972571a375.954286 375.954286 0 1 0 0 752.054858A375.954286 375.954286 0 0 0 512 135.972571z m35.181714 266.020572c12.361143 0 21.796571 2.486857 28.672 8.045714 7.314286 5.997714 11.044571 14.043429 11.044572 23.917714 0 10.971429-11.190857 52.589714-33.060572 123.172572l-4.096 13.677714C517.778286 676.498286 512.731429 698.514286 512.731429 720.384c0 3.510857 0.731429 6.070857 2.194285 7.68 1.462857 1.755429 2.340571 2.340571 2.706286 2.340571 8.265143 0 35.766857-20.333714 78.262857-59.245714l8.777143 0.146286 19.456 18.944-0.146286 9.289143-2.779428 2.56c-45.568 41.691429-77.677714 67.584-98.889143 79.213714l-1.682286 0.877714c-21.357714 11.702857-39.058286 17.773714-53.248 17.773715a44.324571 44.324571 0 0 1-32.914286-12.726858 49.371429 49.371429 0 0 1-11.922285-34.596571c0-42.130286 13.531429-97.645714 64.219428-257.243429a57.197714 57.197714 0 0 0 3.291429-17.92V476.891429c0-2.56-0.438857-2.706286-2.852572-2.706286a41.179429 41.179429 0 0 0-19.748571 6.802286l-0.512 0.219428c-7.972571 4.900571-25.380571 20.260571-55.808 49.005714l-8.265143 0.438858-22.089143-16.822858-0.731428-9.508571 2.048-2.194286c33.572571-35.84 63.634286-61.001143 91.209143-76.288 28.525714-15.872 53.174857-23.844571 73.874285-23.844571z m51.565715-157.988572c11.776 0 22.162286 4.169143 30.134857 12.141715 8.045714 7.972571 12.141714 18.285714 12.141714 30.866285a64.658286 64.658286 0 0 1-17.554286 41.910858 51.2 51.2 0 0 1-39.131428 18.505142 40.448 40.448 0 0 1-29.622857-12.141714 43.373714 43.373714 0 0 1-12.141715-31.670857c0-16.676571 5.339429-30.427429 16.603429-42.276571a53.101714 53.101714 0 0 1 39.497143-17.334858z"
-                        fill="#ffffff" p-id="7202"></path>
-                    </svg>
-                  </div>
-                </template>
-              </el-popover>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.storageData?system.$commonFun.storageNumformat(providerBody.storageData.average_verified_price_per_GB_per_year):'-'}}</b>
-          </div>
-        </el-col> -->
-      </el-row>
-      <el-row :gutter="16" class="border-row">
-        <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="flex-row">
-          <div class="title top">Swan Proxima Chain</div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Total Addresses</span>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.total_addresses?system.$commonFun.replaceFormat(providerBody.totalData.total_addresses):'-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Total Contracts</span>
-              <small>(24H)</small>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">
-              {{providerBody.totalData.smart_contracts?system.$commonFun.replaceFormat(providerBody.totalData.smart_contracts):'-'}}
-              <span class="span" :class="{'up': providerBody.totalData.new_smart_contracts_24h&&providerBody.totalData.new_smart_contracts_24h>=0,'down': providerBody.totalData.new_smart_contracts_24h&&providerBody.totalData.new_smart_contracts_24h<0}">{{providerBody.totalData.new_smart_contracts_24h?providerBody.totalData.new_smart_contracts_24h>=0?'+':'-':''}}{{system.$commonFun.replaceFormat(providerBody.totalData.new_smart_contracts_24h)}}</span>
-            </b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Transactions Today</span>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.transactions_today?system.$commonFun.replaceFormat(providerBody.totalData.transactions_today):'-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Total Transactions</span>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.total_transactions?system.$commonFun.replaceFormat(providerBody.totalData.total_transactions):'-'}}</b>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Gas Used Today</span>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.gas_used_today?system.$commonFun.replaceFormat(providerBody.totalData.gas_used_today):'-'}}</b>
-          </div>
-        </el-col>
-        <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">Total Gas Used</h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.total_gas_used?system.$commonFun.replaceFormat(providerBody.totalData.total_gas_used):'-'}}</b>
-          </div>
-        </el-col> -->
-        <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-          <div class="grid-content">
-            <h6 class="flex-row">
-              <span class="t">Total Blocks</span>
-            </h6>
-            <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.total_blocks?system.$commonFun.replaceFormat(providerBody.totalData.total_blocks):'-'}}</b>
-          </div>
-        </el-col>
-      </el-row>
+        </div>
+        <el-row :gutter="16" :class="{'hide': providerBody.collapse.total}">
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">Total Addresses</span>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.total_addresses?system.$commonFun.replaceFormat(providerBody.totalData.total_addresses):'-'}}</b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">Total Contracts</span>
+                <small>(24H)</small>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">
+                {{providerBody.totalData.smart_contracts?system.$commonFun.replaceFormat(providerBody.totalData.smart_contracts):'-'}}
+                <span class="span" :class="{'up': providerBody.totalData.new_smart_contracts_24h&&providerBody.totalData.new_smart_contracts_24h>=0,'down': providerBody.totalData.new_smart_contracts_24h&&providerBody.totalData.new_smart_contracts_24h<0}">{{providerBody.totalData.new_smart_contracts_24h?providerBody.totalData.new_smart_contracts_24h>=0?'+':'-':''}}{{system.$commonFun.replaceFormat(providerBody.totalData.new_smart_contracts_24h)}}</span>
+              </b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">Transactions Today</span>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.transactions_today?system.$commonFun.replaceFormat(providerBody.totalData.transactions_today):'-'}}</b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">Total Transactions</span>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.total_transactions?system.$commonFun.replaceFormat(providerBody.totalData.total_transactions):'-'}}</b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">Gas Used Today</span>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.gas_used_today?system.$commonFun.replaceFormat(providerBody.totalData.gas_used_today):'-'}}</b>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+            <div class="grid-content">
+              <h6 class="flex-row">
+                <span class="t">Total Blocks</span>
+              </h6>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.totalData.total_blocks?system.$commonFun.replaceFormat(providerBody.totalData.total_blocks):'-'}}</b>
+            </div>
+          </el-col>
+        </el-row>
+      </div>
 
       <div class="tabs-container">
         <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
@@ -1074,7 +976,13 @@ export default defineComponent({
       },
       storageData: {},
       providerData: {},
-      generalData: {}
+      generalData: {},
+      collapse: {
+        general: true,
+        zk: true,
+        total: true,
+        provider: true
+      }
     })
     const networkInput = ref('')
     const networkZK = reactive({
@@ -1558,12 +1466,30 @@ export default defineComponent({
       }
     }
     .border-row {
-      padding: 0 0.1rem 0.3rem;
-      margin: 0.5rem 0 0;
+      padding: 0.15rem 0.18rem;
+      margin: 0.35rem 0 0;
       border: 1px solid #3a67cf;
       border-radius: 0.14rem;
+      .title.top {
+        margin: 0;
+        cursor: pointer;
+        .button {
+          transition: all 0.2s;
+          &.button-transform {
+            transform: rotate(-90deg);
+          }
+        }
+      }
+      .el-row {
+        animation: showing 0.1s linear 1 forwards;
+        overflow: hidden;
+        &.hide {
+          animation: hiddening 0.1s linear 1 forwards;
+        }
+      }
     }
     .title {
+      width: 100%;
       margin: 0;
       font-size: 0.24rem;
       font-weight: 600;
@@ -1576,10 +1502,10 @@ export default defineComponent({
       }
     }
     .tabs-container {
-      margin: 0.8rem 0 0;
+      margin: 0.6rem 0 0;
       .el-tabs {
         .el-tabs__header {
-          margin: 0 0 0.2rem;
+          margin: 0;
           .el-tabs__nav {
             display: flex;
             align-items: stretch;
@@ -1617,7 +1543,7 @@ export default defineComponent({
         }
         .grid-content {
           padding: 0.15rem;
-          margin: 0.3rem 0 0;
+          margin: 0.15rem 0;
           background: #26272a;
           // backdrop-filter: blur(5px);
           border: 1px solid #3a67cf;
@@ -2178,7 +2104,8 @@ export default defineComponent({
         border: 1px solid #f4f4f5;
         border-radius: 5px;
         &:not(.disabled).active,
-        &:not(.disabled):hover {
+        &:not(.disabled):hover,
+        &.is-active {
           background-color: @theme-color;
           border-color: @theme-color;
         }

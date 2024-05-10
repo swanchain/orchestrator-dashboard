@@ -5,7 +5,7 @@
       <div class="flex-row nowrap swan-right">
         <div class="nav pcShow">
           <router-link :to="{name: 'dashboard'}" :class="{'active': route.name === 'dashboard'}">Dashboard</router-link>
-          <router-link :to="{ name: 'myCPInfo'}" :class="{'active': route.name === 'myCPInfo'}" v-if="accessToken !== ''">My CP Info</router-link>
+          <router-link :to="{ name: 'myCPInfo'}" :class="{'active': route.name === 'myCPInfo'}" v-if="accessToken !== ''">CP Profile</router-link>
           <router-link :to="{ name: 'paymentHistory'}" :class="{'active': route.name === 'paymentHistory'}" v-if="accessToken !== ''">Reward History</router-link>
           <router-link :to="{ name: 'UBIHistory'}" :class="{'active': route.name === 'UBIHistory'}" v-if="accessToken !== ''">UBI Reward History</router-link>
         </div>
@@ -63,7 +63,7 @@
                   </el-dropdown-item>
                   <el-dropdown-item v-if="accessToken !== ''">
                     <div class="profile router-link b">
-                      <router-link :to="{ name: 'myCPInfo'}" :class="{'active': route.name === 'myCPInfo'}">My CP Info</router-link>
+                      <router-link :to="{ name: 'myCPInfo'}" :class="{'active': route.name === 'myCPInfo'}">CP Profile</router-link>
                     </div>
                   </el-dropdown-item>
                   <el-dropdown-item v-if="accessToken !== ''">
@@ -117,7 +117,7 @@
       <div class="area flex-row">
         <div class="fast">
           <label>Network</label>
-          <div class="address">{{info.network}}</div>
+          <div class="address" :title="info.network">{{info.network}}</div>
         </div>
         <div class="fast">
           <label>Balance</label>
