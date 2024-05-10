@@ -84,14 +84,6 @@
           <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
             <div class="grid-content">
               <h6 class="flex-row">
-                <span class="t">total computer providers</span>
-              </h6>
-              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_computer_providers):'-'}}</b>
-            </div>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-            <div class="grid-content">
-              <h6 class="flex-row">
                 <span class="t">total GPU deployed jobs</span>
               </h6>
               <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_gpu_deployed_jobs):'-'}}</b>
