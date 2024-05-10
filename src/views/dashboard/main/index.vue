@@ -2104,7 +2104,8 @@ export default defineComponent({
         border: 1px solid #f4f4f5;
         border-radius: 5px;
         &:not(.disabled).active,
-        &:not(.disabled):hover {
+        &:not(.disabled):hover,
+        &.is-active {
           background-color: @theme-color;
           border-color: @theme-color;
         }
