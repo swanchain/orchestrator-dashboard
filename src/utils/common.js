@@ -5,6 +5,12 @@ import {
   ElMessage
 } from 'element-plus'
 import router from '../router'
+// import modal from '../chain'
+
+// imports causing no loader found errors below
+import { reconnect } from '@wagmi/core'
+import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi'
+
 let lastTime = 0
 
 async function sendRequest(apilink, type, jsonObject, api_token) {
@@ -251,6 +257,7 @@ async function walletChain(chainId) {
 }
 
 async function login() {
+  // modal.open()
   const chain_id = await web3Init.eth.net.getId()
   if (!store.state.metaAddress || store.state.metaAddress === undefined) {
     const accounts = await providerInit.request({

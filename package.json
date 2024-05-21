@@ -15,6 +15,7 @@
     "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\""
   },
   "dependencies": {
+
     "@wagmi/connectors": "4.1.14",
     "@wagmi/core": "2.6.5",
     "@web3modal/wagmi": "4.1.11",
@@ -31,7 +32,8 @@
     "vue-i18n": "^9.1.9",
     "vue-loader": "^17.0.0",
     "vue-router": "^4.0.0-0",
-    "vuex": "^4.0.0-0"
+    "vuex": "^4.0.0-0",
+    "web3modal": "^1.9.12"
   },
   "devDependencies": {
     "@intlify/vue-i18n-loader": "^3.0.0",
