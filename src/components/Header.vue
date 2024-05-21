@@ -82,6 +82,10 @@
           </div>
         </div>
         <el-button type="primary" @click="loginMethod" v-else>Login</el-button>
+
+        <!-- web3Modal testnet-->
+        <web3-modal />
+
       </div>
     </div>
 
@@ -196,7 +200,9 @@
   </section>
 </template>
 
+
 <script>
+import web3Modal from "@/components/web3Modal"
 import { defineComponent, computed, onMounted, watch, ref, reactive, getCurrentInstance } from 'vue'
 import { useStore } from "vuex"
 import { useRouter, useRoute } from 'vue-router'
@@ -209,7 +215,7 @@ import SpaceTokenABI from '@/utils/abi/SwanToken.json'
 import CollateralABI from '@/utils/abi/CollateralContract.json'
 export default defineComponent({
   components: {
-    CircleCheck, DocumentCopy, Avatar, Delete, View
+    CircleCheck, DocumentCopy, Avatar, Delete, View, web3Modal
   },
   setup () {
     const store = useStore()

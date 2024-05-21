@@ -928,6 +928,7 @@ import {
   CircleCheck, DocumentCopy, Avatar
 } from '@element-plus/icons-vue'
 import * as echarts from "echarts"
+import worldGeoJSON from '@/assets/js/world.json'
 
 export default defineComponent({
   components: {
@@ -1194,7 +1195,7 @@ export default defineComponent({
         },
         geo: {
           show: true,
-          map: 'world',
+          map: 'worldHq',
           label: {
             normal: {
               show: false
@@ -1401,6 +1402,7 @@ export default defineComponent({
       else changetype()
     }
     onActivated(async () => {
+      echarts.registerMap('worldHq', worldGeoJSON)
       reset('init')
     })
     return {
