@@ -15,7 +15,7 @@ RUN apk add --update \
 WORKDIR /app
 
 # copy both 'package.json'
-COPY package.json ./
+COPY package.json yarn.lock ./
 
 # remove node_modules if exists
 RUN rm -rf node_modules
@@ -27,7 +27,7 @@ RUN rm -rf package-lock.json
 RUN npm cache clean --force
 
 # install project dependencies
-RUN npm install
+RUN yarn install
 
 # copy project files and folders to the current working directory (i.e. 'app' folder)
 COPY . .
