@@ -6,6 +6,7 @@ import {
 } from 'element-plus'
 import router from '../router'
 // import modal from '../chain'
+import { disconnect } from '@wagmi/core'
 
 
 let lastTime = 0
@@ -253,7 +254,7 @@ async function walletChain(chainId) {
   }
 }
 
-async function login() {
+async function login(config) {
   const chain_id = await web3Init.eth.net.getId()
   if (!store.state.metaAddress || store.state.metaAddress === undefined) {
     const accounts = await providerInit.request({
@@ -263,7 +264,7 @@ async function login() {
   }
   const time = await throttle()
   if (!time) return [false, '']
-  const [signature, signErr] = await sign()
+  const [signature, signErr] = await sign(config)
   if (!signature) return [false, signErr]
   const token = await performSignin(signature)
   return [!!token, '']
@@ -294,7 +295,7 @@ function debounce(fn, delay) {
   };
 }
 
-async function sign(nonce) {
+async function sign(config) {
   const rightnow = (Date.now() / 1000).toFixed(0)
   const sortanow = rightnow - (rightnow % 600)
   const local = process.env.VUE_APP_DOMAINNAME
@@ -307,11 +308,12 @@ async function sign(nonce) {
   }).then(sig => {
     signErr = ''
     signature = sig
-  }).catch(err => {
+  }).catch(async err => {
     console.log(err)
     signature = ''
     signErr = err && err.code ? String(err.code) : err
     signOutFun()
+    await disconnect(config)
   })
   return [signature, signErr]
 }
