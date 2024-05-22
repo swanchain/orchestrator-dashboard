@@ -81,8 +81,6 @@
             </el-dropdown>
           </div>
         </div>
-        <el-button type="primary" @click="loginMethod" v-else>signature</el-button>
-
         <!-- web3Modal testnet-->
         <web3-modal />
 

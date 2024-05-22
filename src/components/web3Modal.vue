@@ -84,8 +84,8 @@ async function throttle() {
 let account = reactive(getAccount(config))
 
 async function login2() {
-  console.log('here')
-  console.log(account)
+  // console.log('here')
+  // console.log(account)
   const time = await throttle()
   if (!time) return false
   system.$commonFun.Init(async (addr, chain) => {
@@ -94,12 +94,21 @@ async function login2() {
   })
 }
 
+async function signout2() {
+  await system.$commonFun.signOutFun()
+  // console.log("in signout function")
+  // window.location.reload()
+}
+
 watchAccount(config, {
-  onChange() {
-    account = getAccount(config)
+  onChange(account, prevAccount) {
+    // account = getAccount(config)
     // console.log('watch', account)
+    // console.log('prev', prevAccount)
     if (account?.isConnected) {
       login2()
+    } else if (!account?.isConnected && prevAccount?.isConnected) {
+      signout2()
     }
   },
 })
