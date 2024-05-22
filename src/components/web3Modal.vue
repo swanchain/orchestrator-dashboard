@@ -134,7 +134,6 @@
         await system.$commonFun.timeout(500)
         system.$commonFun.login()
       })*/
-      console.log(test)
       test.value = "No"
     }
   
