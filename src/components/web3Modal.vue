@@ -2,7 +2,7 @@
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/vue'
 import { mainnet, arbitrum } from 'viem/chains'
 import { reconnect } from '@wagmi/core'
-import store from './../store'
+import { useStore } from "vuex"
 import {
   computed,
   ref,
@@ -16,6 +16,9 @@ import {
 import { getAccount, watchAccount } from '@wagmi/core'
 
 const system = getCurrentInstance().appContext.config.globalProperties
+const store = useStore()
+const accessToken = computed(() => (store.state.accessToken))
+const signature = computed(() => (store.state.signature))
 
 const SWAN_PROXIMA = {
   id: Number(20241133), //Number(process.env.NEXT_PUBLIC_L2_PROXIMA_CHAIN_ID),
@@ -103,17 +106,26 @@ async function signout2() {
 watchAccount(config, {
   onChange(account, prevAccount) {
     // account = getAccount(config)
-    // console.log('watch', account)
-    // console.log('prev', prevAccount)
+    console.log('watch', account)
+    console.log('prev', prevAccount)
+    console.log("changed")
     if (account?.isConnected) {
+      console.log("prompted")
       login2()
     } else if (!account?.isConnected && prevAccount?.isConnected) {
       signout2()
     }
   },
 })
+
+async function test() {
+  console.log(store.state.accessToken)
+  console.log(store.state.signature)
+  console.log("here")
+}
 </script>
 
 <template>
-  <w3m-button balance="hide" />
+  <el-button type="primary" @click="login2" v-if="accessToken !== '' && signature === ''">Signature</el-button>
+  <w3m-button balance="hide"  @click="test"/>
 </template>

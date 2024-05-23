@@ -263,8 +263,13 @@ async function login(config) {
     store.dispatch('setMetaAddress', accounts[0])
   }
   const time = await throttle()
+  console.log('passed metamask wait')
   if (!time) return [false, '']
+  console.log('before sign')
   const [signature, signErr] = await sign(config)
+  store.dispatch('setSignature', signature)
+  console.log('after sign')
+  console.log(store.state.signature)
   if (!signature) return [false, signErr]
   const token = await performSignin(signature)
   return [!!token, '']
@@ -338,6 +343,7 @@ async function performSignin(sig) {
 
 async function signOutFun() {
   store.dispatch('setAccessToken', '')
+  store.dispatch('setSignature', '')
   // store.dispatch('setMetaAddress', '')
 }
 
