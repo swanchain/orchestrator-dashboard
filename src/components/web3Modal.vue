@@ -115,5 +115,5 @@ watchAccount(config, {
 </script>
 
 <template>
-  <w3m-button />
+  <w3m-button balance="hide" />
 </template>
