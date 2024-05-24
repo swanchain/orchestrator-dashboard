@@ -83,6 +83,6 @@ async function test () {
 <template>
   <div class="flex-row">
     <w3m-button balance="hide" @click="test" />
-    <el-button type="primary" @click="login2" v-if="metaAddress && signature === ''" class="m-button">Signature</el-button>
+    <el-button type="primary" @click="login2" v-if="metaAddress && signature === ''" class="m-button">Login</el-button>
   </div>
 </template>
