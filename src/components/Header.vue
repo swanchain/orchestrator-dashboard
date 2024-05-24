@@ -9,6 +9,10 @@
           <router-link :to="{ name: 'paymentHistory'}" :class="{'active': route.name === 'paymentHistory'}" v-if="accessToken !== ''">Reward History</router-link>
           <router-link :to="{ name: 'UBIHistory'}" :class="{'active': route.name === 'UBIHistory'}" v-if="accessToken !== ''">UBI Reward History</router-link>
         </div>
+
+        <!-- web3Modal testnet-->
+        <web3-modal />
+
         <div class="header-right flex-row nowrap" v-if="accessToken !== ''">
           <!-- <div class="set ">
             <div class="info-style flex-row">
@@ -81,10 +85,6 @@
             </el-dropdown>
           </div>
         </div>
-
-        <!-- web3Modal testnet-->
-        <web3-modal />
-
       </div>
     </div>
 

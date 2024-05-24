@@ -123,6 +123,10 @@ export default defineComponent({
   border-top: 2px solid #868688;
 }
 
+.m-button {
+  margin: 0 0 0 0.1rem;
+}
+
 .describe {
   font-size: 16px;
   @media screen and (max-width: 1600px) {
