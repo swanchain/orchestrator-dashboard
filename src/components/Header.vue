@@ -9,14 +9,18 @@
           <router-link :to="{ name: 'paymentHistory'}" :class="{'active': route.name === 'paymentHistory'}" v-if="accessToken !== ''">Reward History</router-link>
           <router-link :to="{ name: 'UBIHistory'}" :class="{'active': route.name === 'UBIHistory'}" v-if="accessToken !== ''">UBI Reward History</router-link>
         </div>
+
+        <!-- web3Modal testnet-->
+        <web3-modal />
+
         <div class="header-right flex-row nowrap" v-if="accessToken !== ''">
-          <div class="set ">
+          <!-- <div class="set ">
             <div class="info-style flex-row">
               <div class="address" @click="wrongMethod">
                 {{system.$commonFun.hiddAddress(metaAddress)}}
               </div>
             </div>
-          </div>
+          </div> -->
           <div class="set">
             <el-dropdown popper-class="menu-style" @command="handleSelect" placement="bottom-end" :hide-on-click="false">
               <div class="el-dropdown-link setting-style loginImg flex-row">
@@ -81,7 +85,6 @@
             </el-dropdown>
           </div>
         </div>
-        <el-button type="primary" @click="loginMethod" v-else>Login</el-button>
       </div>
     </div>
 
@@ -196,7 +199,9 @@
   </section>
 </template>
 
+
 <script>
+import web3Modal from "@/components/web3Modal"
 import { defineComponent, computed, onMounted, watch, ref, reactive, getCurrentInstance } from 'vue'
 import { useStore } from "vuex"
 import { useRouter, useRoute } from 'vue-router'
@@ -209,7 +214,7 @@ import SpaceTokenABI from '@/utils/abi/SwanToken.json'
 import CollateralABI from '@/utils/abi/CollateralContract.json'
 export default defineComponent({
   components: {
-    CircleCheck, DocumentCopy, Avatar, Delete, View
+    CircleCheck, DocumentCopy, Avatar, Delete, View, web3Modal
   },
   setup () {
     const store = useStore()

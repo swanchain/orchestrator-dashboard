@@ -6,6 +6,7 @@ const CompressionWebpackPlugin = require('compression-webpack-plugin') // gzip�
 const productionGzipExtensions = /\.(js|css|json|txt|html|ico|svg)(\?.*)?$/i // gzip匹配文件规则
 const BranchVersionWebpackPlugin = require('./webpack-plugin/branch-version-webpack-plugin');
 const NOT_DEV = process.env.NODE_ENV !== 'development'
+const { defineConfig } = require('@vue/cli-service')
 
 const globalConfig = require('./src/config/index.js')
 
@@ -21,7 +22,7 @@ const externals = {
   // 'echarts': 'echarts'
 }
 
-module.exports = {
+module.exports = defineConfig({
   publicPath: '/',
 
   outputDir: process.env.VUE_APP_OUTPUTDIR,
@@ -29,6 +30,8 @@ module.exports = {
   runtimeCompiler: true,
 
   productionSourceMap: false,
+
+  transpileDependencies: true,
 
   css: {
     loaderOptions: {
@@ -124,7 +127,7 @@ module.exports = {
 
   devServer: {
     port: 8080,
-    open: true,
+    open: false,
     // proxy: { 
     //   '/api': {
     //     target: 'http://18.221.71.211:5000/',
@@ -149,4 +152,4 @@ module.exports = {
       fullInstall: true
     }
   }
-}
+})

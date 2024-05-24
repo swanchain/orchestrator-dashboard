@@ -3,6 +3,7 @@ node_modules
 /dist/
 /dist_prod/
 /dist_test/
+/dist_testnet/
 package-lock.json
 
 
