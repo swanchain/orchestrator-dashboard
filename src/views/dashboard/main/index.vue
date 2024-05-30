@@ -15,13 +15,8 @@
         </el-col>
       </el-row>
       <div class="border-row">
-        <div class="title top flex-row space-between" @click="providerBody.collapse.general=!providerBody.collapse.general">
+        <div class="title top flex-row space-between">
           Computing Provider
-          <div class="button width-icon" :class="{'button-transform': providerBody.collapse.general}">
-            <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="ExpandMoreIcon">
-              <path d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>
-            </svg>
-          </div>
         </div>
         <el-row :gutter="16" :class="{'hide': providerBody.collapse.general}">
           <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
@@ -101,13 +96,8 @@
       </div>
 
       <div class="border-row">
-        <div class="title top flex-row space-between" @click="providerBody.collapse.zk=!providerBody.collapse.zk">
+        <div class="title top flex-row space-between">
           ZK Provider
-          <div class="button width-icon" :class="{'button-transform': providerBody.collapse.zk}">
-            <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="ExpandMoreIcon">
-              <path d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>
-            </svg>
-          </div>
         </div>
         <el-row :gutter="16" :class="{'hide': providerBody.collapse.zk}">
           <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
@@ -246,13 +236,8 @@
       </div>
 
       <div class="border-row">
-        <div class="title top flex-row space-between" @click="providerBody.collapse.provider=!providerBody.collapse.provider">
+        <div class="title top flex-row space-between">
           storage provider
-          <div class="button width-icon" :class="{'button-transform': providerBody.collapse.provider}">
-            <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="ExpandMoreIcon">
-              <path d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>
-            </svg>
-          </div>
         </div>
         <el-row :gutter="16" :class="{'hide': providerBody.collapse.provider}">
           <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
@@ -437,13 +422,8 @@
       </div>
 
       <div class="border-row">
-        <div class="title top flex-row space-between" @click="providerBody.collapse.total=!providerBody.collapse.total">
+        <div class="title top flex-row space-between">
           Swan Proxima Chain
-          <div class="button width-icon" :class="{'button-transform': providerBody.collapse.total}">
-            <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="ExpandMoreIcon">
-              <path d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>
-            </svg>
-          </div>
         </div>
         <el-row :gutter="16" :class="{'hide': providerBody.collapse.total}">
           <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
@@ -979,10 +959,10 @@ export default defineComponent({
       providerData: {},
       generalData: {},
       collapse: {
-        general: true,
-        zk: true,
-        total: true,
-        provider: true
+        general: false,
+        zk: false,
+        total: false,
+        provider: false
       }
     })
     const networkInput = ref('')
