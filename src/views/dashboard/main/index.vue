@@ -1271,7 +1271,7 @@ export default defineComponent({
       const option4 = JSON.parse(JSON.stringify(option))
       const option5 = JSON.parse(JSON.stringify(option))
       option2.series[0].data = [
-        { value: providerBody.data.total_gpu - providerBody.data.total_used_gpu, name: providerBody.data.total_gpu - providerBody.data.total_used_gpu },
+        { value: providerBody.data.total_gpu - providerBody.data.total_used_gpu, name: (providerBody.data.total_gpu - providerBody.data.total_used_gpu) + ' ' },
         { value: providerBody.data.total_used_gpu, name: providerBody.data.total_used_gpu },
       ]
       option3.series[0].data = [
@@ -1347,7 +1347,7 @@ export default defineComponent({
       try {
         option2.series[0].data = [
           { value: providerBody.ubiData.providers.gpu.free, name: providerBody.ubiData.providers.gpu.free },
-          { value: providerBody.ubiData.providers.gpu.total - providerBody.ubiData.providers.gpu.free, name: providerBody.ubiData.providers.gpu.total - providerBody.ubiData.providers.gpu.free },
+          { value: providerBody.ubiData.providers.gpu.total - providerBody.ubiData.providers.gpu.free, name: (providerBody.ubiData.providers.gpu.total - providerBody.ubiData.providers.gpu.free) + ' ' },
         ]
         option3.series[0].data = [
           { value: providerBody.ubiData.providers.memory.free, name: system.$commonFun.sizeChange(providerBody.ubiData.providers.memory.free) + ' ' },
