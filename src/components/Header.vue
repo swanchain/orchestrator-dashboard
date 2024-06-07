@@ -162,7 +162,7 @@
             <div class="fast width">
               <label>CP Address</label>
               <!-- <div class="address">{{cpCollateralCont.address}}</div> -->
-              <el-input v-model="metaAddress" class="is-disabled" type="text" placeholder=" " readonly />
+              <el-input v-model="cpCollateralCont.user_input_address" @change="userInput" type="text" placeholder=" " />
               <p class="error" v-show="cpCollateralCont.tip">Please enter a valid Ethereum address</p>
             </div>
           </div>
@@ -265,7 +265,8 @@ export default defineComponent({
       tip_amount: false,
       address: '',
       amount: NaN,
-      tx_hash: ''
+      tx_hash: '',
+      user_input_address: ''
     })
     const txLink = process.env.VUE_APP_ATOMBLOCKURL
     const tokenAddress = process.env.VUE_APP_OPSWAN_SWANTOKEN_ADDRESS
@@ -389,7 +390,7 @@ export default defineComponent({
     async function cpCollateral () {
       cpCollateralCont.show = true
       try {
-        if (Number(cpCollateralCont.amount) >= 0) cpDeposit()
+        if (Number(cpCollateralCont.amount) >= 0 && !cpCollateralCont.tip) cpDeposit()
         else {
           cpCollateralCont.tip_amount = true
           cpCollateralCont.show = false
@@ -426,6 +427,9 @@ export default defineComponent({
       }
       // cpCollateralCont.diagle = false
     }
+    function userInput () {
+      cpCollateralCont.tip = !system.$commonFun.web3Init.utils.isAddress(cpCollateralCont.user_input_address)
+    }
     async function cpDeposit () {
       try {
         const amount = system.$commonFun.web3Init.utils.toWei(String(cpCollateralCont.amount), 'ether')
@@ -436,7 +440,7 @@ export default defineComponent({
         //   from: metaAddress.value, gasLimit: approveGasLimit
         // })
 
-        let payMethod = collateralContract.methods.deposit(metaAddress.value)
+        let payMethod = collateralContract.methods.deposit(cpCollateralCont.user_input_address)
         let payGasLimit = await payMethod.estimateGas({ from: metaAddress.value })
         const tx = await payMethod.send({ from: metaAddress.value, gasLimit: Math.floor(payGasLimit * 5), value: amount })
           .on('transactionHash', async (transactionHash) => {
@@ -457,8 +461,8 @@ export default defineComponent({
       cpCheckCont.diagle = true
       cpCheckCont.show = true
       try {
-        const taskBalance = await collateralContract.methods.frozenBalance(metaAddress.value).call()
-        const balances = await collateralContract.methods.balances(metaAddress.value).call()
+        const taskBalance = await collateralContract.methods.lockedCollateral(metaAddress.value).call()
+        const balances = await collateralContract.methods.availableBalance(metaAddress.value).call()
         cpCheckCont.balance = system.$commonFun.web3Init.utils.fromWei(String(balances), 'ether') || 0
         cpCheckCont.taskBalance = system.$commonFun.web3Init.utils.fromWei(String(taskBalance), 'ether') || 0
       } catch{ }
@@ -524,7 +528,7 @@ export default defineComponent({
       ruleForm,
       info, wrongVisible, bodyWidth, cpCheckCont, cpCollateralCont, txLink,
       getdataList, createCom, deleteToken, handleKeyChange, handleSizeChange,
-      loginMethod, handleSelect, wrongMethod, cpCollateral
+      loginMethod, handleSelect, wrongMethod, cpCollateral, userInput
     }
   }
 })
