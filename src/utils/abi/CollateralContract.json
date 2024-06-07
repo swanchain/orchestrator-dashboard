@@ -1,49 +1,227 @@
-[{
+[
+  {
     "inputs": [],
     "stateMutability": "nonpayable",
     "type": "constructor"
   },
   {
-    "anonymous": false,
-    "inputs": [{
-        "indexed": false,
+    "inputs": [
+      {
         "internalType": "address",
-        "name": "previousAdmin",
+        "name": "target",
+        "type": "address"
+      }
+    ],
+    "name": "AddressEmptyCode",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "implementation",
+        "type": "address"
+      }
+    ],
+    "name": "ERC1967InvalidImplementation",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ERC1967NonPayable",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "FailedInnerCall",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidInitialization",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NotInitializing",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnableInvalidOwner",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "OwnableUnauthorizedAccount",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "UUPSUnauthorizedCallContext",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "slot",
+        "type": "bytes32"
+      }
+    ],
+    "name": "UUPSUnsupportedProxiableUUID",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "cp",
         "type": "address"
       },
       {
         "indexed": false,
-        "internalType": "address",
-        "name": "newAdmin",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "frozenAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "balanceAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "operation",
+        "type": "string"
       }
     ],
-    "name": "AdminChanged",
+    "name": "CollateralAdjusted",
     "type": "event"
   },
   {
     "anonymous": false,
-    "inputs": [{
-      "indexed": true,
-      "internalType": "address",
-      "name": "beacon",
-      "type": "address"
-    }],
-    "name": "BeaconUpgraded",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [{
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "cp",
+        "type": "address"
+      },
+      {
         "indexed": false,
+        "internalType": "uint256",
+        "name": "collateralAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "taskUid",
+        "type": "string"
+      }
+    ],
+    "name": "CollateralLocked",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "cp",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "taskUid",
+        "type": "string"
+      }
+    ],
+    "name": "CollateralSlashed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "taskUid",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum CollateralV2.CollateralStatus",
+        "name": "newStatus",
+        "type": "uint8"
+      }
+    ],
+    "name": "CollateralStatusChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "cp",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "collateralAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "taskUid",
+        "type": "string"
+      }
+    ],
+    "name": "CollateralUnlocked",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
         "internalType": "address",
         "name": "fundingWallet",
         "type": "address"
       },
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "address",
-        "name": "receivingWallet",
+        "name": "cpAccount",
         "type": "address"
       },
       {
@@ -58,42 +236,40 @@
   },
   {
     "anonymous": false,
-    "inputs": [{
-      "indexed": false,
-      "internalType": "uint8",
-      "name": "version",
-      "type": "uint8"
-    }],
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "challenger",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "taskUid",
+        "type": "string"
+      }
+    ],
+    "name": "DisputeProof",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint64",
+        "name": "version",
+        "type": "uint64"
+      }
+    ],
     "name": "Initialized",
     "type": "event"
   },
   {
     "anonymous": false,
-    "inputs": [{
-        "indexed": false,
-        "internalType": "address",
-        "name": "taskContract",
-        "type": "address"
-      },
+    "inputs": [
       {
-        "indexed": false,
-        "internalType": "address[]",
-        "name": "cpList",
-        "type": "address[]"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "collateralAmount",
-        "type": "uint256"
-      }
-    ],
-    "name": "LockCollateral",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [{
         "indexed": true,
         "internalType": "address",
         "name": "previousOwner",
@@ -111,45 +287,55 @@
   },
   {
     "anonymous": false,
-    "inputs": [{
-        "indexed": false,
-        "internalType": "address",
-        "name": "taskContract",
-        "type": "address"
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "taskUid",
+        "type": "string"
       },
       {
         "indexed": false,
         "internalType": "address",
-        "name": "cp",
+        "name": "cpAccountAddress",
         "type": "address"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "collateralAmount",
+        "name": "collateral",
         "type": "uint256"
       }
     ],
-    "name": "UnlockCollateral",
+    "name": "TaskCreated",
     "type": "event"
   },
   {
     "anonymous": false,
-    "inputs": [{
-      "indexed": true,
-      "internalType": "address",
-      "name": "implementation",
-      "type": "address"
-    }],
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "implementation",
+        "type": "address"
+      }
+    ],
     "name": "Upgraded",
     "type": "event"
   },
   {
     "anonymous": false,
-    "inputs": [{
-        "indexed": false,
+    "inputs": [
+      {
+        "indexed": true,
         "internalType": "address",
-        "name": "fundingWallet",
+        "name": "cpOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "cpAccount",
         "type": "address"
       },
       {
@@ -163,71 +349,249 @@
     "type": "event"
   },
   {
-    "inputs": [{
-      "internalType": "address",
-      "name": "newAdmin",
-      "type": "address"
-    }],
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "collateralContratOwner",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "slashfund",
+        "type": "uint256"
+      }
+    ],
+    "name": "WithdrawSlash",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "UPGRADE_INTERFACE_VERSION",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newAdmin",
+        "type": "address"
+      }
+    ],
     "name": "addAdmin",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [{
-      "internalType": "address",
-      "name": "",
-      "type": "address"
-    }],
-    "name": "balances",
-    "outputs": [{
-      "internalType": "uint256",
-      "name": "",
-      "type": "uint256"
-    }],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "availableBalance",
+    "outputs": [
+      {
+        "internalType": "int256",
+        "name": "",
+        "type": "int256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [{
-      "internalType": "address",
-      "name": "recipient",
-      "type": "address"
-    }],
+    "inputs": [],
+    "name": "baseCollateral",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "collateralInfo",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "slashedFunds",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "baseCollateral",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "collateralRatio",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "slashRatio",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct CollateralV2.ContractInfo",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "collateralRatio",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "cpAddress",
+        "type": "address"
+      }
+    ],
+    "name": "cpInfo",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "cpAccount",
+            "type": "address"
+          },
+          {
+            "internalType": "int256",
+            "name": "availableBalance",
+            "type": "int256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lockedCollateral",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "status",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct CollateralV2.CPInfo",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "cpStatus",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "cpAccount",
+        "type": "address"
+      }
+    ],
     "name": "deposit",
     "outputs": [],
     "stateMutability": "payable",
     "type": "function"
   },
   {
-    "inputs": [{
-        "internalType": "address",
-        "name": "recipient",
-        "type": "address"
-      },
+    "inputs": [
       {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
+        "internalType": "string",
+        "name": "taskUid",
+        "type": "string"
       }
     ],
-    "name": "depositETH",
+    "name": "disputeProof",
     "outputs": [],
-    "stateMutability": "payable",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [{
-      "internalType": "address",
-      "name": "",
-      "type": "address"
-    }],
-    "name": "frozenBalance",
-    "outputs": [{
-      "internalType": "uint256",
-      "name": "",
-      "type": "uint256"
-    }],
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "taskUid",
+        "type": "string"
+      }
+    ],
+    "name": "getTaskInfo",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address[]",
+            "name": "cpList",
+            "type": "address[]"
+          },
+          {
+            "internalType": "uint256",
+            "name": "collateral",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum CollateralV2.CollateralStatus",
+            "name": "collateralStatus",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct CollateralV2.Task",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -239,25 +603,30 @@
     "type": "function"
   },
   {
-    "inputs": [{
-      "internalType": "address",
-      "name": "",
-      "type": "address"
-    }],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "name": "isAdmin",
-    "outputs": [{
-      "internalType": "bool",
-      "name": "",
-      "type": "bool"
-    }],
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [{
-        "internalType": "address",
-        "name": "taskContract",
-        "type": "address"
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "taskUid",
+        "type": "string"
       },
       {
         "internalType": "address[]",
@@ -266,7 +635,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "collateral",
+        "name": "taskCollateral",
         "type": "uint256"
       }
     ],
@@ -276,33 +645,76 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "taskUid",
+        "type": "string"
+      },
+      {
+        "internalType": "address[]",
+        "name": "cpList",
+        "type": "address[]"
+      }
+    ],
+    "name": "lockCollateral",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "lockedCollateral",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "owner",
-    "outputs": [{
-      "internalType": "address",
-      "name": "",
-      "type": "address"
-    }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "proxiableUUID",
-    "outputs": [{
-      "internalType": "bytes32",
-      "name": "",
-      "type": "bytes32"
-    }],
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [{
-      "internalType": "address",
-      "name": "admin",
-      "type": "address"
-    }],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "admin",
+        "type": "address"
+      }
+    ],
     "name": "removeAdmin",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -316,70 +728,133 @@
     "type": "function"
   },
   {
-    "inputs": [{
-      "internalType": "address",
-      "name": "",
-      "type": "address"
-    }],
-    "name": "taskBalance",
-    "outputs": [{
-      "internalType": "uint256",
-      "name": "",
-      "type": "uint256"
-    }],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_baseCollateral",
+        "type": "uint256"
+      }
+    ],
+    "name": "setBaseCollateral",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_slashRatio",
+        "type": "uint256"
+      }
+    ],
+    "name": "setSlashRatio",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "taskUid",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "cpAccount",
+        "type": "address"
+      }
+    ],
+    "name": "slashCollateral",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "slashRatio",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [{
-      "internalType": "address",
-      "name": "",
-      "type": "address"
-    }],
-    "name": "totalFrozenBalance",
-    "outputs": [{
-      "internalType": "uint256",
-      "name": "",
-      "type": "uint256"
-    }],
+    "inputs": [],
+    "name": "slashedFunds",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [{
-      "internalType": "address",
-      "name": "newOwner",
-      "type": "address"
-    }],
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "name": "tasks",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "collateral",
+        "type": "uint256"
+      },
+      {
+        "internalType": "enum CollateralV2.CollateralStatus",
+        "name": "collateralStatus",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
     "name": "transferOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [{
-      "internalType": "address",
-      "name": "recipient",
-      "type": "address"
-    }],
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "taskUid",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
     "name": "unlockCollateral",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [{
-      "internalType": "address",
-      "name": "newImplementation",
-      "type": "address"
-    }],
-    "name": "upgradeTo",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [{
+    "inputs": [
+      {
         "internalType": "address",
         "name": "newImplementation",
         "type": "address"
@@ -398,21 +873,43 @@
   {
     "inputs": [],
     "name": "version",
-    "outputs": [{
-      "internalType": "uint256",
-      "name": "",
-      "type": "uint256"
-    }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "pure",
     "type": "function"
   },
   {
-    "inputs": [{
-      "internalType": "uint256",
-      "name": "amount",
-      "type": "uint256"
-    }],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "cpAccount",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
     "name": "withdraw",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "withdrawSlashedFunds",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
