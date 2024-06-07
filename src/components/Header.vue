@@ -13,33 +13,24 @@
         <!-- web3Modal testnet-->
         <web3-modal />
 
-        <div class="header-right flex-row nowrap" v-if="accessToken !== ''">
-          <!-- <div class="set ">
-            <div class="info-style flex-row">
-              <div class="address" @click="wrongMethod">
-                {{system.$commonFun.hiddAddress(metaAddress)}}
-              </div>
-            </div>
-          </div> -->
+        <div class="header-right flex-row nowrap">
           <div class="set">
             <el-dropdown popper-class="menu-style" @command="handleSelect" placement="bottom-end" :hide-on-click="false">
               <div class="el-dropdown-link setting-style loginImg flex-row">
                 <el-icon>
-                  <Avatar />
+                  <Avatar v-if="accessToken !== ''" />
+                  <Setting v-else />
                 </el-icon>
               </div>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item command="apiKey">
+                  <el-dropdown-item command="apiKey" v-if="accessToken !== ''">
                     <div class="profile router-link b">Show API-Key</div>
                   </el-dropdown-item>
-                  <el-dropdown-item command="cpCollateral">
-                    <div class="profile router-link b">CP Collateral</div>
+                  <el-dropdown-item command="cpCollateralTools">
+                    <div class="profile router-link b">Collateral Tools</div>
                   </el-dropdown-item>
-                  <el-dropdown-item command="cpCollateralCheck">
-                    <div class="profile router-link b">CP Collateral Check</div>
-                  </el-dropdown-item>
-                  <el-dropdown-item command="sign_out">
+                  <el-dropdown-item command="sign_out" v-if="accessToken !== ''">
                     <span class="link">Sign Out</span>
                   </el-dropdown-item>
                 </el-dropdown-menu>
@@ -114,53 +105,22 @@
       </template>
     </el-dialog>
 
-    <el-dialog title="Account" v-model="wrongVisible" :append-to-body="false" :width="bodyWidth" custom-class="wrongNet" class="wrongNet">
-      <label>Connected with MetaMask</label>
-      <div class="address">{{system.$commonFun.hiddAddress(metaAddress)}}</div>
-      <div class="area flex-row">
-        <div class="fast">
-          <label>Network</label>
-          <div class="address" :title="info.network">{{info.network}}</div>
-        </div>
-        <div class="fast">
-          <label>Balance</label>
-          <div class="address">{{info.balance||'-'}} {{info.unit}}</div>
-        </div>
-      </div>
-      <div class="share flex-row">
-        <el-button :disabled="info.url?false:true" @click="system.$commonFun.goLink(`${info.url}${metaAddress}`)">
-          <svg t="1669800457857" class="icon icon_big" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6207" width="64" height="64">
-            <path d="M923.648 1015.442H100.206a91.648 91.648 0 0 1-91.721-91.72V101.01a91.502 91.502 0 0 1 91.72-91.501H649.29a30.72 30.72 0 0 1 0 61.44H130.487a60.855 60.855 0 0 0-60.928 60.854v762.003a60.855 60.855 0 0 0 60.928 60.928h762.441a60.855 60.855 0 0 0 60.928-60.928V345.088a30.72 30.72 0 1 1 61.44 0v579.291a91.21 91.21 0 0 1-91.648 91.063z m-497.81-403.675a30.574 30.574 0 1 1-43.228-43.228L930.816 17.92a30.574 30.574 0 1 1 43.154 43.3L425.91 611.768z"
-              p-id="6208" fill="#7405ff"></path>
-            <path d="M923.648 1023.854H100.206A100.206 100.206 0 0 1 0.073 923.72v-822.71C0.22 45.86 44.91 1.096 100.206 1.096h549.083a39.131 39.131 0 1 1 0 78.263H130.414a52.443 52.443 0 0 0-52.444 52.443v762.003c0 28.964 23.48 52.443 52.517 52.516H893a52.368 52.368 0 0 0 37.084-15.36 52.81 52.81 0 0 0 15.36-37.156V345.088a39.131 39.131 0 0 1 78.262 0v579.291a99.913 99.913 0 0 1-100.059 99.475zM100.059 17.92c-45.787 0-82.944 37.23-83.017 83.09v822.784c0.073 46.007 37.303 83.237 83.31 83.31h823.37a83.09 83.09 0 0 0 83.163-82.798V345.015a22.309 22.309 0 0 0-44.544 0v548.864c0 18.359-7.315 35.986-20.188 49.006a68.754 68.754 0 0 1-49.079 20.333H130.487a69.486 69.486 0 0 1-69.34-69.34V131.804a69.266 69.266 0 0 1 69.267-69.339h518.948a22.309 22.309 0 1 0-0.146-44.544h-549.01z m304.202 611.328a39.058 39.058 0 0 1-27.575-66.706L924.818 11.995a38.985 38.985 0 1 1 55.077 55.223l-548.06 550.473c-7.314 7.315-17.261 11.484-27.574 11.557zM952.32 17.335a22.162 22.162 0 0 0-15.58 6.583L388.536 574.39a22.162 22.162 0 1 0 31.378 31.451L968.046 55.296a21.943 21.943 0 0 0 6.583-15.726 22.382 22.382 0 0 0-22.236-22.235z"
-              p-id="6209" fill="#7405ff"></path>
-          </svg>
-          View on explorer
-        </el-button>
+    <el-dialog v-model="cpCollateralCont.diagle" :append-to-body="false" :width="bodyWidth"  :before-close="cpCollateralCont.user_input_address=''" custom-class="wrongNet" class="wrongNet">
+      <template #header>
+        <el-tabs v-model="activeName" @tab-click="collateralClick">
+          <el-tab-pane name="deposit" :disabled="metaAddress?false:true" label="Deposit Collateral"></el-tab-pane>
+          <el-tab-pane name="check" label="Check Collateral"></el-tab-pane>
+        </el-tabs>
+      </template>
 
-        <el-button @click="system.$commonFun.copyContent(metaAddress, 'Copied')">
-          <svg t="1640938541398" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4760" width="32" height="32">
-            <path d="M746.932 698.108" p-id="4761" fill="#7405ff"></path>
-            <path d="M925.731 288.698c-1.261-1.18-3.607-3.272-6.902-6.343-5.486-5.112-11.615-10.758-18.236-16.891-18.921-17.526-38.003-35.028-56.046-51.397-2.038-1.848-2.038-1.835-4.077-3.682-24.075-21.795-44.156-39.556-58.996-52.076-8.682-7.325-15.517-12.807-20.539-16.426-3.333-2.402-6.043-4.13-8.715-5.396-3.365-1.595-6.48-2.566-10.905-2.483C729.478 134.227 720 143.77 720 155.734l0 42.475 0 42.475 0 84.95L720 347l21.205 0L890 347l0 595L358.689 942C323.429 942 295 913.132 295 877.922L295 177l361.205 0c11.736 0 21.25-9.771 21.25-21.5s-9.514-21.5-21.25-21.5l-382.5 0L252 134l0 21.734L252 813l-52.421 0C166.646 813 140 786.928 140 754.678L140 72l566.286 0C739.29 72 766 98.154 766 130.404L766 134l40 0 0-3.596C806 76.596 761.271 33 706.286 33L119.958 33 100 33l0 19.506 0 702.172C100 808.463 144.642 852 199.579 852L252 852l0 25.922C252 936.612 299.979 984 358.689 984l552.515 0L932 984l0-21.237L932 325.635 932 304l0.433 0C932.432 299 930.196 292.878 925.731 288.698zM762 304l0-63.315L762 198.21l0-0.273c14 11.479 30.3 26.369 49.711 43.942 2.022 1.832 2.136 1.832 4.157 3.665 17.923 16.259 36.957 33.492 55.779 50.926 2.878 2.666 5.713 5.531 8.391 7.531L762 304.001z"
-              p-id="4762" fill="#7405ff"></path>
-            <path d="M816.936 436 407.295 436c-10.996 0-19.91 8.727-19.91 19.5 0 10.77 8.914 19.5 19.91 19.5l409.641 0c11 0 19.914-8.73 19.914-19.5C836.85 444.727 827.936 436 816.936 436z" p-id="4763" fill="#7405ff"></path>
-            <path d="M816.936 553 407.295 553c-10.996 0-19.91 8.727-19.91 19.5 0 10.774 8.914 19.5 19.91 19.5l409.641 0c11 0 19.914-8.726 19.914-19.5C836.85 561.727 827.936 553 816.936 553z" p-id="4764" fill="#7405ff"></path>
-            <path d="M816.936 689 407.295 689c-10.996 0-19.91 8.729-19.91 19.503 0 10.769 8.914 19.497 19.91 19.497l409.641 0c11 0 19.914-8.729 19.914-19.497C836.85 697.729 827.936 689 816.936 689z" p-id="4765" fill="#7405ff"></path>
-          </svg>
-          Copy Wallet Address
-        </el-button>
-      </div>
-    </el-dialog>
-
-    <el-dialog title="CP Collateral" v-model="cpCollateralCont.diagle" :append-to-body="false" :width="bodyWidth" custom-class="wrongNet" class="wrongNet">
-      <div v-loading="cpCollateralCont.show">
+      <div v-if="activeName === 'deposit'" v-loading="cpCollateralCont.show">
         <label v-if="cpCollateralCont.tx_hash !== ''">TransactionHash:
           <b @click="system.$commonFun.goLink(`${txLink}/tx/${cpCollateralCont.tx_hash}`)">{{cpCollateralCont.tx_hash}}</b>
         </label>
         <div v-else>
           <div class="area flex-row">
             <div class="fast width">
-              <label>CP Address</label>
+              <label>CP Account Address</label>
               <!-- <div class="address">{{cpCollateralCont.address}}</div> -->
               <el-input v-model="cpCollateralCont.user_input_address" @change="userInput" type="text" placeholder=" " />
               <p class="error" v-show="cpCollateralCont.tip">Please enter a valid Ethereum address</p>
@@ -175,13 +135,22 @@
             </div>
           </div>
           <br />
-          <el-button type="primary" class="add-button" @click="cpCollateral">OK</el-button>
+          <el-button type="primary" class="add-button" :disabled="!cpCollateralCont.amount || cpCollateralCont.amount<0 || cpCollateralCont.tip || !cpCollateralCont.user_input_address" @click="cpCollateral">OK</el-button>
         </div>
       </div>
-    </el-dialog>
-
-    <el-dialog title="CP Collateral Check" v-model="cpCheckCont.diagle" :append-to-body="false" :width="bodyWidth" custom-class="wrongNet" class="wrongNet">
-      <div class="area flex-row" v-loading="cpCheckCont.show">
+      <div v-if="activeName === 'check'" class="area flex-row" v-loading="cpCheckCont.show">
+        <div class="fast width">
+          <label>CP Account Address</label>
+          <div class="address_email">
+            <div class="address_body flex-row baseline nowrap space-between">
+              <div class="address_left">
+                <el-input v-model="cpCollateralCont.user_input_address" @change="userInput" type="text" placeholder=" " />
+                <p class="error" v-show="cpCollateralCont.tip">Please enter a valid Ethereum address</p>
+              </div>
+              <el-button type="primary" class="add-button" :disabled="cpCollateralCont.tip || !cpCollateralCont.user_input_address" @click="cpCheckMethod">Check</el-button>
+            </div>
+          </div>
+        </div>
         <div class="fast width">
           <label>Available Collateral </label>
           <div class="address">{{cpCheckCont.balance}} sETH</div>
@@ -206,7 +175,7 @@ import { defineComponent, computed, onMounted, watch, ref, reactive, getCurrentI
 import { useStore } from "vuex"
 import { useRouter, useRoute } from 'vue-router'
 import {
-  CircleCheck, DocumentCopy, Avatar, Delete, View
+  CircleCheck, DocumentCopy, Avatar, Setting, Delete, View
 } from '@element-plus/icons-vue'
 import { ElMessageBox } from 'element-plus'
 import * as echarts from "echarts"
@@ -214,7 +183,7 @@ import SpaceTokenABI from '@/utils/abi/SwanToken.json'
 import CollateralABI from '@/utils/abi/CollateralContract.json'
 export default defineComponent({
   components: {
-    CircleCheck, DocumentCopy, Avatar, Delete, View, web3Modal
+    CircleCheck, DocumentCopy, Avatar, Setting, Delete, View, web3Modal
   },
   setup () {
     const store = useStore()
@@ -225,34 +194,13 @@ export default defineComponent({
     const route = useRoute()
     const router = useRouter()
     const swanLogo = require("@/assets/images/icons/logo.png")
-    const providersLoad = ref(false)
-    const providersData = ref([])
-    const small = ref(false)
-    const background = ref(false)
-    const getnetID = ref(NaN)
     const prevType = ref(true)
     const centerDialogVisible = ref(false)
     const tokenShow = ref(false)
     const toolData = ref('')
-    const paginKey = reactive({
-      pageSize: 12,
-      pageNo: 1,
-      total: 0,
-      sort: 'updated'
-    })
-    const ruleForm = reactive({
-      name: ''
-    })
-    const info = reactive({
-      network: '',
-      url: '',
-      balance: '',
-      unit: ''
-    })
-    const wrongVisible = ref(false)
     const cpCheckCont = reactive({
       diagle: false,
-      show: true,
+      show: false,
       tip: '',
       status: 'success',
       balance: 0,
@@ -268,6 +216,7 @@ export default defineComponent({
       tx_hash: '',
       user_input_address: ''
     })
+    const activeName = ref('deposit')
     const txLink = process.env.VUE_APP_ATOMBLOCKURL
     const tokenAddress = process.env.VUE_APP_OPSWAN_SWANTOKEN_ADDRESS
     const tokenContract = new system.$commonFun.web3Init.eth.Contract(SpaceTokenABI, tokenAddress)
@@ -275,10 +224,6 @@ export default defineComponent({
     const collateralContract = new system.$commonFun.web3Init.eth.Contract(CollateralABI, collateralAddress)
 
 
-    async function handleKeyChange (currentPage) {
-      paginKey.pageNo = currentPage
-      getdataList()
-    }
     async function createCom () {
       tokenShow.value = true
       const listRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}api_token`, 'post')
@@ -320,41 +265,6 @@ export default defineComponent({
 
       tokenShow.value = false
     }
-    function handleSizeChange (val) { }
-    let lastTime = 0
-    async function throttle () {
-      // Prevent multiple signatures
-      let now = new Date().valueOf();
-      if (lastTime > 0 && (now - lastTime) <= 2000) return false
-      lastTime = now
-      return true
-    }
-    async function loginMethod () {
-      const time = await throttle()
-      if (!time) return false
-      system.$commonFun.Init(async (addr, chain) => {
-        providersLoad.value = true
-        getnetID.value = await system.$commonFun.web3Init.eth.net.getId()
-        await system.$commonFun.timeout(500)
-        if (accessToken.value !== '') providersLoad.value = false
-        else system.$commonFun.login()
-      })
-    }
-    async function signIn () {
-      // if (getnetID.value !== 20241133) system.$commonFun.walletChain(20241133)
-      // else system.$commonFun.login()
-    }
-    async function signSetIn (t) {
-      let time = t || 0
-      let timer = null
-      timer = setInterval(() => {
-        if (time > 3) {
-          clearInterval(timer)
-          if (accessToken.value !== '') providersLoad.value = false
-          else signIn()
-        } else time += 1
-      }, 1000)
-    }
     function fn () {
       document.addEventListener('visibilitychange', function () {
         prevType.value = !document.hidden
@@ -362,30 +272,40 @@ export default defineComponent({
       if (typeof window.ethereum === 'undefined') return
       system.$commonFun.providerInit.on('accountsChanged', async function (accounts) {
         if (!prevType.value) return false
-        getnetID.value = await system.$commonFun.web3Init.eth.net.getId()
-        system.$commonFun.signOutFun()
+        system.$commonFun.signOutFun('disconnect')
       })
       system.$commonFun.providerInit.on('chainChanged', async function (accounts) {
         if (!prevType.value) return false
-        getnetID.value = await system.$commonFun.web3Init.eth.net.getId()
-        system.$commonFun.signOutFun()
+        system.$commonFun.signOutFun('disconnect')
       })
     }
     async function handleSelect (key, keyPath) {
       // console.log(key, keyPath) //  
       if (key === 'apiKey') getdataList()
-      else if (key === 'cpCollateral') {
-        const net = await system.$commonFun.checkNetwork()
-        if (net) return
-        cpCollateralCont.tip = false
-        cpCollateralCont.tx_hash = ''
-        cpCollateralCont.diagle = true
-      } else if (key === 'cpCollateralCheck') cpCheck()
+      else if (key === 'cpCollateralTools') cpTools()
       else if (key === 'sign_out') {
         await system.$commonFun.signOutFun()
         // await system.$commonFun.timeout(50)
         window.location.reload()
       }
+    }
+    function depositMethod () {
+      cpCollateralCont.tip = false
+      cpCollateralCont.tx_hash = ''
+      cpCollateralCont.diagle = true
+    }
+    async function cpTools () {
+      const net = await system.$commonFun.checkNetwork()
+      if (net) return
+      activeName.value = metaAddress.value ? 'deposit' : 'check'
+      depositMethod()
+    }
+    function collateralClick (tab, event) {
+      activeName.value = tab.props.name || 'deposit'
+      cpCollateralCont.user_input_address = ''
+      cpCollateralCont.tip = false
+      if (activeName.value === 'deposit') depositMethod()
+      // else cpCheckMethod()
     }
     async function cpCollateral () {
       cpCollateralCont.show = true
@@ -395,37 +315,11 @@ export default defineComponent({
           cpCollateralCont.tip_amount = true
           cpCollateralCont.show = false
         }
-
-        // const isAddress = system.$commonFun.web3Init.utils.isAddress(cpCollateralCont.address)
-        // if (!isAddress) {
-        //   cpCollateralCont.tip = true
-        //   cpCollateralCont.show = false
-        //   return
-        // } else cpCollateralCont.tip = false
-
-        // if (cpCollateralCont.address !== metaAddress.value) {
-        //   ElMessageBox.confirm(
-        //     'Detected that the currently filled wallet address does not match the login wallet address, continue？',
-        //     'Warning',
-        //     {
-        //       confirmButtonText: 'OK',
-        //       cancelButtonText: 'Cancel',
-        //       type: 'warning',
-        //     }
-        //   )
-        //     .then(async () => {
-        //       cpDeposit()
-        //     })
-        //     .catch(() => {
-        //       cpCollateralCont.show = false
-        //     })
-        // } else cpDeposit()
       } catch (err) {
         console.log('err', err)
         if (err && err.message) system.$commonFun.messageTip('error', err.message)
         cpCollateralCont.show = false
       }
-      // cpCollateralCont.diagle = false
     }
     function userInput () {
       cpCollateralCont.tip = !system.$commonFun.web3Init.utils.isAddress(cpCollateralCont.user_input_address)
@@ -433,12 +327,6 @@ export default defineComponent({
     async function cpDeposit () {
       try {
         const amount = system.$commonFun.web3Init.utils.toWei(String(cpCollateralCont.amount), 'ether')
-
-        // let approveMethod = tokenContract.methods.approve(collateralAddress, amount)
-        // let approveGasLimit = await approveMethod.estimateGas({ from: metaAddress.value })
-        // const approve_tx = await approveMethod.send({
-        //   from: metaAddress.value, gasLimit: approveGasLimit
-        // })
 
         let payMethod = collateralContract.methods.deposit(cpCollateralCont.user_input_address)
         let payGasLimit = await payMethod.estimateGas({ from: metaAddress.value })
@@ -455,80 +343,35 @@ export default defineComponent({
         cpCollateralCont.show = false
       }
     }
-    async function cpCheck () {
-      const net = await system.$commonFun.checkNetwork()
-      if (net) return
+    async function cpCheckMethod () {
       cpCheckCont.diagle = true
       cpCheckCont.show = true
       try {
-        const taskBalance = await collateralContract.methods.lockedCollateral(metaAddress.value).call()
-        const balances = await collateralContract.methods.availableBalance(metaAddress.value).call()
+        const taskBalance = await collateralContract.methods.lockedCollateral(cpCollateralCont.user_input_address).call()
+        const balances = await collateralContract.methods.availableBalance(cpCollateralCont.user_input_address).call()
         cpCheckCont.balance = system.$commonFun.web3Init.utils.fromWei(String(balances), 'ether') || 0
         cpCheckCont.taskBalance = system.$commonFun.web3Init.utils.fromWei(String(taskBalance), 'ether') || 0
       } catch{ }
-      // const cpRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}cp/collateral/${metaAddress.value}`, 'get')
-      // if (cpRes) {
-      //   system.$commonFun.messageTip(cpRes.status, cpRes.message)
-      //   cpCheckCont.tip = cpRes.message
-      //   cpCheckCont.balance = cpRes.data.balance ? system.$commonFun.web3Init.utils.fromWei(String(cpRes.data.balance), 'ether') : 0
-      //   cpCheckCont.status = cpRes.status
-      // }
       cpCheckCont.show = false
     }
-    async function activeMenu (row) {
-      const chainId = await system.$commonFun.web3Init.eth.net.getId()
-      const { unit, name, url } = await system.$commonFun.getUnit(chainId)
-      info.network = name || `Chain ID: ${chainId}`
-      info.unit = unit
-      info.url = url || ''
-    }
-    function balanceMethod () {
-      if (!metaAddress.value) return false
-      system.$commonFun.web3Init.eth.getBalance(metaAddress.value).then((balance) => {
-        // console.log(balance)
-        const myBalance = balance
-        const balanceAll = system.$commonFun.web3Init.utils.fromWei(myBalance, 'ether')
-        info.balance = Number(balanceAll).toFixed(4)
-        return true
-      })
-    }
-    async function wrongMethod () {
-      activeMenu()
-      const info = await balanceMethod()
-      wrongVisible.value = true
-    }
     onMounted(async () => {
-      getnetID.value = await system.$commonFun.web3Init.eth.net.getId()
       fn()
-      activeMenu()
-      balanceMethod()
     })
     watch(route, (to, from) => {
-      activeMenu(to.path)
       window.scrollTo(0, 0)
-    })
-    watch(metaAddress, (to, from) => {
-      balanceMethod()
     })
     return {
       system,
       route,
       swanLogo,
       metaAddress,
-      providersLoad,
-      providersData,
-      small,
-      background,
-      getnetID,
       accessToken,
       centerDialogVisible,
       toolData,
       tokenShow,
-      paginKey,
-      ruleForm,
-      info, wrongVisible, bodyWidth, cpCheckCont, cpCollateralCont, txLink,
-      getdataList, createCom, deleteToken, handleKeyChange, handleSizeChange,
-      loginMethod, handleSelect, wrongMethod, cpCollateral, userInput
+      bodyWidth, cpCheckCont, cpCollateralCont, txLink, activeName,
+      getdataList, createCom, deleteToken, cpCheckMethod,
+      handleSelect, cpCollateral, userInput, collateralClick
     }
   }
 })
@@ -623,6 +466,7 @@ export default defineComponent({
         cursor: pointer;
         border-radius: 0.08rem;
         transition: all 0.2s;
+        outline: none;
         &:hover {
           background-color: transparent !important;
         }
@@ -649,25 +493,6 @@ export default defineComponent({
         vertical-align: middle;
         * {
           vertical-align: middle;
-        }
-        .info-style {
-          background: linear-gradient(45deg, #025bd5, #3c73ec);
-          color: @white-color;
-          cursor: text;
-          border-radius: 0.08rem;
-          transition: all 0.2s;
-          &:hover {
-            background-color: transparent !important;
-          }
-          .address {
-            padding: 5px 0.1rem;
-            line-height: 25px;
-            cursor: pointer;
-          }
-          .el-dropdown {
-            padding: 0.05rem 0.07rem 0.05rem 0.05rem;
-            border-left: 1px solid @theme-color;
-          }
         }
         .el-button-group > .el-button {
           border-radius: 7px;
@@ -712,18 +537,38 @@ export default defineComponent({
     border-radius: 0.2rem;
     text-align: left;
     .el-dialog__header {
-      padding: 0.1rem 0.4rem;
+      padding: 0.06rem 0;
       display: flex;
       align-items: center;
       justify-content: space-between;
       border-bottom: 1px solid #dfdfdf;
       color: #000;
-      font-size: 0.2rem;
+      font-size: 0.16rem;
       font-weight: 500;
       line-height: 1;
       text-transform: capitalize;
       @media screen and (max-width: 479px) {
         padding: 0.3rem 0.2rem;
+      }
+      .el-tabs {
+        width: 100%;
+        .el-tabs__nav-wrap:after,
+        .el-tabs__active-bar {
+          display: none;
+        }
+        .el-tabs__header {
+          margin: 0;
+          .el-tabs__nav {
+            width: 100%;
+            .el-tabs__item {
+              width: 50%;
+              padding: 0;
+              margin: 0;
+              font-size: inherit;
+              text-align: center;
+            }
+          }
+        }
       }
       .el-dialog__headerbtn {
         position: relative;
@@ -751,10 +596,11 @@ export default defineComponent({
       @media screen and (max-width: 540px) {
         padding: 0.2rem;
       }
+      .is-disabled {
+        opacity: 0.8;
+      }
       .cp-show {
         min-height: 50px;
-        label {
-        }
       }
       label {
         word-break: break-word;
@@ -772,57 +618,14 @@ export default defineComponent({
       .address_email {
         margin: 0 0 10px;
         .address_body {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
           margin: 10px 0 0;
-          .address {
-            width: 80%;
-            margin: 0;
-          }
-          .address_right {
-            position: relative;
-            display: inline-block;
-            padding: 0.05rem 0.2rem 0.05rem 0.32rem;
-            margin: 0 5px;
-            background-color: rgba(85, 128, 233, 0.15);
-            font-size: 14px;
-            border-radius: 0.5rem;
-            white-space: nowrap;
-            @media screen and (max-width: 1600px) {
-              font-size: 13px;
-            }
-            @media screen and (max-width: 600px) {
-              font-size: 12px;
-            }
-            &::before {
-              position: absolute;
-              left: 0.16rem;
-              top: 50%;
-              content: "";
-              width: 0.08rem;
-              height: 0.08rem;
-              margin-top: -0.04rem;
-              background-color: #606266;
-              border-radius: 0.5rem;
-            }
+          .address_left {
+            width: 100%;
+            margin: 0 0.1rem 0 0;
           }
           .bg-primary {
             &::before {
               background-color: #4d73ff;
-            }
-          }
-        }
-        .share {
-          .el-button {
-            width: 100%;
-            margin: 3px 0 0;
-            font-size: 13px;
-            @media screen and (min-width: 1800px) {
-              font-size: 14px;
-            }
-            @media screen and (max-width: 600px) {
-              font-size: 12px;
             }
           }
         }
@@ -861,49 +664,6 @@ export default defineComponent({
           }
         }
       }
-      .share {
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        font-size: inherit;
-        svg,
-        path {
-          fill: @theme-color;
-        }
-        .el-button {
-          justify-content: flex-start;
-          min-width: 50%;
-          padding: 0;
-          margin: 8px 0 0;
-          background: transparent !important;
-          border: 0;
-          color: @theme-color !important;
-          font-size: inherit;
-          font-weight: normal;
-          font-family: inherit;
-          opacity: 0.8;
-          box-shadow: none !important;
-          span {
-            display: flex;
-            align-items: center;
-            svg {
-              width: 15px;
-              height: 15px;
-              margin: 0 3px 0 0;
-            }
-            .icon_big {
-              width: 13px;
-              height: 13px;
-            }
-          }
-          &:hover {
-            background: transparent;
-            opacity: 1;
-          }
-          &.is-disabled {
-            opacity: 0.4;
-          }
-        }
-      }
       .loadStyle {
         position: absolute;
         top: 0;
@@ -913,21 +673,6 @@ export default defineComponent({
         z-index: 2000;
         background: rgba(255, 255, 255, 1);
         border-radius: 0.2rem;
-      }
-      .apiTipCont {
-        p {
-          display: flex;
-          align-items: center;
-          text-indent: 0.1rem;
-          margin: 0.1rem;
-          color: #7e7e7e;
-          font-size: 0.18rem;
-          .el-icon-document-copy {
-            display: block;
-            font-size: 17px;
-            cursor: pointer;
-          }
-        }
       }
     }
   }
@@ -952,6 +697,9 @@ export default defineComponent({
       font-size: 14px;
       @media screen and (max-width: 768px) {
         font-size: 13px;
+      }
+      &.is-disabled {
+        opacity: 0.8;
       }
     }
     .el-input {
@@ -1205,17 +953,6 @@ export default defineComponent({
         }
       }
     }
-    .apiTipCont {
-      padding: 0.15rem 0.25rem;
-      p {
-        margin-bottom: 0.15rem;
-        line-height: 1.5;
-        word-break: break-word;
-        @media screen and (min-width: 1800px) {
-          font-size: 16px;
-        }
-      }
-    }
   }
   .el-dialog__footer {
     padding: 0 0.25rem 0.25rem;
@@ -1287,7 +1024,7 @@ export default defineComponent({
       }
       .profile {
         width: 100%;
-        padding: 5px 0 0;
+        padding: 5px 0;
         margin: 0;
         // &.router-link {
         //   display: block;
