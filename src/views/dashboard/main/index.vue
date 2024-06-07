@@ -680,11 +680,11 @@
 
     <div class="providers-network">
       <div class="providers-cp" v-if="activeName === 'CP'">
-        <div class="search-body flex">
+        <!-- <div class="search-body flex">
           <el-input v-model="networkInput" placeholder="Search Providers" @chang="searchProvider" @input="searchProvider" />
           <el-button type="primary" :disabled="!networkInput ? true:false" round @click="searchProvider">Search</el-button>
           <el-button type="info" :disabled="!networkInput ? true:false" round @click="clearProvider">Clear</el-button>
-        </div>
+        </div> -->
         <el-table :data="providersData" @expand-change="expandChange" :row-key="getRowKeys" :expand-row-keys="expands" style="width: 100%" empty-text="No Data" v-loading="providersTableLoad">
           <el-table-column type="expand" width="40">
             <template #default="props">
@@ -750,11 +750,12 @@
               <div class="service-body" v-else>No Data</div>
             </template>
           </el-table-column>
-          <el-table-column prop="name" label="Name" min-width="120">
+          <el-table-column prop="multiAddress" label="Multi Address" min-width="120">
             <template #default="scope">
               <div class="badge">
                 <img v-if="scope.$index < 2 && pagin.pageNo <= 1" :src="badgeIcon01" alt="">
-                <img v-else :src="badgeIcon02" alt=""> {{scope.row.name}}
+                <img v-else :src="badgeIcon02" alt="">
+                <span v-for="address in scope.row.multiAddress" :key="address">{{address}}</span>
               </div>
             </template>
           </el-table-column>
@@ -765,8 +766,8 @@
             <template #default="scope">
               <div class="badge">
                 <div class="flex-row machines-style">
-                  <span v-for="(gpu, g) in scope.row.gpu_list" :key="g">
-                    {{gpu}}
+                  <span v-for="(gpu, g) in scope.row.gpu_list" :key="g" :class="{'green': gpu.status === 'available'}">
+                    {{gpu.name}}
                   </span>
                 </div>
               </div>
@@ -1027,12 +1028,21 @@ export default defineComponent({
       let l = list || []
       l.forEach((element) => {
         element.gpu_list = []
+        element.multiAddress = []
+        element.name.forEach(n => {
+          const ip = n.split('/')
+          const address = `${ip[2]}:${ip[4]}`
+          element.multiAddress.push(address)
+        })
         try {
           if (element.computer_provider.machines && element.computer_provider.machines.length > 0) {
             element.computer_provider.machines.forEach((machines) => {
               if (machines.specs.gpu.details && machines.specs.gpu.details.length > 0) {
                 machines.specs.gpu.details.forEach((gpu) => {
-                  if (element.gpu_list.indexOf(gpu.product_name) < 0) element.gpu_list.push(gpu.product_name)
+                  if (element.gpu_list.indexOf(gpu.product_name) < 0) element.gpu_list.push({
+                    name: gpu.product_name,
+                    status: gpu.status
+                  })
                 })
               }
             })
@@ -2035,6 +2045,9 @@ export default defineComponent({
                 word-break: break-word;
                 line-height: 1;
                 color: @white-color;
+                &.green {
+                  background-color: #4db470;
+                }
               }
             }
           }
