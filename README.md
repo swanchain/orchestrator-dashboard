@@ -4,20 +4,23 @@
 
 ## Installation dependency
 
-Run `npm install` to generate component.
+Run `yarn install` to generate component.
 
 ## Development server
 
+Run `npm run serve` for a dev server. Navigate to `http://localhost:8080/`. The app will automatically reload if you change any of the source files.
+
 ```shell
-# Node version below 17
-$ npm run serve
-
-# Node version 17 and above
-$ npm run serve_t # (windows system)
-$ npm run serve_u
-```
-
-Navigate to `http://localhost:8080/`. The app will automatically reload if you change any of the source files.
+ ERROR  ValidationError: Progress Plugin Invalid Options
+        options should NOT have additional properties
+        options should NOT have additional properties
+        options should NOT have additional properties
+        options should pass 'instanceof' keyword validation
+        options should match exactly one schema in oneOf
+ ...
+ ...
+ ```
+ Run `npm install -g yarn` `yarn install` to reinstall the components.
 
 ## Build project
 
