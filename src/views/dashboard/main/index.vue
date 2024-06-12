@@ -16,7 +16,7 @@
       </el-row>
       <div class="border-row">
         <div class="title top flex-row space-between">
-          Computing Provider
+          FCP (Fog Computing Provider)
         </div>
         <el-row :gutter="16" :class="{'hide': providerBody.collapse.general}">
           <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
@@ -97,7 +97,7 @@
 
       <div class="border-row">
         <div class="title top flex-row space-between">
-          ZK Provider
+          ECP (Edge Computing Provider)
         </div>
         <el-row :gutter="16" :class="{'hide': providerBody.collapse.zk}">
           <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
