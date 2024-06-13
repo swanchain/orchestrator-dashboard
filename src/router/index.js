@@ -13,6 +13,8 @@ const paymentHistory = () =>
     import ("@/components/paymentHistory");
 const UBIHistory = () =>
     import ("@/components/UBIHistory");
+const myCPInfo = () =>
+    import ("@/views/dashboard/cpInfo/index");
 
 const routes = [{
         path: '/',
@@ -52,6 +54,24 @@ const routes = [{
                 path: '/UBI-reward-history',
                 name: 'UBIHistory',
                 component: UBIHistory,
+                meta: {
+                    keepAlive: true,
+                    title: ''
+                },
+                beforeEnter: (to, from, next) => {
+                    if (!sessionStorage.getItem('access_token_swan')) {
+                        next({
+                            path: '/provider-status'
+                        })
+                    } else {
+                        next()
+                    }
+                }
+            },
+            {
+                path: '/cp-profile',
+                name: 'myCPInfo',
+                component: myCPInfo,
                 meta: {
                     keepAlive: true,
                     title: ''

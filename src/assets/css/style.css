@@ -158,6 +158,24 @@ a:focus {
     margin: auto;
 }
 
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
 @keyframes run1 {
     from {
         transform: translateX(-100%)
@@ -209,6 +227,90 @@ a:focus {
     }
     100% {
         box-shadow: 0 0 15px #447dff, 0 0 25px #447dff, 0 0 35px #447dff, 0 0 45px #447dff;
+    }
+}
+
+@keyframes hiddening {
+    0% {
+        max-height: unset;
+    }
+    20% {
+        max-height: 250px;
+    }
+    40% {
+        max-height: 180px;
+    }
+    60% {
+        max-height: 120px;
+    }
+    70% {
+        max-height: 60px;
+    }
+    100% {
+        max-height: 0;
+    }
+}
+
+@-webkit-keyframes hiddening {
+    0% {
+        max-height: unset;
+    }
+    20% {
+        max-height: 250px;
+    }
+    40% {
+        max-height: 180px;
+    }
+    60% {
+        max-height: 120px;
+    }
+    70% {
+        max-height: 60px;
+    }
+    100% {
+        max-height: 0;
+    }
+}
+
+@keyframes showing {
+    0% {
+        max-height: 0;
+    }
+    20% {
+        max-height: 60px;
+    }
+    40% {
+        max-height: 120px;
+    }
+    60% {
+        max-height: 180px;
+    }
+    70% {
+        max-height: 250px;
+    }
+    100% {
+        max-height: unset;
+    }
+}
+
+@-webkit-keyframes showing {
+    0% {
+        max-height: 0;
+    }
+    20% {
+        max-height: 60px;
+    }
+    40% {
+        max-height: 120px;
+    }
+    60% {
+        max-height: 180px;
+    }
+    70% {
+        max-height: 250px;
+    }
+    100% {
+        max-height: unset;
     }
 }
 

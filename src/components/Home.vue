@@ -74,11 +74,23 @@ export default defineComponent({
       @media (min-width: 768px) {
         max-width: 770px;
       }
+      @media (min-width: 800px) {
+        max-width: 800px;
+      }
+      @media (min-width: 992px) {
+        max-width: 900px;
+      }
       @media (min-width: 1024px) {
-        max-width: 1010px;
+        max-width: 929px;
       }
       @media (min-width: 1200px) {
+        max-width: 1024px;
+      }
+      @media (min-width: 1440px) {
         max-width: 1190px;
+      }
+      @media (min-width: 1800px) {
+        max-width: 1360px;
       }
       @media (min-width: 1920px) {
         max-width: 1440px;
@@ -111,6 +123,10 @@ export default defineComponent({
   border-top: 2px solid #868688;
 }
 
+.m-button {
+  margin: 0 0 0 0.1rem;
+}
+
 .describe {
   font-size: 16px;
   @media screen and (max-width: 1600px) {
@@ -141,6 +157,48 @@ export default defineComponent({
   }
   &.nowrap {
     flex-wrap: nowrap;
+  }
+  &.baseline {
+    align-items: baseline;
+  }
+}
+
+.width-icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  color: #fff;
+  fill: #fff;
+  &.small {
+    width: 20px;
+    height: 20px;
+  }
+  &.min-small {
+    width: 16px !important;
+    height: 16px;
+  }
+  &.minimum-small {
+    width: 14px;
+    height: 14px;
+  }
+  &.big {
+    width: 35px;
+    height: 35px;
+  }
+  svg {
+    width: inherit;
+    height: inherit;
+  }
+}
+
+.el-popper {
+  .el-table-filter__list {
+    .el-table-filter__list-item {
+      color: #000;
+      &.is-active {
+        color: #fff;
+      }
+    }
   }
 }
 </style>

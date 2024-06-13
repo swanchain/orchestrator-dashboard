@@ -4,20 +4,23 @@
 
 ## Installation dependency
 
-Run `npm install` to generate component.
+Run `yarn install` to generate component.
 
 ## Development server
 
+Run `npm run serve` for a dev server. Navigate to `http://localhost:8080/`. The app will automatically reload if you change any of the source files.
+
 ```shell
-# Node version below 17
-$ npm run serve
-
-# Node version 17 and above
-$ npm run serve_t # (windows system)
-$ npm run serve_u
-```
-
-Navigate to `http://localhost:8080/`. The app will automatically reload if you change any of the source files.
+ ERROR  ValidationError: Progress Plugin Invalid Options
+        options should NOT have additional properties
+        options should NOT have additional properties
+        options should NOT have additional properties
+        options should pass 'instanceof' keyword validation
+        options should match exactly one schema in oneOf
+ ...
+ ...
+ ```
+ Run `npm install -g yarn` `yarn install` to reinstall the components.
 
 ## Build project
 
@@ -39,7 +42,7 @@ The build artifacts will be stored in the `dist` directory.
 
    Since this project is based on nodejs, you need to make preparations for nodejs. Before running the project, please ensure that the following applications have been installed in the system:
 
-   (1)、Node (Version v14.15.0 of Node was used for this project). Please refer to:[Download and install node.](https://nodejs.org/en/download/)
+   (1)、Node (Version v18.12.1 of Node was used for this project). Please refer to:[Download and install node.](https://nodejs.org/en/download/)
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).

@@ -5,12 +5,17 @@ import {
   ElMessage
 } from 'element-plus'
 import router from '../router'
+import config from './config.js'
+// import modal from '../chain'
+import { disconnect } from '@wagmi/core'
+
+
 let lastTime = 0
 
-async function sendRequest(apilink, type, jsonObject, api_token) {
+async function sendRequest (apilink, type, jsonObject, api_token) {
   // signOutFun()
   // axios.defaults.timeout = 60000
-  axios.defaults.headers.common['Authorization'] = `Bearer ${api_token?api_token:store.state.accessToken}`
+  axios.defaults.headers.common['Authorization'] = `Bearer ${api_token ? api_token : store.state.accessToken}`
   try {
     let response
     switch (type) {
@@ -50,11 +55,11 @@ async function sendRequest(apilink, type, jsonObject, api_token) {
   }
 }
 
-async function timeout(delay) {
+async function timeout (delay) {
   return new Promise((resolve) => setTimeout(resolve, delay))
 }
 
-async function messageTip(type, text) {
+async function messageTip (type, text) {
   ElMessage({
     showClose: true,
     message: text,
@@ -62,7 +67,7 @@ async function messageTip(type, text) {
   })
 }
 
-function momentFun(dateItem) {
+function momentFun (dateItem) {
   let dateNew = dateItem * 1000
   let dataUnit = ''
   let dataTime = new Date(dateNew) + ''
@@ -88,7 +93,7 @@ function momentFun(dateItem) {
   return dateNew
 }
 
-function copyContent(text, tipCont) {
+function copyContent (text, tipCont) {
   var txtArea = document.createElement('textarea')
   txtArea.id = 'txt'
   txtArea.style.position = 'fixed'
@@ -114,7 +119,7 @@ function copyContent(text, tipCont) {
   }
   return false
 }
-async function Init(callback) {
+async function Init (callback) {
   if (typeof window.ethereum === 'undefined') {
     window.open('https://metamask.io/download.html')
     alert("Consider installing MetaMask!");
@@ -128,18 +133,18 @@ async function Init(callback) {
           return false
         }
         web3Init.eth.getAccounts().then(async webAccounts => {
-            store.dispatch('setMetaAddress', webAccounts[0])
-            // const chainId = await providerInit.request({ method: 'eth_chainId' })
-            // console.log(parseInt(chainId, 16))
-            callback(webAccounts[0])
-          })
+          store.dispatch('setMetaAddress', webAccounts[0])
+          // const chainId = await providerInit.request({ method: 'eth_chainId' })
+          // console.log(parseInt(chainId, 16))
+          callback(webAccounts[0])
+        })
           .catch(async (error) => {
             store.dispatch('setMetaAddress', accounts[0])
             callback(accounts[0])
           })
       })
       .catch((error) => {
-        if (error === "User rejected provider access") {} else {
+        if (error === "User rejected provider access") { } else {
           alert("Please unlock MetaMask and switch to the correct network.");
           return false
         }
@@ -173,75 +178,62 @@ if (typeof window.ethereum === 'undefined') {
   web3Init = web3
 }
 
-async function walletChain(chainId) {
+async function walletChain (chainId) {
   let text = {}
   const currentID = await web3Init.eth.net.getId()
   switch (chainId) {
-    case 8598668088:
+    case 20241133:
       text = {
-        chainId: web3Init.utils.numberToHex(8598668088),
-        chainName: 'OpSwan',
-        // nativeCurrency: {
-        //   name: 'SWAN',
-        //   symbol: 'SWAN', // 2-6 characters long
-        //   decimals: 18
-        // },
-        rpcUrls: [process.env.VUE_APP_OPSWANRPCURL],
-        blockExplorerUrls: [process.env.VUE_APP_OPSWANURL]
-      }
-      break
-    case 2024:
-      text = {
-        chainId: web3Init.utils.numberToHex(2024),
-        chainName: 'Saturn Testnet',
+        chainId: web3Init.utils.numberToHex(20241133),
+        chainName: 'Swan Proxima Chain',
         nativeCurrency: {
           name: 'sETH',
           symbol: 'sETH', // 2-6 characters long
           decimals: 18
         },
-        rpcUrls: [process.env.VUE_APP_SATURNURL],
-        blockExplorerUrls: [process.env.VUE_APP_SATURNBLOCKURL]
+        rpcUrls: [process.env.VUE_APP_ATOMURL],
+        blockExplorerUrls: [process.env.VUE_APP_ATOMBLOCKURL]
       }
       break
-      // case 80001:
-      //   text = {
-      //     chainId: web3Init.utils.numberToHex(80001),
-      //     chainName: 'Mumbai Testnet',
-      //     nativeCurrency: {
-      //       name: 'MATIC',
-      //       symbol: 'MATIC', // 2-6 characters long
-      //       decimals: 18
-      //     },
-      //     rpcUrls: [process.env.VUE_APP_MUMBAIRPCURL],
-      //     blockExplorerUrls: [process.env.VUE_APP_MUMBAIPAYMENTURL]
-      //   }
-      //   break
-      // case 97:
-      //   text = {
-      //     chainId: web3Init.utils.numberToHex(97),
-      //     chainName: 'BSC TestNet',
-      //     nativeCurrency: {
-      //       name: 'tBNB',
-      //       symbol: 'tBNB', // 2-6 characters long
-      //       decimals: 18
-      //     },
-      //     rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545'],
-      //     blockExplorerUrls: [process.env.VUE_APP_BSCTESTNETBLOCKURL]
-      //   }
-      //   break
-      // case 137:
-      //   text = {
-      //     chainId: web3Init.utils.numberToHex(137),
-      //     chainName: 'Polygon Mainnet',
-      //     nativeCurrency: {
-      //       name: 'MATIC',
-      //       symbol: 'MATIC', // 2-6 characters long
-      //       decimals: 18
-      //     },
-      //     rpcUrls: ['https://polygon-rpc.com'],
-      //     blockExplorerUrls: [process.env.VUE_APP_POLYGONBLOCKURL]
-      //   }
-      //   break
+    // case 80001:
+    //   text = {
+    //     chainId: web3Init.utils.numberToHex(80001),
+    //     chainName: 'Mumbai Testnet',
+    //     nativeCurrency: {
+    //       name: 'MATIC',
+    //       symbol: 'MATIC', // 2-6 characters long
+    //       decimals: 18
+    //     },
+    //     rpcUrls: [process.env.VUE_APP_MUMBAIRPCURL],
+    //     blockExplorerUrls: [process.env.VUE_APP_MUMBAIPAYMENTURL]
+    //   }
+    //   break
+    // case 97:
+    //   text = {
+    //     chainId: web3Init.utils.numberToHex(97),
+    //     chainName: 'BSC TestNet',
+    //     nativeCurrency: {
+    //       name: 'tBNB',
+    //       symbol: 'tBNB', // 2-6 characters long
+    //       decimals: 18
+    //     },
+    //     rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545'],
+    //     blockExplorerUrls: [process.env.VUE_APP_BSCTESTNETBLOCKURL]
+    //   }
+    //   break
+    // case 137:
+    //   text = {
+    //     chainId: web3Init.utils.numberToHex(137),
+    //     chainName: 'Polygon Mainnet',
+    //     nativeCurrency: {
+    //       name: 'MATIC',
+    //       symbol: 'MATIC', // 2-6 characters long
+    //       decimals: 18
+    //     },
+    //     rpcUrls: ['https://polygon-rpc.com'],
+    //     blockExplorerUrls: [process.env.VUE_APP_POLYGONBLOCKURL]
+    //   }
+    //   break
   }
   try {
     await providerInit.request({
@@ -263,8 +255,7 @@ async function walletChain(chainId) {
   }
 }
 
-async function login() {
-  // if (chain_id !== 2024) return
+async function login (config) {
   const chain_id = await web3Init.eth.net.getId()
   if (!store.state.metaAddress || store.state.metaAddress === undefined) {
     const accounts = await providerInit.request({
@@ -273,14 +264,19 @@ async function login() {
     store.dispatch('setMetaAddress', accounts[0])
   }
   const time = await throttle()
+  console.log('passed metamask wait')
   if (!time) return [false, '']
-  const [signature, signErr] = await sign()
+  console.log('before sign')
+  const [signature, signErr] = await sign(config)
+  store.dispatch('setSignature', signature)
+  console.log('after sign')
+  console.log(store.state.signature)
   if (!signature) return [false, signErr]
   const token = await performSignin(signature)
   return [!!token, '']
 }
 
-async function throttle() {
+async function throttle () {
   // Prevent multiple signatures
   let now = new Date().valueOf();
   if (lastTime > 0 && (now - lastTime) <= 2000) return false
@@ -288,7 +284,24 @@ async function throttle() {
   return true
 }
 
-async function sign(nonce) {
+function debounce (fn, delay) {
+  if (typeof fn !== 'function') {
+    throw new TypeError('Fn is not a function')
+  }
+  let timer;
+  return function () {
+    var _this = this;
+    var args = arguments;
+    if (timer) {
+      clearTimeout(timer);
+    }
+    timer = setTimeout(function () {
+      fn.apply(_this, args);
+    }, delay);
+  };
+}
+
+async function sign (config) {
   const rightnow = (Date.now() / 1000).toFixed(0)
   const sortanow = rightnow - (rightnow % 600)
   const local = process.env.VUE_APP_DOMAINNAME
@@ -301,16 +314,17 @@ async function sign(nonce) {
   }).then(sig => {
     signErr = ''
     signature = sig
-  }).catch(err => {
+  }).catch(async err => {
     console.log(err)
     signature = ''
     signErr = err && err.code ? String(err.code) : err
     signOutFun()
+    // await disconnect(config)
   })
   return [signature, signErr]
 }
 
-async function performSignin(sig) {
+async function performSignin (sig) {
   try {
     const reqOpts = [store.state.metaAddress, sig]
     const response = await sendRequest(`${process.env.VUE_APP_BASEAPI}login`, 'post', reqOpts)
@@ -328,23 +342,27 @@ async function performSignin(sig) {
   }
 }
 
-async function signOutFun() {
+async function signOutFun (status) {
+  if (store.state.accessToken || status) {
+    await disconnect(config.config)
+    store.dispatch('setMetaAddress', '')
+  }
   store.dispatch('setAccessToken', '')
-  // store.dispatch('setMetaAddress', '')
+  store.dispatch('setSignature', '')
 }
 
-function hiddAddress(val) {
+function hiddAddress (val) {
   if (val) return `${val.substring(0, 5)}...${val.substring(val.length - 5)}`
   else return '-'
 }
 
-function expiredTime(validDays) {
+function expiredTime (validDays) {
   if (String(validDays) === '0') return 'Forever'
   else if (validDays === undefined) return '-'
   else return momentFun(validDays)
 }
 
-function sizeChange(bytes) {
+function sizeChange (bytes) {
   if (bytes === 0) return '0 B'
   if (!bytes) return '-'
   var k = 1024 // or 1000
@@ -355,7 +373,40 @@ function sizeChange(bytes) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
 
-async function getUnit(id) {
+function byteStorage (limit) {
+  if (limit <= 0) {
+    return '0'
+  } else {
+    return (limit / (1024 * 1024 * 1024)).toFixed(2) //or 1000
+  }
+}
+
+function storageNumformat (data) {
+  if (!data) return
+  let dataList = data.split(' ')
+  dataList[0] = parseFloat(dataList[0]).toFixed(2)
+  return dataList[1] ? `${dataList[0]} ${dataList[1]}` : dataList[0]
+}
+
+function fixedformat (num1, num2) {
+  if (!num1 || !num2) return 0
+  let dataList = num1 / num2 * 100
+  return parseFloat(dataList).toFixed(2)
+}
+
+function filNumformat (data) {
+  if (!data) return
+  const price_regular = data ? data.split(" ") : []
+  return `${replaceFormat(price_regular[0] * 365)} FIL/GiB/year` || '0 FIL/GiB/year'
+}
+
+function timeFormat (data) {
+  if (!data) return
+  const d = data / 60 / 60
+  return d < 0.001 ? 0 : d
+}
+
+async function getUnit (id) {
   let unit = 'ETH'
   let name = ''
   let url = ''
@@ -365,17 +416,17 @@ async function getUnit(id) {
       unit = 'ETH'
       name = 'Ethereum Mainnet '
       break
-    case 8598668088:
-      unit = 'SwanETH'
-      name = 'OpSwan '
-      url = `${process.env.VUE_APP_OPSWANURL}/address/`
-      url_tx = `${process.env.VUE_APP_OPSWANURL}/tx/`
-      break
     case 2024:
       unit = 'sETH'
       name = 'Saturn Testnet '
       url = `${process.env.VUE_APP_SATURNBLOCKURL}/address/`
       url_tx = `${process.env.VUE_APP_SATURNBLOCKURL}/tx/`
+      break
+    case 20241133:
+      unit = 'sETH'
+      name = 'Swan Proxima Chain '
+      url = `${process.env.VUE_APP_ATOMBLOCKURL}/address/`
+      url_tx = `${process.env.VUE_APP_ATOMBLOCKURL}/tx/`
       break
     default:
       unit = '-'
@@ -390,19 +441,19 @@ async function getUnit(id) {
   })
 }
 
-function goLink(link) {
+function goLink (link) {
   window.open(link)
 }
 
-async function checkNetwork() {
+async function checkNetwork () {
   const getnetID = await web3Init.eth.net.getId()
-  if (getnetID !== 2024) {
-    walletChain(2024)
+  if (getnetID !== 20241133) {
+    walletChain(20241133)
     return true
   } else return false
 }
 
-function NumFormat(num) {
+function NumFormat (num) {
   try {
     if (num) return parseFloat(num).toFixed(2)
     else return '-'
@@ -411,7 +462,7 @@ function NumFormat(num) {
   }
 }
 
-function replaceFormat(value) {
+function replaceFormat (value) {
   try {
     if (String(value) === '0') return '0'
     else if (!value) return '-'
@@ -422,6 +473,35 @@ function replaceFormat(value) {
     return intPartArr[1] ? `${intPartFormat}.${intPartArr[1].slice(0, 2)}` : intPartFormat
   } catch {
     return '-'
+  }
+}
+
+function floorFormat (num) {
+  try {
+    if (num) return Math.floor(parseFloat(num))
+    else return '-'
+  } catch {
+    return '-'
+  }
+}
+
+function unifyNumber (num) {
+  if (!num) return 0
+  const handleNum = parseFloat(num * 100)
+  const isToFixed = handleNum.toString().includes('.') && handleNum.toString().split('.')[1].length > 2
+  if (isToFixed) {
+    const handleArray = handleNum.toString().split('.')
+    const decimal = handleArray[1].substr(0, 2)
+    if (decimal === "00") return handleNum.toFixed(0)
+    else return `${handleArray[0]}.${decimal}`
+  } else return handleNum
+}
+
+function AddFormat (num1, num2) {
+  try {
+    return parseFloat(num1) + parseFloat(num2)
+  } catch {
+    return 0
   }
 }
 
@@ -439,10 +519,19 @@ export default {
   hiddAddress,
   expiredTime,
   sizeChange,
+  byteStorage,
+  storageNumformat,
+  fixedformat,
+  filNumformat,
+  timeFormat,
   getUnit,
   goLink,
   providerInit,
   checkNetwork,
   NumFormat,
-  replaceFormat
+  replaceFormat,
+  debounce,
+  floorFormat,
+  unifyNumber,
+  AddFormat
 }
