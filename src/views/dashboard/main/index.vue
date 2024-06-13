@@ -1036,8 +1036,7 @@ export default defineComponent({
         owner_addr: networkZK.owner_addr,
         node_id: networkZK.node_id
       }
-      const uri = `${process.env.VUE_APP_UBI}${store.state.versionValue}/providers`
-      const providerRes = await system.$commonFun.sendRequest(`${uri}?${system.$Qs.stringify(params)}`, 'get')
+      const providerRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_UBI}${store.state.versionValue}/providers?${system.$Qs.stringify(params)}`, 'get')
       if (providerRes && providerRes.code === 0) {
         paginZK.total = providerRes.data.total || 0
         providerBody.ubiTableData = providerRes.data.list || []
@@ -1083,7 +1082,7 @@ export default defineComponent({
       return l
     }
     async function getUBITotal () {
-      const statsRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_UBI}v1/stats`, 'get')
+      const statsRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_UBI}${store.state.versionValue}/stats`, 'get')
       if (statsRes && statsRes.code === 0) {
         providerBody.ubiData = statsRes.data || {}
         // changeZKtype()
@@ -1109,15 +1108,17 @@ export default defineComponent({
     }
     async function getOverview () {
       providersLoad.value = true
-      const overviewRes = await system.$commonFun.sendRequest(`${system.$baseurl}cp/overview`, 'get')
-      if (overviewRes && overviewRes.status === 'success') {
-        pagin.total_deployments = overviewRes.data.total_deployments
-        pagin.active_applications = overviewRes.data.active_applications
-        providerBody.data = overviewRes.data || {}
-        dataArr.value = overviewRes.data.map_info
-        drawChart(dataArr.value)
-        changetype()
-      }
+      try{
+        const overviewRes = await system.$commonFun.sendRequest(`${system.$baseurl}cp/overview`, 'get')
+        if (overviewRes && overviewRes.status === 'success') {
+          pagin.total_deployments = overviewRes.data.total_deployments
+          pagin.active_applications = overviewRes.data.active_applications
+          providerBody.data = overviewRes.data || {}
+          dataArr.value = overviewRes.data.map_info
+          drawChart(dataArr.value)
+          changetype()
+        }
+      }catch{}
       providersLoad.value = false
     }
     async function getStorageStats () {
