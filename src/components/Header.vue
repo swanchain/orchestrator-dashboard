@@ -5,7 +5,7 @@
       <div class="flex-row nowrap swan-right">
         <div class="nav pcShow">
           <router-link :to="{name: 'dashboard'}" :class="{'active': route.name === 'dashboard'}">Dashboard</router-link>
-          <router-link :to="{ name: 'myCPInfo'}" :class="{'active': route.name === 'myCPInfo'}" v-if="accessToken !== ''">CP Profile</router-link>
+          <!-- <router-link :to="{ name: 'myCPInfo'}" :class="{'active': route.name === 'myCPInfo'}" v-if="accessToken !== ''">CP Profile</router-link> -->
           <router-link :to="{ name: 'paymentHistory'}" :class="{'active': route.name === 'paymentHistory'}" v-if="accessToken !== ''">Reward History</router-link>
           <router-link :to="{ name: 'UBIHistory'}" :class="{'active': route.name === 'UBIHistory'}" v-if="accessToken !== ''">UBI Reward History</router-link>
         </div>
@@ -56,11 +56,11 @@
                       <router-link :to="{name: 'dashboard'}" :class="{'active': route.name === 'dashboard'}">Dashboard</router-link>
                     </div>
                   </el-dropdown-item>
-                  <el-dropdown-item v-if="accessToken !== ''">
+                  <!-- <el-dropdown-item v-if="accessToken !== ''">
                     <div class="profile router-link b">
                       <router-link :to="{ name: 'myCPInfo'}" :class="{'active': route.name === 'myCPInfo'}">CP Profile</router-link>
                     </div>
-                  </el-dropdown-item>
+                  </el-dropdown-item> -->
                   <el-dropdown-item v-if="accessToken !== ''">
                     <div class="profile router-link b">
                       <router-link :to="{ name: 'paymentHistory'}" :class="{'active': route.name === 'paymentHistory'}">Reward History</router-link>
@@ -105,7 +105,7 @@
       </template>
     </el-dialog>
 
-    <el-dialog v-model="cpCollateralCont.diagle" :append-to-body="false" :width="bodyWidth"  :before-close="cpCollateralCont.user_input_address=''" custom-class="wrongNet" class="wrongNet">
+    <el-dialog v-model="cpCollateralCont.diagle" :append-to-body="false" :width="bodyWidth" :before-close="cpCollateralCont.user_input_address=''" custom-class="wrongNet" class="wrongNet">
       <template #header>
         <el-tabs v-model="activeName" @tab-click="collateralClick">
           <el-tab-pane name="deposit" :disabled="metaAddress?false:true" label="Deposit Collateral"></el-tab-pane>
@@ -226,9 +226,10 @@ export default defineComponent({
 
     async function createCom () {
       tokenShow.value = true
-      const listRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}api_token`, 'post')
+      const listRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASELOGINAPI}api_token`, 'post')
       if (listRes && listRes.status === 'success') {
         system.$commonFun.messageTip('success', listRes.message ? listRes.message : 'Success!')
+        store.dispatch('setAccessApiKey', listRes.data.token ?.token || '')
         getdataList()
         return
       } else system.$commonFun.messageTip('error', listRes.message ? listRes.message : 'Failed!')
@@ -239,9 +240,11 @@ export default defineComponent({
       tokenShow.value = true
       let formData = new FormData()
       formData.append('api_token', tokenName)
-      const listRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}api_token/delete`, 'post', formData)
-      if (listRes && listRes.status === 'success') system.$commonFun.messageTip('success', listRes.message ? listRes.message : 'Delete successfully!')
-      else system.$commonFun.messageTip('error', listRes.message ? listRes.message : 'Delete failed!')
+      const listRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASELOGINAPI}api_token/delete`, 'post', formData)
+      if (listRes && listRes.status === 'success') {
+        store.dispatch('setAccessApiKey', '')
+        system.$commonFun.messageTip('success', listRes.message ? listRes.message : 'Delete successfully!')
+      } else system.$commonFun.messageTip('error', listRes.message ? listRes.message : 'Delete failed!')
       getdataList()
     }
     async function getdataList () {
@@ -250,7 +253,7 @@ export default defineComponent({
       toolData.value = ''
 
       try {
-        const keysRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}api_token`, 'get')
+        const keysRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASELOGINAPI}api_token`, 'get')
 
         if (keysRes && keysRes.status === 'success') {
           // Assuming the 'data' field in response contains the required token
@@ -987,6 +990,19 @@ export default defineComponent({
 </style>
 
 <style lang="less">
+.tabs-dropdown {
+  .el-dropdown-menu {
+    .el-dropdown-menu__item {
+      padding: 2px 20px;
+      &:hover,
+      &:focus {
+        background-color: #eee;
+        font-weight: 900;
+        color: @theme-color;
+      }
+    }
+  }
+}
 .menu-style {
   border-radius: 0.1rem;
   border-top-right-radius: 0.05rem;

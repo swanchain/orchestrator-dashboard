@@ -327,8 +327,9 @@ async function sign (config) {
 async function performSignin (sig) {
   try {
     const reqOpts = [store.state.metaAddress, sig]
-    const response = await sendRequest(`${process.env.VUE_APP_BASEAPI}login`, 'post', reqOpts)
+    const response = await sendRequest(`${process.env.VUE_APP_BASELOGINAPI}login`, 'post', reqOpts)
     if (response && response.access_token) {
+      store.dispatch('setAccessApiKey', response.api_token || '')
       store.dispatch('setAccessToken', response.access_token)
       return true
     } else signOutFun()

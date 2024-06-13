@@ -336,7 +336,7 @@ export default defineComponent({
       let formData = new FormData()
       formData.append('tx_hash', row.transaction_hash)
       formData.append('chain_id', row.chain_id)
-      const reviewRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}claim_review`, 'post', formData)
+      const reviewRes = await system.$commonFun.sendRequest(`${system.$baseurl}claim_review`, 'post', formData, store.state.accessKey)
       if (reviewRes) {
         ElMessageBox.alert(
           `Status: ${reviewRes.status}<br />Message: ${reviewRes.message}`,
@@ -374,7 +374,7 @@ export default defineComponent({
       paymentLoad.value = true
       let formData = new FormData()
       formData.append('task_uuid', row.task_uuid)
-      const retryRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}terminate_retry`, 'post', formData)
+      const retryRes = await system.$commonFun.sendRequest(`${system.$baseurl}terminate_retry`, 'post', formData, store.state.accessKey)
       if (!retryRes || retryRes.status !== 'success') if (retryRes.message) system.$commonFun.messageTip('error', retryRes.message)
       init()
     }
@@ -441,7 +441,7 @@ export default defineComponent({
       let formData = new FormData()
       formData.append('tx_hash', row.transaction_hash)
       formData.append('chain_id', row.chain_id)
-      const refundRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}user/refund`, 'post', formData)
+      const refundRes = await system.$commonFun.sendRequest(`${system.$baseurl}user/refund`, 'post', formData, store.state.accessKey)
       if (!refundRes || refundRes.status !== 'success') if (refundRes.message) system.$commonFun.messageTip('error', refundRes.message)
       init()
     }
@@ -457,7 +457,7 @@ export default defineComponent({
         formData.append('amount', system.$commonFun.web3Init.utils.fromWei(String(receipt.events.RewardClaimed.returnValues.reward), 'ether'))
       } catch {
       }
-      const claimRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}user/provider/payments`, 'post', formData)
+      const claimRes = await system.$commonFun.sendRequest(`${system.$baseurl}user/provider/payments`, 'post', formData, store.state.accessKey)
       if (!claimRes || claimRes.status !== 'success') if (claimRes.message) system.$commonFun.messageTip('error', claimRes.message)
       init()
     }
@@ -465,14 +465,14 @@ export default defineComponent({
     async function init (pFilter) {
       paymentLoad.value = true
       paymentType.value = route.query.type || 'user'
-      const requestURL = `${process.env.VUE_APP_BASEAPI}provider/payments`
+      const requestURL = `${system.$baseurl}provider/payments`
       const page = pagin.pageNo > 0 ? pagin.pageNo - 1 : 0
       let paramsOption = {
         limit: pagin.pageSize,
         offset: page * pagin.pageSize
       }
       paramsOption = Object.assign({}, paramsOption, paramsFilter.data)
-      const paymentsRes = await system.$commonFun.sendRequest(`${requestURL}?${system.$Qs.stringify(paramsOption)}`, 'get') //?public_address=${store.state.metaAddress}
+      const paymentsRes = await system.$commonFun.sendRequest(`${requestURL}?${system.$Qs.stringify(paramsOption)}`, 'get', {}, store.state.accessKey) //?public_address=${store.state.metaAddress}
       if (paymentsRes && paymentsRes.status === 'success') {
         for (let p = 0; p < paymentsRes.data.payments.length; p++) {
           let { url_tx } = await system.$commonFun.getUnit(20241133)
@@ -502,11 +502,13 @@ export default defineComponent({
     onMounted(async () => {
     })
     onActivated(async () => {
-      getnetID = await system.$commonFun.web3Init.eth.net.getId()
-      init()
+      if (store.state.accessKey) {
+        getnetID = await system.$commonFun.web3Init.eth.net.getId()
+        init()
+      } else system.$commonFun.messageTip('error', 'Please generate an API key first')
     })
     watch(route, (to, from) => {
-      if (to.name === "paymentHistory") init()
+      // if (to.name === "paymentHistory" && store.state.accessKey) init()
     })
     return {
       paymentData,

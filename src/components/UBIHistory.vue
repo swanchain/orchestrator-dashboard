@@ -85,7 +85,7 @@ export default defineComponent({
         "page_no": page,
         "page_size": pagin.pageSize
       }
-      const paymentsRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_UBI}rewards?${system.$Qs.stringify(paramsCont)}`, 'get') //?public_address=${store.state.metaAddress}
+      const paymentsRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_UBI}v1/rewards?${system.$Qs.stringify(paramsCont)}`, 'get') //?public_address=${store.state.metaAddress}
       if (paymentsRes && paymentsRes.code === 0) {
         for (let p = 0; p < paymentsRes.data.list.length; p++) {
           let { url_tx } = await system.$commonFun.getUnit(parseInt(paymentsRes.data.list[p].chain_id), 16)
