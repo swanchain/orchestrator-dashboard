@@ -1,6 +1,14 @@
 <template>
   <section id="container">
-    <h1 class="color">Swan Provider Status</h1>
+    <div class="flex-row item-label">
+      <h1 class="color t">Swan Provider Status</h1>
+
+      <el-select v-model="versionRef.value" placeholder="Select" size="small" @change="versionMethod">
+        <el-option v-for="item in versionRef.options" :key="item.value" :label="item.value" :value="item.value">
+          <div class="font-14">{{item.value}}</div>
+        </el-option>
+      </el-select>
+    </div>
     <div class="describe ">
       Use this status page to check an Swan Provider information and status.
       <br> This list is refreshed every 5 minutes. Below snapshot taken at
@@ -498,15 +506,15 @@
                 <div id="maychar-vcpu" class="maychar"></div>
                 <h6 class="background-free">
                   <i></i>
-                  <b>{{providerBody.data.total_vcpu - providerBody.data.total_used_vcpu}}</b> vcpu Free
+                  <b>{{providerBody.data.total_cpu - providerBody.data.total_used_cpu}}</b> vcpu Free
                 </h6>
                 <h6 class="background-used">
                   <i></i>
-                  <b>{{providerBody.data.total_used_vcpu}}</b> vcpu Used
+                  <b>{{providerBody.data.total_used_cpu}}</b> vcpu Used
                 </h6>
                 <h6 class="background-total">
                   <i></i>
-                  <b>{{providerBody.data.total_vcpu}}</b> Total
+                  <b>{{providerBody.data.total_cpu}}</b> Total
                 </h6>
               </div>
             </el-col>
@@ -906,14 +914,14 @@ import { defineComponent, computed, onActivated, watch, ref, reactive, getCurren
 import { useStore } from "vuex"
 import { useRouter, useRoute } from 'vue-router'
 import {
-  CircleCheck, DocumentCopy, Avatar
+  DocumentCopy, Avatar
 } from '@element-plus/icons-vue'
 import * as echarts from "echarts"
 import worldGeoJSON from '@/assets/js/world.json'
 
 export default defineComponent({
   components: {
-    CircleCheck, DocumentCopy, Avatar
+    DocumentCopy, Avatar
   },
   setup () {
     const store = useStore()
@@ -977,6 +985,16 @@ export default defineComponent({
     const expands = ref([])
     const activeName = ref('CP')
     const cpLoad = ref(false)
+    const versionRef = reactive({
+      value: store.state.versionValue || 'v1',
+      options: [
+        {
+          value: 'v1'
+        },
+        {
+          value: 'v2'
+        }]
+    })
 
     function handleSizeChange (val) { }
     async function handleCurrentChange (currentPage) {
@@ -995,7 +1013,7 @@ export default defineComponent({
         offset: page * pagin.pageSize,
         search_string: networkInput.value
       }
-      const providerRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}cp/cplist?${system.$Qs.stringify(params)}`, 'get')
+      const providerRes = await system.$commonFun.sendRequest(`${system.$baseurl}cp/cplist?${system.$Qs.stringify(params)}`, 'get')
       if (providerRes && providerRes.status === 'success') {
         pagin.total = providerRes.data.list_providers_cnt || 0
         providersData.value = await getList(providerRes.data.providers)
@@ -1014,12 +1032,14 @@ export default defineComponent({
         owner_addr: networkZK.owner_addr,
         node_id: networkZK.node_id
       }
-      const providerRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_UBI}providers?${system.$Qs.stringify(params)}`, 'get')
+      const uri = `${process.env.VUE_APP_UBI}${store.state.versionValue}/providers`
+      const providerRes = await system.$commonFun.sendRequest(`${uri}?${system.$Qs.stringify(params)}`, 'get')
       if (providerRes && providerRes.code === 0) {
         paginZK.total = providerRes.data.total || 0
         providerBody.ubiTableData = providerRes.data.list || []
       } else {
         providerBody.ubiTableData = []
+        paginZK.total = 0
         if (providerRes.msg) system.$commonFun.messageTip('error', providerRes.msg)
       }
       providersTableLoad.value = false
@@ -1029,11 +1049,15 @@ export default defineComponent({
       l.forEach((element) => {
         element.gpu_list = []
         element.multiAddress = []
-        element.name.forEach(n => {
-          const ip = n.split('/')
-          const address = `${ip[2]}:${ip[4]}`
-          element.multiAddress.push(address)
-        })
+        try {
+          element.name.forEach(n => {
+            const ip = n.split('/')
+            const address = `${ip[2]}:${ip[4]}`
+            element.multiAddress.push(address)
+          })
+        } catch{
+          element.multiAddress.push(element.name)
+        }
         try {
           if (element.computer_provider.machines && element.computer_provider.machines.length > 0) {
             element.computer_provider.machines.forEach((machines) => {
@@ -1052,7 +1076,7 @@ export default defineComponent({
       return l
     }
     async function getUBITotal () {
-      const statsRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_UBI}stats`, 'get')
+      const statsRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_UBI}v1/stats`, 'get')
       if (statsRes && statsRes.code === 0) {
         providerBody.ubiData = statsRes.data || {}
         // changeZKtype()
@@ -1078,7 +1102,7 @@ export default defineComponent({
     }
     async function getOverview () {
       providersLoad.value = true
-      const overviewRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}cp/overview`, 'get')
+      const overviewRes = await system.$commonFun.sendRequest(`${system.$baseurl}cp/overview`, 'get')
       if (overviewRes && overviewRes.status === 'success') {
         pagin.total_deployments = overviewRes.data.total_deployments
         pagin.active_applications = overviewRes.data.active_applications
@@ -1098,7 +1122,7 @@ export default defineComponent({
       if (providerRes && providerRes.status === "success") providerBody.providerData = providerRes.data || {}
     }
     async function getGeneralStats () {
-      const generalRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASEAPI}stats/general`, 'get')
+      const generalRes = await system.$commonFun.sendRequest(`${system.$baseurl}stats/general`, 'get')
       if (generalRes && generalRes.status === "success") providerBody.generalData = generalRes.data || {}
     }
     const searchProvider = system.$commonFun.debounce(async function () {
@@ -1293,8 +1317,8 @@ export default defineComponent({
         { value: providerBody.data.total_used_storage, name: system.$commonFun.sizeChange(providerBody.data.total_used_storage) },
       ]
       option5.series[0].data = [
-        { value: providerBody.data.total_vcpu - providerBody.data.total_used_vcpu, name: `${providerBody.data.total_vcpu - providerBody.data.total_used_vcpu} vcpu ` },
-        { value: providerBody.data.total_used_vcpu, name: `${providerBody.data.total_used_vcpu} vcpu` },
+        { value: providerBody.data.total_cpu - providerBody.data.total_used_cpu, name: `${providerBody.data.total_cpu - providerBody.data.total_used_cpu} vcpu ` },
+        { value: providerBody.data.total_used_cpu, name: `${providerBody.data.total_used_cpu} vcpu` },
       ]
       machart_gpu.setOption(option2);
       machart_memory.setOption(option3);
@@ -1386,10 +1410,25 @@ export default defineComponent({
     }
     const handleClick = async (tab, event) => {
       activeName.value = tab.props.name || 'CP'
+      echartReset()
+    }
+    const echartReset = async () => {
       cpLoad.value = true
       await system.$commonFun.timeout(500)
       if (activeName.value === 'ZK-CP') changeZKtype()
       else changetype()
+    }
+    function handleSelect (key, keyPath) {
+      // console.log(key, keyPath)
+      echartReset()
+      handleZKCurrentChange(1)
+    }
+    function versionMethod (key) {
+      store.dispatch('setVersion', key)
+      system.$baseurl = `${process.env.VUE_APP_BASEAPI}${store.state.versionValue}/`
+      // console.log(key, system.$baseurl)
+      echartReset()
+      reset('init')
     }
     onActivated(async () => {
       echarts.registerMap('worldHq', worldGeoJSON)
@@ -1413,7 +1452,9 @@ export default defineComponent({
       badgeIcon01,
       badgeIcon02,
       accessToken, expands, activeName, cpLoad,
-      handleSizeChange, handleCurrentChange, handleZKCurrentChange, searchProvider, searchZKProvider, clearProvider, expandChange, getRowKeys, handleClick
+      versionRef,
+      handleSizeChange, handleCurrentChange, handleZKCurrentChange, searchProvider, searchZKProvider, clearProvider, expandChange, getRowKeys,
+      handleClick, handleSelect, versionMethod
     }
   }
 })
@@ -1441,9 +1482,41 @@ export default defineComponent({
     font-family: inherit;
   }
   h1 {
-    margin: 0 0 0.2rem;
     font-size: 0.35rem;
     font-weight: 600;
+  }
+  .item-label {
+    align-items: self-end;
+    width: 100%;
+    margin: 0.1rem 0 0.3rem;
+    line-height: 1;
+    h1 {
+      margin: 0 0.15rem 0 0;
+    }
+    :deep(.el-select) {
+      width: auto;
+      .el-select__wrapper {
+        width: 60px;
+        background-color: transparent;
+        font-size: 0.18rem;
+        border: 0;
+        border-radius: 0.5rem;
+        box-shadow: none;
+        .el-select__placeholder {
+          color: @white-color;
+        }
+        .el-select__suffix {
+          .el-select__icon {
+            background: url(../../../assets/images/icons/icon-01.png) no-repeat
+              center;
+            background-size: 13px;
+            svg {
+              display: none;
+            }
+          }
+        }
+      }
+    }
   }
   .color {
     color: #3c85ff;
@@ -1518,6 +1591,9 @@ export default defineComponent({
               line-height: 1;
               &.is-active {
                 background-color: #447dff;
+              }
+              .t {
+                margin: 0 0.15rem 0 0;
               }
             }
           }
