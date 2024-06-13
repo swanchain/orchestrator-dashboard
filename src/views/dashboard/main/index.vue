@@ -769,13 +769,17 @@
           </el-table-column>
           <!-- <el-table-column prop="country" label="Country" /> -->
           <el-table-column prop="computer_provider.active_deployment" label="Active deployment" width="130" />
-          <el-table-column prop="computer_provider.score" label="Score" width="120" />
+          <el-table-column prop="computer_provider.score" label="Score" width="120">
+            <template #default="scope">
+              <span>{{scope.row.computer_provider.score || scope.row.score}}</span>
+            </template>
+          </el-table-column>
           <el-table-column prop="gpu_list" label="GPU" min-width="140">
             <template #default="scope">
               <div class="badge">
                 <div class="flex-row machines-style">
-                  <span v-for="(gpu, g) in scope.row.gpu_list" :key="g" :class="{'green': gpu.status === 'available'}">
-                    {{gpu.name}}
+                  <span v-for="(gpu, g) in scope.row.gpu_list" :key="g">
+                    {{gpu}}
                   </span>
                 </div>
               </div>
@@ -1063,10 +1067,13 @@ export default defineComponent({
             element.computer_provider.machines.forEach((machines) => {
               if (machines.specs.gpu.details && machines.specs.gpu.details.length > 0) {
                 machines.specs.gpu.details.forEach((gpu) => {
-                  if (element.gpu_list.indexOf(gpu.product_name) < 0) element.gpu_list.push({
-                    name: gpu.product_name,
-                    status: gpu.status
-                  })
+                  if (element.gpu_list.indexOf(gpu.product_name) < 0) element.gpu_list.push(gpu.product_name)
+                  // const field = 'name';
+                  // const containsValue = element.gpu_list.some(item => item[field].includes(gpu.product_name));
+                  // if (!containsValue) element.gpu_list.push({
+                  //   name: gpu.product_name,
+                  //   status: gpu.status
+                  // })
                 })
               }
             })
