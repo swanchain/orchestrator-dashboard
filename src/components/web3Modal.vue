@@ -1,6 +1,6 @@
 <script setup>
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/vue'
-import { reconnect } from '@wagmi/core'
+import { reconnect, disconnect } from '@wagmi/core'
 import { useStore } from "vuex"
 import {
   computed,
@@ -59,30 +59,49 @@ async function signout2 () {
 }
 
 watchAccount(config, {
-  onChange (account, prevAccount) {
+  async onChange (account, prevAccount) {
     // account = getAccount(config)
-    console.log('watch', account)
-    console.log('prev', prevAccount)
-    console.log("changed")
-    if (account ?.isConnected && signature.value === '' && metaAddress.value === '') {
-      console.log("prompted")
-      login2()
-    } else if (!account ?.isConnected && prevAccount ?.isConnected) {
-      signout2()
-    }
+    try {
+      console.log('watch', account)
+      console.log('prev', prevAccount)
+      console.log("changed", fristOpen, sessionStorage.getItem('fristOpen_swan'))
+      if (sessionStorage.getItem('fristOpen_swan') === null && signature.value === '') signout2()
+      else if (account ?.isConnected && signature.value === '' && metaAddress.value === '' && fristOpen > 0) {
+        console.log("prompted")
+        login2()
+      } else if (!account ?.isConnected && prevAccount ?.isConnected) {
+        signout2()
+      }
+      sessionStorage.setItem('fristOpen_swan', true)
+    } catch{ }
   },
 })
 
+let beginTime = 0; // 执行onbeforeunload的开始时间
+
+window.onbeforeunload = function () {
+  beginTime = new Date().getTime();
+}
+
+window.onunload = function () {
+  let differTime = new Date().getTime() - beginTime;
+  if (differTime <= 5) {
+    disconnect(config)
+  }
+}
+
+let fristOpen = 0
 async function test () {
-  console.log(store.state.metaAddress)
-  console.log(store.state.signature)
-  console.log("here")
+  // console.log(store.state.metaAddress)
+  // console.log(store.state.signature)
+  // console.log("here")
+  fristOpen = 1
 }
 </script>
 
 <template>
   <div class="flex-row">
     <w3m-button balance="hide" @click="test" />
-    <el-button type="primary" @click="login2" v-if="metaAddress && signature === ''" class="m-button">Login</el-button>
+    <el-button type="primary" @click="login2" v-if="metaAddress !== '' && signature === ''" class="m-button">Login</el-button>
   </div>
 </template>
