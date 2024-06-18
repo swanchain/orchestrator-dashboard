@@ -990,7 +990,7 @@ export default defineComponent({
     const activeName = ref('CP')
     const cpLoad = ref(false)
     const versionRef = reactive({
-      value: store.state.versionValue || 'v1',
+      value: store.state.versionValue || 'v2',
       options: [
         {
           value: 'v1'

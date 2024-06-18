@@ -8,7 +8,7 @@ export default createStore({
     accessToken: sessionStorage.getItem('access_token_swan') || '',
     accessKey: sessionStorage.getItem('access_apikey_swan') || '',
     signature: sessionStorage.getItem('signature_swan') || '',
-    versionValue: sessionStorage.getItem('version_swan') || 'v1'
+    versionValue: sessionStorage.getItem('version_swan') || 'v2'
   },
   mutations: {
     SET_METAADDRESS: (state, metaAddress) => {
