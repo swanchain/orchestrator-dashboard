@@ -17,9 +17,94 @@
 
     <div class="providers-overview mt-border">
       <div class="title">Providers Overview</div>
+      <div>
+        <el-row :gutter="16">
+          <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
+            <div class="grid-content total-container" v-loading="providerBody.chipLoad">
+              <div class="flex-row">
+                <h6 class="flex-row flex-end">
+                  <span class="t">Providers</span>
+                </h6>
+                <b class="flex-row font-bold color">{{providerBody.totalData.hardwareTotal ? system.$commonFun.replaceFormat(providerBody.totalData.hardwareTotal.provider):'-'}}</b>
+              </div>
+              <div class="flex-row">
+                <h6 class="flex-row flex-end">
+                  <span class="t">Location</span>
+                </h6>
+                <b class="flex-row font-bold color">{{providerBody.totalData.hardwareTotal ? system.$commonFun.replaceFormat(providerBody.totalData.hardwareTotal.location):'-'}}</b>
+              </div>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
+            <div class="grid-content total-container" v-loading="providerBody.chipLoad">
+              <div class="flex-row">
+                <h6 class="flex-row flex-end">
+                  <span class="t">CPU</span>
+                </h6>
+                <b class="flex-row font-bold color">{{providerBody.totalData.hardwareTotal ? system.$commonFun.replaceFormat(providerBody.totalData.hardwareTotal.CPU):'-'}}</b>
+              </div>
+              <div class="flex-row">
+                <h6 class="flex-row flex-end">
+                  <span class="t">GPU</span>
+                </h6>
+                <b class="flex-row font-bold color">{{providerBody.totalData.hardwareTotal ? system.$commonFun.replaceFormat(providerBody.totalData.hardwareTotal.GPU):'-'}}</b>
+              </div>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
+            <div class="grid-content total-container" v-loading="providerBody.chipLoad">
+              <div class="flex-row">
+                <h6 class="flex-row flex-end">
+                  <span class="t">Storage</span>
+                </h6>
+                <b class="flex-row font-bold color">{{providerBody.totalData.hardwareTotal ? providerBody.totalData.hardwareTotal.storage:'-'}}</b>
+              </div>
+              <div class="flex-row">
+                <h6 class="flex-row flex-end">
+                  <span class="t">Memory</span>
+                </h6>
+                <b class="flex-row font-bold color">{{providerBody.totalData.hardwareTotal ? providerBody.totalData.hardwareTotal.memory:'-'}}</b>
+              </div>
+            </div>
+          </el-col>
+        </el-row>
+      </div>
       <el-row :gutter="16">
-        <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="flex-row">
-          <div class='chart' id='chart' v-loading="providersLoad" element-loading-background="rgba(0, 0, 0, 0)"></div>
+        <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="flex-row">
+          <div class="chart-container">
+            <div class="world-buttom flex-row">
+              <div class="tool flex-row center">
+                <svg @click="roamMap(1)" width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8.00098 6H4.00098" stroke="#8F929B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M6.00098 11C8.7624 11 11.001 8.76142 11.001 6C11.001 3.23858 8.7624 1 6.00098 1C3.23955 1 1.00098 3.23858 1.00098 6C1.00098 8.76142 3.23955 11 6.00098 11Z" stroke="#8F929B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                  />
+                  <path d="M12.001 11.9998L9.53613 9.53491" stroke="#8F929B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </div>
+              <div class="tool flex-row center">
+                <svg @click="roamMap(0)" width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6.00098 4V8" stroke="#8F929B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M8.00098 6H4.00098" stroke="#8F929B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M6.00098 11C8.7624 11 11.001 8.76142 11.001 6C11.001 3.23858 8.7624 1 6.00098 1C3.23955 1 1.00098 3.23858 1.00098 6C1.00098 8.76142 3.23955 11 6.00098 11Z" stroke="#8F929B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                  />
+                  <path d="M12.001 11.9998L9.53613 9.53491" stroke="#8F929B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </div>
+            </div>
+            <div class='chart' id='chart' v-loading="providersLoad" element-loading-background="rgba(0, 0, 0, 0)"></div>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="flex-row">
+          <div class="chip-data" v-loading="providerBody.chipLoad">
+            <div class="cont flex-row space-between" v-for="chip in providerBody.chipData" :key="chip">
+              <div class="absolute" :style="'width:' + (chip.hardware_quantity / providerBody.chipMaxData * 100) + '%;'"></div>
+              <div class="flex-row items-center">
+                <div class="point"></div>
+                <div class="text-region">{{chip.region}}</div>
+              </div>
+              <div class="text-data">{{chip.hardware_quantity}}</div>
+            </div>
+          </div>
         </el-col>
       </el-row>
       <div class="border-row">
@@ -966,8 +1051,19 @@ export default defineComponent({
         total_transactions: '',
         transactions_today: '',
         smart_contracts: '',
-        new_smart_contracts_24h: ''
+        new_smart_contracts_24h: '',
+        hardwareTotal: {
+          CPU: 0,
+          GPU: 0,
+          location: 0,
+          memory: '-',
+          provider: 0,
+          storage: '-'
+        }
       },
+      chipData: [],
+      chipMaxData: 0,
+      chipLoad: false,
       storageData: {},
       providerData: {},
       generalData: {},
@@ -1106,9 +1202,22 @@ export default defineComponent({
         providerBody.totalData.smart_contracts = statsRes.smart_contracts || ''
       }
     }
+    async function getHardwareMetricsTotal () {
+        providerBody.chipLoad = true
+      try {
+        const totalRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASELOGINAPI}cp/hardware_metrics`, 'get')
+        if (totalRes && totalRes.status === "success" && totalRes.data) {
+          providerBody.totalData.hardwareTotal = totalRes.data.total || {}
+          providerBody.chipData = await system.$commonFun.sortBoole(totalRes.data.chips) || []
+          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].hardware_quantity : 0
+          providerBody.chipData = providerBody.chipData.slice(0, 9)
+        }
+      } catch{ }
+        providerBody.chipLoad = false
+    }
     async function getOverview () {
       providersLoad.value = true
-      try{
+      try {
         const overviewRes = await system.$commonFun.sendRequest(`${system.$baseurl}cp/overview`, 'get')
         if (overviewRes && overviewRes.status === 'success') {
           pagin.total_deployments = overviewRes.data.total_deployments
@@ -1118,7 +1227,7 @@ export default defineComponent({
           drawChart(dataArr.value)
           changetype()
         }
-      }catch{}
+      } catch{ }
       providersLoad.value = false
     }
     async function getStorageStats () {
@@ -1178,8 +1287,12 @@ export default defineComponent({
       networkInput.value = ''
       networkZK.owner_addr = ''
       networkZK.node_id = ''
+      providerBody.chipMaxData = 0
+      providerBody.chipData = []
+      providerBody.chipLoad = false
       if (type) init()
       getOverview()
+      getHardwareMetricsTotal()
       getUBITotal()
       getUBITable()
       getTotal()
@@ -1188,8 +1301,32 @@ export default defineComponent({
       getProviderStats()
       getGeneralStats()
     }
+    let chart = null
+    function resetMap () {
+      chart.setOption({
+        geo: {
+          center: undefined,
+          zoom: 1.4
+        }
+      })
+    }
+    function roamMap (flag) {
+      const currentZoom = chart.getOption().geo[0].zoom
+      let increaseAmplitude = 1.1
+      if (flag === 1) {
+        increaseAmplitude = 0.8
+        if (currentZoom < 1) increaseAmplitude = 1
+      } else if (flag == 2) {
+        increaseAmplitude = 0 //reset
+      }
+      chart.setOption({
+        geo: {
+          zoom: currentZoom * increaseAmplitude < 1 ? 1 : currentZoom * increaseAmplitude
+        },
+      })
+    }
     function drawChart (dataArr) {
-      let chart = echarts.init(document.getElementById('chart'))
+      chart = echarts.init(document.getElementById('chart'))
       window.addEventListener('resize', function () {
         chart.resize()
       })
@@ -1200,6 +1337,36 @@ export default defineComponent({
           right: '2%',
           bottom: '2%',
           containLabel: true
+        },
+        toolbox: {
+          orient: 'vertical',
+          top: '2%',
+          right: '2%',
+          feature: {
+            dataZoom: { show: false },
+            restore: {
+              show: false,
+              textStyle: {
+                color: 'transparent'
+              },
+              iconStyle: {
+                borderColor: '#fff',
+                borderWidth: 2,
+                color: 'transparent' 
+              },
+              emphasis: {
+                iconStyle: {
+                  borderColor: '#fff', 
+                  borderWidth: 2,
+                  color: 'transparent' 
+                }
+              }
+            },
+            // zoom: { show: true },
+          },
+          textStyle: {
+            color: '#fff',
+          }
         },
         tooltip: {
           trigger: "item",
@@ -1227,7 +1394,17 @@ export default defineComponent({
             }
           },
           // aspectScale: 0.75,
-          roam: false,
+          roam: true, 
+          toolbox: {
+            show: true,
+            feature: {
+              dataZoom: {
+                yAxisIndex: 'none'
+              },
+              restore: {},
+              move: {}
+            }
+          },
           itemStyle: {
             normal: {
               areaColor: '#565658',
@@ -1243,7 +1420,11 @@ export default defineComponent({
           emphasis: {
             focus: 'none'
           },
-          silent: true
+          silent: true,
+          zoom: 1.4,
+          scaleLimit: {
+            min: 1
+          },
           // left: '5%',
           // right: '5%'
         },
@@ -1435,6 +1616,7 @@ export default defineComponent({
       store.dispatch('setVersion', key)
       system.$baseurl = `${process.env.VUE_APP_BASEAPI}${store.state.versionValue}/`
       // console.log(key, system.$baseurl)
+      resetMap()
       echartReset()
       reset('init')
     }
@@ -1460,9 +1642,9 @@ export default defineComponent({
       badgeIcon01,
       badgeIcon02,
       accessToken, expands, activeName, cpLoad,
-      versionRef,
+      versionRef, dataArr,
       handleSizeChange, handleCurrentChange, handleZKCurrentChange, searchProvider, searchZKProvider, clearProvider, expandChange, getRowKeys,
-      handleClick, handleSelect, versionMethod
+      handleClick, handleSelect, versionMethod, roamMap
     }
   }
 })
@@ -1626,6 +1808,24 @@ export default defineComponent({
           border-radius: 0.14rem;
           // animation: glow 1s ease-in-out infinite alternate;
           overflow: hidden;
+          &.total-container {
+            h6 {
+              width: 0.85rem;
+              margin: 0 0.15rem 0 0;
+            }
+            b {
+              font-size: 0.32rem;
+              @media screen and (min-width: 1800px) {
+                font-size: 0.36rem;
+              }
+              @media screen and (max-width: 1440px) {
+                font-size: 0.32rem;
+              }
+              @media screen and (max-width: 768px) {
+                font-size: 22px;
+              }
+            }
+          }
           h6 {
             min-height: 34px;
             font-size: 12px;
@@ -1716,12 +1916,88 @@ export default defineComponent({
             }
           }
         }
+        .chart-container {
+          position: relative;
+          width: 100%;
+          margin: 0.35rem auto 0;
+          border: 1px solid #3a67cf;
+          border-radius: 0.14rem;
+          .world-buttom {
+            position: absolute;
+            left: 0.18rem;
+            top: 0.18rem;
+            width: auto;
+            padding: 4px 7px;
+            background-color: #26272a;
+            border-radius: 8px;
+            z-index: 10;
+            .tool {
+              width: 30px;
+              height: 30px;
+              margin: 0;
+              border-radius: 4px;
+              cursor: pointer;
+              &:hover {
+                background-color: #0d0e12;
+              }
+              svg {
+                display: block;
+                width: 16px;
+                height: 16px;
+                cursor: pointer;
+              }
+            }
+          }
+        }
         .chart {
           width: 100%;
-          margin: 0.45rem auto 0;
-          height: 500px;
-          @media screen and (max-width: 540px) {
-            height: 400px;
+          height: 460px;
+          @media screen and (max-width: 992px) {
+            height: 360px;
+          }
+        }
+        .chip-data {
+          width: 100%;
+          margin: 0.35rem auto 0;
+          flex-direction: column;
+          .cont {
+            position: relative;
+            flex-direction: row;
+            width: calc(100% - 0.32rem);
+            padding: 0.07rem 0.16rem;
+            margin: 0 0 0.1rem;
+            font-size: 0.18rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #fff;
+            z-index: 9;
+            .absolute {
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              background: linear-gradient(
+                45deg,
+                rgba(60, 133, 255, 0),
+                #3c85ff
+              );
+              border-radius: 10px;
+              z-index: -1;
+            }
+            .items-center {
+              .point {
+                width: 12px;
+                height: 12px;
+                background-color: #52555f;
+                border-radius: 100%;
+              }
+              .text-region {
+                margin: 0 0 0 0.11rem;
+              }
+            }
+            .text-data {
+            }
           }
         }
       }

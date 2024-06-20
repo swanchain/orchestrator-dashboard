@@ -506,6 +506,11 @@ function AddFormat (num1, num2) {
   }
 }
 
+async function sortBoole (arr) {
+  if (!arr || (arr && arr.length === 0)) return []
+  return arr.sort((a, b) => b.hardware_quantity - a.hardware_quantity)
+}
+
 export default {
   sendRequest,
   timeout,
@@ -534,5 +539,6 @@ export default {
   debounce,
   floorFormat,
   unifyNumber,
-  AddFormat
+  AddFormat,
+  sortBoole
 }
