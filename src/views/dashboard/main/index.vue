@@ -95,7 +95,16 @@
           </el-col>
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="flex-row">
             <div class="chip-data" v-loading="providerBody.chipLoad">
-              <div class="chip-filter flex-row flex-end">
+              <div class="chip-filter flex-row space-between">
+                <div class="world-name flex-row">
+                  <div class="flex-row" v-if="providerBody.chipFilter === 'GPU'">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex h-6 w-6 text-gray-dark-1000">
+                      <path fill-rule="evenodd" clip-rule="evenodd" d="M7.6279 1.34882C7.84562 1.2244 8.11112 1.21703 8.33541 1.32918L15.9764 5.14967L22.6279 1.34882C22.86 1.21617 23.1452 1.21713 23.3764 1.35132C23.6077 1.48551 23.75 1.73265 23.75 2V18C23.75 18.2691 23.6058 18.5177 23.3721 18.6512L16.3721 22.6512C16.1544 22.7756 15.8889 22.783 15.6646 22.6708L8.0236 18.8503L1.3721 22.6512C1.13998 22.7838 0.854791 22.7829 0.623555 22.6487C0.392319 22.5145 0.25 22.2674 0.25 22V6C0.25 5.73086 0.394215 5.48235 0.627896 5.34882L7.6279 1.34882ZM8.75 17.5365L15.25 20.7865V6.46353L8.75 3.21353V17.5365ZM7.25 3.29239V17.5648L1.75 20.7076V6.43524L7.25 3.29239ZM16.75 6.43524V20.7076L22.25 17.5648V3.29239L16.75 6.43524Z"
+                        fill="currentColor" style="fill: color(display-p3 0.6 0.6 0.6); fill-opacity: 1;"></path>
+                    </svg>
+                    <small>&nbsp;Map: &nbsp;</small>{{providerBody.chipWorld}}
+                  </div>
+                </div>
                 <el-radio-group v-model="providerBody.chipFilter" text-color="#fff" fill="#3c85ff" @change="chipFilterMethod">
                   <el-radio-button label="GPU" value="GPU" />
                   <el-radio-button label="Memory" value="Memory" />
@@ -1074,6 +1083,7 @@ export default defineComponent({
           storage: '-'
         }
       },
+      chipWorld: 'Canada',
       chipFilter: 'GPU',
       chipData: [],
       chipDataAll: {
@@ -1137,7 +1147,7 @@ export default defineComponent({
       const providerRes = await system.$commonFun.sendRequest(`${system.$baseurl}${networkInput.value ? 'cp/search_cp' : 'cp/cplist'}?${system.$Qs.stringify(params)}`, 'get')
       if (providerRes && providerRes.status === 'success') {
         pagin.total = providerRes.data.list_providers_cnt || 0
-        providersData.value = await getList(networkInput.value?providerRes.data.provider:providerRes.data.providers)
+        providersData.value = await getList(networkInput.value ? providerRes.data.provider : providerRes.data.providers)
       } else {
         pagin.total = 0
         providersData.value = []
@@ -1374,6 +1384,7 @@ export default defineComponent({
       }
     }
     function worldChange (name) {
+      providerBody.chipWorld = name
       switch (name) {
         case 'Canada':
           providerBody.chipData = providerBody.chipDataAll.caArray
@@ -1895,6 +1906,9 @@ export default defineComponent({
         border: 0;
         border-radius: 0.5rem;
         box-shadow: none;
+        @media screen and (max-width: 600px) {
+          font-size: 11px;
+        }
         .el-select__placeholder {
           color: @white-color;
         }
@@ -1920,7 +1934,7 @@ export default defineComponent({
     &.providers-overview {
       padding: 0.4rem 0 0;
       @media screen and (max-width: 992px) {
-        padding: 0.4rem 0.5rem;
+        padding: 0.4rem 0.25rem;
       }
     }
     .border-row {
@@ -1982,6 +1996,9 @@ export default defineComponent({
               color: #fff;
               text-align: center;
               line-height: 1;
+              @media screen and (max-width: 600px) {
+                white-space: normal;
+              }
               &.is-active {
                 background-color: #447dff;
               }
@@ -2013,7 +2030,7 @@ export default defineComponent({
           overflow: hidden;
           &.total-container {
             h6 {
-              width: 0.8rem;
+              width: 80px;
               margin: 0 0.15rem 0 0;
             }
             b {
@@ -2158,6 +2175,9 @@ export default defineComponent({
           @media screen and (max-width: 992px) {
             height: 360px;
           }
+          @media screen and (max-width: 600px) {
+            height: 260px;
+          }
         }
         .chip-data {
           width: 100%;
@@ -2166,10 +2186,24 @@ export default defineComponent({
           flex-direction: column;
           .chip-filter {
             height: 40px;
+            .world-name {
+              font-size: 0.14rem;
+              @media screen and (max-width: 600px) {
+                font-size: 12px;
+              }
+              small {
+                opacity: 0.6;
+              }
+            }
             .el-radio-button__inner {
               background-color: transparent;
+              font-size: 0.14rem;
               color: @theme-color;
               border-color: @theme-color;
+              @media screen and (max-width: 600px) {
+                padding: 5px;
+                font-size: 11px;
+              }
             }
           }
           .no-result {
@@ -2188,6 +2222,10 @@ export default defineComponent({
             letter-spacing: 1px;
             color: #fff;
             z-index: 9;
+            @media screen and (max-width: 600px) {
+              padding: 0.12rem 0.16rem;
+              font-size: 12px;
+            }
             .absolute {
               position: absolute;
               top: 0;
@@ -2312,6 +2350,9 @@ export default defineComponent({
             }
             .title {
               font-size: 0.18rem;
+              @media screen and (max-width: 600px) {
+                font-size: 11px;
+              }
             }
             h6 {
               display: flex;
