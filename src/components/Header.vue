@@ -464,7 +464,7 @@ export default defineComponent({
       :deep(.el-select) {
         width: auto;
         .el-select__wrapper {
-          width: 105px;
+          width: 115px;
           background-color: transparent;
           font-size: inherit;
           border: 0;
