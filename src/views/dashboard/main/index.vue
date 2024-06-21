@@ -90,6 +90,7 @@
                   </svg>
                 </div>
               </div>
+              <div class="world-buttom flex-row overview" @click="worldOverview">{{providerBody.chipOverview ? 'single world' : 'world overview'}}</div>
               <div class='chart' id='chart' v-loading="providersLoad" element-loading-background="rgba(0, 0, 0, 0)"></div>
             </div>
           </el-col>
@@ -97,7 +98,7 @@
             <div class="chip-data" v-loading="providerBody.chipLoad">
               <div class="chip-filter flex-row space-between">
                 <div class="world-name flex-row">
-                  <div class="flex-row" v-if="providerBody.chipFilter === 'GPU'">
+                  <div class="flex-row" v-if="providerBody.chipFilter.indexOf('GPU')>-1">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex h-6 w-6 text-gray-dark-1000">
                       <path fill-rule="evenodd" clip-rule="evenodd" d="M7.6279 1.34882C7.84562 1.2244 8.11112 1.21703 8.33541 1.32918L15.9764 5.14967L22.6279 1.34882C22.86 1.21617 23.1452 1.21713 23.3764 1.35132C23.6077 1.48551 23.75 1.73265 23.75 2V18C23.75 18.2691 23.6058 18.5177 23.3721 18.6512L16.3721 22.6512C16.1544 22.7756 15.8889 22.783 15.6646 22.6708L8.0236 18.8503L1.3721 22.6512C1.13998 22.7838 0.854791 22.7829 0.623555 22.6487C0.392319 22.5145 0.25 22.2674 0.25 22V6C0.25 5.73086 0.394215 5.48235 0.627896 5.34882L7.6279 1.34882ZM8.75 17.5365L15.25 20.7865V6.46353L8.75 3.21353V17.5365ZM7.25 3.29239V17.5648L1.75 20.7076V6.43524L7.25 3.29239ZM16.75 6.43524V20.7076L22.25 17.5648V3.29239L16.75 6.43524Z"
                         fill="currentColor" style="fill: color(display-p3 0.6 0.6 0.6); fill-opacity: 1;"></path>
@@ -106,7 +107,8 @@
                   </div>
                 </div>
                 <el-radio-group v-model="providerBody.chipFilter" text-color="#fff" fill="#3c85ff" @change="chipFilterMethod">
-                  <el-radio-button label="GPU" value="GPU" />
+                  <el-radio-button label="GPU" value="GPUWorld" v-if="providerBody.chipOverview" />
+                  <el-radio-button label="GPU" value="GPU" v-else />
                   <el-radio-button label="Memory" value="Memory" />
                   <el-radio-button label="Storage" value="Storage" />
                 </el-radio-group>
@@ -116,7 +118,7 @@
                 <div class="absolute" :style="'width:' + ((chip.hardware_quantity||chip.storage_amount||chip.memory_amount) / providerBody.chipMaxData * 100) + '%;'"></div>
                 <div class="flex-row items-center">
                   <div class="point"></div>
-                  <div class="text-region">{{chip.config_name || chip.region}}</div>
+                  <div class="text-region">{{chip.hardware_name || chip.region}}</div>
                 </div>
                 <div class="text-data">{{chip.hardware_quantity || chip.storage || chip.memory}}</div>
               </div>
@@ -1087,6 +1089,7 @@ export default defineComponent({
       chipFilter: 'GPU',
       chipData: [],
       chipDataAll: {
+        all: [],
         usArray: [],
         caArray: [],
         memoryArray: [],
@@ -1094,6 +1097,7 @@ export default defineComponent({
       },
       chipMaxData: 0,
       chipLoad: false,
+      chipOverview: false,
       storageData: {},
       providerData: {},
       generalData: {},
@@ -1250,6 +1254,7 @@ export default defineComponent({
     }
     async function getChipList (list) {
       let array = {
+        all: [],
         usArray: [],
         caArray: [],
         memoryArray: [],
@@ -1257,16 +1262,28 @@ export default defineComponent({
       }
       try {
         let arr = await system.$commonFun.sortBoole(list.chips) || []
+        arr = arr.filter(item => item.hardware_name !== 'CPU')
         let arrMemory = await list.memory.sort((a, b) => b.memory_amount - a.memory_amount) || []
         let arrStorage = await list.storage.sort((a, b) => b.storage_amount - a.storage_amount) || []
-        arr = arr.filter(item => item.hardware_name !== 'CPU');
-        const [usArray, caArray] = splitArray(arr, (item) => item.region.indexOf('US') > -1);
-        array.usArray = usArray.slice(0, 8)
-        array.caArray = caArray.slice(0, 8)
+        const [usArray, caArray] = splitArray(arr, (item) => item.region.indexOf('US') > -1)
+        const allUniqueArray = uniqueByValue(arr, 'hardware_name')
+        const usUniqueArray = uniqueByValue(usArray, 'hardware_name')
+        const caUniqueArray = uniqueByValue(caArray, 'hardware_name')
+        array.all = allUniqueArray.slice(0, 8)
+        array.usArray = usUniqueArray.slice(0, 8)
+        array.caArray = caUniqueArray.slice(0, 8)
         array.memoryArray = arrMemory.slice(0, 8)
         array.storageArray = arrStorage.slice(0, 8)
         return array
       } catch{ return array }
+    }
+    function uniqueByValue (array, key) {
+      const seen = new Set();
+      return array.filter((item) => {
+        const isNew = !seen.has(item[key]);
+        seen.add(item[key]);
+        return isNew;
+      });
     }
     function splitArray (arr, conditionFn) {
       return arr.reduce((acc, value) => {
@@ -1348,10 +1365,12 @@ export default defineComponent({
       networkInput.value = ''
       networkZK.owner_addr = ''
       networkZK.node_id = ''
+      providerBody.chipWorld = ' Canada'
       providerBody.chipFilter = 'GPU'
       providerBody.chipMaxData = 0
       providerBody.chipData = []
       providerBody.chipLoad = false
+      providerBody.chipOverview = false
       if (type) init()
       getOverview()
       getHardwareMetricsTotal()
@@ -1377,11 +1396,21 @@ export default defineComponent({
           drawChart(canadaData)
           worldChange('Canada')
           break;
+        case 'GPUWorld':
+          drawV1Chart([])
+          worldChange('World')
+          break;
         default:
           drawV1Chart([])
           worldChange(val)
           break;
       }
+    }
+    function worldOverview () {
+      providerBody.chipFilter = providerBody.chipOverview ? 'GPU' : 'GPUWorld'
+      const overview = providerBody.chipOverview ? 'GPU' : 'World'
+      providerBody.chipOverview = !providerBody.chipOverview
+      chipFilterMethod(overview)
     }
     function worldChange (name) {
       providerBody.chipWorld = name
@@ -1401,6 +1430,10 @@ export default defineComponent({
         case 'Storage':
           providerBody.chipData = providerBody.chipDataAll.storageArray
           providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].storage_amount : 0
+          break;
+        case 'World':
+          providerBody.chipData = providerBody.chipDataAll.all
+          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].hardware_quantity : 0
           break;
         default:
           providerBody.chipData = []
@@ -1560,7 +1593,7 @@ export default defineComponent({
         chart.resize()
       })
       chart.on('click', function (params) {
-        // console.log(params.name)
+        // console.log(params)
         if (providerBody.chipFilter === 'GPU') worldChange(params.name)
       });
       chart.setOption({
@@ -1827,7 +1860,6 @@ export default defineComponent({
       system.$baseurl = `${process.env.VUE_APP_BASEAPI}${store.state.versionValue}/`
       // console.log(key, system.$baseurl)
       if (versionRef.value === 'v2') {
-        providerBody.chipFilter = 'GPU'
         drawChart(canadaData)
         resetMap()
       } else networkInput.value = ''
@@ -1858,7 +1890,7 @@ export default defineComponent({
       accessToken, expands, activeName, cpLoad,
       versionRef, dataArr,
       handleSizeChange, handleCurrentChange, handleZKCurrentChange, searchProvider, searchZKProvider, clearProvider, expandChange, getRowKeys,
-      handleClick, handleSelect, versionMethod, roamMap, chipFilterMethod
+      handleClick, handleSelect, versionMethod, roamMap, chipFilterMethod, worldOverview
     }
   }
 })
@@ -2151,13 +2183,25 @@ export default defineComponent({
             background-color: #26272a;
             border-radius: 8px;
             z-index: 10;
+            &.overview {
+              left: auto;
+              right: 0.18rem;
+              font-size: 12px;
+              cursor: pointer;
+              transition: all 0.2s;
+              text-transform: capitalize;
+              &:hover {
+                background-color: #565658;
+              }
+            }
             .tool {
               width: 30px;
               height: 30px;
               margin: 0;
               border-radius: 4px;
               cursor: pointer;
-              &:hover {
+              &:hover,
+              &.active {
                 background-color: #0d0e12;
               }
               svg {
