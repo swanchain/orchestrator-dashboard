@@ -8,7 +8,8 @@ export default createStore({
     accessToken: sessionStorage.getItem('access_token_swan') || '',
     accessKey: sessionStorage.getItem('access_apikey_swan') || '',
     signature: sessionStorage.getItem('signature_swan') || '',
-    versionValue: sessionStorage.getItem('version_swan') || 'v2'
+    versionValue: sessionStorage.getItem('version_swan') || 'v2',
+    networkValue: sessionStorage.getItem('network_swan') || 'Proxima',
   },
   mutations: {
     SET_METAADDRESS: (state, metaAddress) => {
@@ -31,6 +32,10 @@ export default createStore({
       state.versionValue = versionValue
       sessionStorage.setItem('version_swan', versionValue)
     },
+    SET_NETWORK: (state, networkValue) => {
+      state.networkValue = networkValue
+      sessionStorage.setItem('network_swan', networkValue)
+    }
   },
   actions: {
     setMetaAddress ({
@@ -57,6 +62,11 @@ export default createStore({
       commit
     }, versionValue) {
       commit('SET_VERSION', versionValue)
+    },
+    setNetwork ({
+      commit
+    }, networkValue) {
+      commit('SET_NETWORK', networkValue)
     }
   },
   modules: {}

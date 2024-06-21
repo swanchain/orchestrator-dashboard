@@ -1,7 +1,20 @@
 <template>
   <section id="container">
     <div class="swan-logo flex-row nowrap">
-      <img :src="swanLogo" @click="system.$commonFun.goLink('https://www.swanchain.io/')" />
+      <div class="flex-row current">
+        <img :src="swanLogo" @click="system.$commonFun.goLink('https://www.swanchain.io/')" />
+        <div class="flex-row ml-10">
+          <svg t="1718862572896" class="icon ml-10" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2310" width="22" height="22">
+            <path d="M448 832v64l-128.32-128L448 640v64h192a192 192 0 0 0 115.84-345.152l0.704-0.896 90.24-90.24A320 320 0 0 1 640 832l-192.064 0.064zM576 192V128l131.008 128L576 384V320H384a192 192 0 0 0-115.712 345.216l-91.072 91.008A320 320 0 0 1 384 192h192.064z"
+              fill="#ffffff" p-id="2311"></path>
+          </svg>
+          <el-select v-model="currentRef.value" placeholder="Select" size="small" @change="currentMethod">
+            <el-option v-for="item in currentRef.options" :key="item.value" :label="item.value" :value="item.value">
+              <div class="font-14">{{item.value}}</div>
+            </el-option>
+          </el-select>
+        </div>
+      </div>
       <div class="flex-row nowrap swan-right">
         <div class="nav pcShow">
           <router-link :to="{name: 'dashboard'}" :class="{'active': route.name === 'dashboard'}">Dashboard</router-link>
@@ -217,10 +230,20 @@ export default defineComponent({
       user_input_address: ''
     })
     const activeName = ref('deposit')
+    const currentRef = reactive({
+      value: store.state.networkValue || 'Proxima',
+      options: [
+        {
+          value: 'Mainnet'
+        },
+        {
+          value: 'Proxima'
+        }]
+    })
     const txLink = process.env.VUE_APP_ATOMBLOCKURL
-    const tokenAddress = process.env.VUE_APP_OPSWAN_SWANTOKEN_ADDRESS
+    const tokenAddress = store.state.networkValue === 'Proxima' ? process.env.VUE_APP_OPSWAN_SWANTOKEN_ADDRESS : process.env.VUE_APP_MINNET_SWANTOKEN_ADDRESS
     const tokenContract = new system.$commonFun.web3Init.eth.Contract(SpaceTokenABI, tokenAddress)
-    const collateralAddress = process.env.VUE_APP_COLLATERAL_CONTACT
+    const collateralAddress = store.state.networkValue === 'Proxima' ? process.env.VUE_APP_COLLATERAL_CONTACT : process.env.VUE_APP_MINNET_COLLATERAL_CONTACT
     const collateralContract = new system.$commonFun.web3Init.eth.Contract(CollateralABI, collateralAddress)
 
 
@@ -354,8 +377,23 @@ export default defineComponent({
         const balances = await collateralContract.methods.availableBalance(cpCollateralCont.user_input_address).call()
         cpCheckCont.balance = system.$commonFun.web3Init.utils.fromWei(String(balances), 'ether') || 0
         cpCheckCont.taskBalance = system.$commonFun.web3Init.utils.fromWei(String(taskBalance), 'ether') || 0
-      } catch{ }
+      } catch (err) {
+        console.log(err.message)
+        if (err && err.message) system.$commonFun.messageTip('error', err.message)
+      }
       cpCheckCont.show = false
+    }
+    async function currentMethod (key) {
+      store.dispatch('setNetwork', key)
+      switch (key) {
+        case 'Proxima':
+          break
+        case 'Mainnet':
+          break
+      }
+      store.dispatch('setVersion', 'v2')
+      // await system.$commonFun.signOutFun()
+      window.location.reload()
     }
     onMounted(async () => {
       fn()
@@ -372,9 +410,9 @@ export default defineComponent({
       centerDialogVisible,
       toolData,
       tokenShow,
-      bodyWidth, cpCheckCont, cpCollateralCont, txLink, activeName,
+      bodyWidth, cpCheckCont, cpCollateralCont, txLink, activeName, currentRef,
       getdataList, createCom, deleteToken, cpCheckMethod,
-      handleSelect, cpCollateral, userInput, collateralClick
+      handleSelect, cpCollateral, userInput, collateralClick, currentMethod
     }
   }
 })
@@ -417,6 +455,26 @@ export default defineComponent({
       height: 0.42rem;
       @media screen and (max-width: 767px) {
         height: 35px;
+      }
+    }
+    .current {
+      .ml-10 {
+        margin-left: 0.06rem;
+      }
+      :deep(.el-select) {
+        width: auto;
+        .el-select__wrapper {
+          width: 115px;
+          background-color: transparent;
+          font-size: inherit;
+          border: 0;
+          border-radius: 0.5rem;
+          box-shadow: none;
+          .el-select__placeholder,
+          .el-select__suffix .el-select__icon {
+            color: @white-color;
+          }
+        }
       }
     }
     .swan-right {

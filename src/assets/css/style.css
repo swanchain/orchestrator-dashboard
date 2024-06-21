@@ -369,4 +369,8 @@ a:focus {
     .wrapper {
         font-size: 42px;
     }
+    .el-message {
+        min-width: 320px !important;
+        max-width: 95% !important;
+    }
 }

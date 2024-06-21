@@ -16,7 +16,7 @@ import qs from 'qs'
 const app = createApp(App)
 app.config.globalProperties.$commonFun = commonFun
 app.config.globalProperties.$Qs = qs
-app.config.globalProperties.$baseurl = `${process.env.VUE_APP_BASEAPI}${store.state.versionValue}/`
+app.config.globalProperties.$baseurl = `${store.state.networkValue === 'Proxima' ? process.env.VUE_APP_BASEAPI : process.env.VUE_APP_BASEAPIMAINNET}${store.state.versionValue}/`
 app.use(ElementPlus, {
     locale: en,
 })
