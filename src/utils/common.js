@@ -9,7 +9,7 @@ import config from './config.js'
 // import modal from '../chain'
 import { disconnect } from '@wagmi/core'
 
-
+let chainNetworkID = store.state.networkValue === 'Proxima' ? 20241133 : 254
 let lastTime = 0
 
 async function sendRequest (apilink, type, jsonObject, api_token) {
@@ -195,45 +195,19 @@ async function walletChain (chainId) {
         blockExplorerUrls: [process.env.VUE_APP_ATOMBLOCKURL]
       }
       break
-    // case 80001:
-    //   text = {
-    //     chainId: web3Init.utils.numberToHex(80001),
-    //     chainName: 'Mumbai Testnet',
-    //     nativeCurrency: {
-    //       name: 'MATIC',
-    //       symbol: 'MATIC', // 2-6 characters long
-    //       decimals: 18
-    //     },
-    //     rpcUrls: [process.env.VUE_APP_MUMBAIRPCURL],
-    //     blockExplorerUrls: [process.env.VUE_APP_MUMBAIPAYMENTURL]
-    //   }
-    //   break
-    // case 97:
-    //   text = {
-    //     chainId: web3Init.utils.numberToHex(97),
-    //     chainName: 'BSC TestNet',
-    //     nativeCurrency: {
-    //       name: 'tBNB',
-    //       symbol: 'tBNB', // 2-6 characters long
-    //       decimals: 18
-    //     },
-    //     rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545'],
-    //     blockExplorerUrls: [process.env.VUE_APP_BSCTESTNETBLOCKURL]
-    //   }
-    //   break
-    // case 137:
-    //   text = {
-    //     chainId: web3Init.utils.numberToHex(137),
-    //     chainName: 'Polygon Mainnet',
-    //     nativeCurrency: {
-    //       name: 'MATIC',
-    //       symbol: 'MATIC', // 2-6 characters long
-    //       decimals: 18
-    //     },
-    //     rpcUrls: ['https://polygon-rpc.com'],
-    //     blockExplorerUrls: [process.env.VUE_APP_POLYGONBLOCKURL]
-    //   }
-    //   break
+    case 254:
+      text = {
+        chainId: web3Init.utils.numberToHex(254),
+        chainName: 'Swan Mainnet',
+        nativeCurrency: {
+          name: 'sETH',
+          symbol: 'sETH', // 2-6 characters long
+          decimals: 18
+        },
+        rpcUrls: [process.env.VUE_APP_SWANMAINNETURL],
+        blockExplorerUrls: [process.env.VUE_APP_SWANMAINNETBLOCKURL]
+      }
+      break
   }
   try {
     await providerInit.request({
@@ -423,6 +397,12 @@ async function getUnit (id) {
       url = `${process.env.VUE_APP_SATURNBLOCKURL}/address/`
       url_tx = `${process.env.VUE_APP_SATURNBLOCKURL}/tx/`
       break
+    case 254:
+      unit = 'sETH'
+      name = 'Swan Mainnet '
+      url = `${process.env.VUE_APP_SWANMAINNETBLOCKURL}/address/`
+      url_tx = `${process.env.VUE_APP_SWANMAINNETBLOCKURL}/tx/`
+      break
     case 20241133:
       unit = 'sETH'
       name = 'Swan Proxima Chain '
@@ -448,8 +428,8 @@ function goLink (link) {
 
 async function checkNetwork () {
   const getnetID = await web3Init.eth.net.getId()
-  if (getnetID !== 20241133) {
-    walletChain(20241133)
+  if (getnetID !== chainNetworkID) {
+    walletChain(chainNetworkID)
     return true
   } else return false
 }
@@ -540,5 +520,6 @@ export default {
   floorFormat,
   unifyNumber,
   AddFormat,
-  sortBoole
+  sortBoole,
+  chainNetworkID
 }

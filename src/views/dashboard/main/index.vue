@@ -3,7 +3,7 @@
     <div class="flex-row item-label">
       <h1 class="color t">Swan Provider Status</h1>
 
-      <el-select v-model="versionRef.value" placeholder="Select" size="small" @change="versionMethod">
+      <el-select v-if="networkValue !== 'Mainnet'" v-model="versionRef.value" placeholder="Select" size="small" @change="versionMethod">
         <el-option v-for="item in versionRef.options" :key="item.value" :label="item.value" :value="item.value">
           <div class="font-14">{{item.value}}</div>
         </el-option>
@@ -103,7 +103,7 @@
                         fill="currentColor" style="fill: color(display-p3 0.6 0.6 0.6); fill-opacity: 1;"></path>
                     </svg>
                     <small>&nbsp;Map: &nbsp;</small>{{providerBody.chipWorld}}
-                  </div> 
+                  </div>
                 </div>
                 <el-radio-group v-model="providerBody.chipFilter" text-color="#fff" fill="#3c85ff" @change="chipFilterMethod">
                   <el-radio-button label="GPU" value="GPU" />
@@ -1038,6 +1038,7 @@ export default defineComponent({
     const store = useStore()
     const metaAddress = computed(() => (store.state.metaAddress))
     const accessToken = computed(() => (store.state.accessToken))
+    const networkValue = computed(() => (store.state.networkValue))
     const system = getCurrentInstance().appContext.config.globalProperties
     const route = useRoute()
     const router = useRouter()
@@ -1842,6 +1843,7 @@ export default defineComponent({
       system,
       route,
       metaAddress,
+      networkValue,
       gmtTime,
       providersLoad,
       providersTableLoad,

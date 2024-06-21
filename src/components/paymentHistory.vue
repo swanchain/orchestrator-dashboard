@@ -367,8 +367,8 @@ export default defineComponent({
     }
 
     async function retryFun (row) {
-      if (getnetID.toString() !== '20241133') {
-        await system.$commonFun.walletChain(20241133)
+      if (getnetID.toString() !== system.$commonFun.chainNetworkID.toString()) {
+        await system.$commonFun.walletChain(system.$commonFun.chainNetworkID)
         return
       }
       paymentLoad.value = true
@@ -380,8 +380,8 @@ export default defineComponent({
     }
 
     async function rewardFun (row, type) {
-      if (getnetID.toString() !== '20241133') {
-        await system.$commonFun.walletChain(20241133)
+      if (getnetID.toString() !== system.$commonFun.chainNetworkID.toString()) {
+        await system.$commonFun.walletChain(system.$commonFun.chainNetworkID)
         return
       }
       paymentLoad.value = true
@@ -475,7 +475,7 @@ export default defineComponent({
       const paymentsRes = await system.$commonFun.sendRequest(`${requestURL}?${system.$Qs.stringify(paramsOption)}`, 'get', {}, store.state.accessKey) //?public_address=${store.state.metaAddress}
       if (paymentsRes && paymentsRes.status === 'success') {
         for (let p = 0; p < paymentsRes.data.payments.length; p++) {
-          let { url_tx } = await system.$commonFun.getUnit(20241133)
+          let { url_tx } = await system.$commonFun.getUnit(system.$commonFun.chainNetworkID)
           paymentsRes.data.payments[p].url_tx = url_tx
         }
         paymentData.value = paymentsRes.data.payments || []
