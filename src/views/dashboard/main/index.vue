@@ -114,13 +114,13 @@
                 </el-radio-group>
               </div>
               <div class="no-result flex-row center" v-if="providerBody.chipData && providerBody.chipData.length === 0">There are no devices present in the selected country</div>
-              <div class="cont flex-row space-between" v-for="chip in providerBody.chipData" :key="chip">
-                <div class="absolute" :style="'width:' + ((chip.hardware_quantity||chip.storage_amount||chip.memory_amount) / providerBody.chipMaxData * 100) + '%;'"></div>
+              <div class="cont flex-row space-between" v-for="chip in providerBody.chipData.slice(0, 8)" :key="chip">
+                <div class="absolute" :style="'width:' + ((chip.value||chip.gpu_amount||chip.storage_amount||chip.memory_amount) / providerBody.chipMaxData * 100) + '%;'"></div>
                 <div class="flex-row items-center">
                   <div class="point"></div>
-                  <div class="text-region">{{chip.hardware_name || chip.region}}</div>
+                  <div class="text-region">{{chip.name || chip.gpu || chip.region}}</div>
                 </div>
-                <div class="text-data">{{chip.hardware_quantity || chip.storage || chip.memory}}</div>
+                <div class="text-data">{{chip.value || chip.gpu_amount || chip.storage || chip.memory}}</div>
               </div>
             </div>
           </el-col>
@@ -1247,7 +1247,7 @@ export default defineComponent({
           providerBody.totalData.hardwareTotal = totalRes.data.total || {}
           providerBody.chipDataAll = await getChipList(totalRes.data)
           providerBody.chipData = providerBody.chipDataAll.caArray
-          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].hardware_quantity : 0
+          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].value : 0
         }
       } catch{ }
       providerBody.chipLoad = false
@@ -1261,34 +1261,23 @@ export default defineComponent({
         storageArray: []
       }
       try {
-        let arr = await system.$commonFun.sortBoole(list.chips) || []
-        arr = arr.filter(item => item.hardware_name !== 'CPU')
+        let arr = list.world_detail || []
         let arrMemory = await list.memory.sort((a, b) => b.memory_amount - a.memory_amount) || []
         let arrStorage = await list.storage.sort((a, b) => b.storage_amount - a.storage_amount) || []
-        const [usArray, caArray] = splitArray(arr, (item) => item.region.indexOf('US') > -1)
-        const allUniqueArray = uniqueByValue(arr, 'hardware_name')
-        const usUniqueArray = uniqueByValue(usArray, 'hardware_name')
-        const caUniqueArray = uniqueByValue(caArray, 'hardware_name')
-        array.all = allUniqueArray.slice(0, 8)
-        array.usArray = usUniqueArray.slice(0, 8)
-        array.caArray = caUniqueArray.slice(0, 8)
-        array.memoryArray = arrMemory.slice(0, 8)
-        array.storageArray = arrStorage.slice(0, 8)
+        const [usArray, caArray] = splitArray(arr, (item) => item.region.indexOf('us') > -1)
+        array.all = list.gpu_total
+        array.usArray = await system.$commonFun.sortBoole(usArray)
+        array.caArray = await system.$commonFun.sortBoole(caArray)
+        array.memoryArray = arrMemory
+        array.storageArray = arrStorage
         return array
       } catch{ return array }
-    }
-    function uniqueByValue (array, key) {
-      const seen = new Set();
-      return array.filter((item) => {
-        const isNew = !seen.has(item[key]);
-        seen.add(item[key]);
-        return isNew;
-      });
     }
     function splitArray (arr, conditionFn) {
       return arr.reduce((acc, value) => {
         const index = conditionFn(value) ? 0 : 1;
-        acc[index].push(value);
+        const res = [].concat(value.gpu_count)
+        res.forEach(r => acc[index].push(r))
         return acc;
       }, [[], []]);
     }
@@ -1417,11 +1406,11 @@ export default defineComponent({
       switch (name) {
         case 'Canada':
           providerBody.chipData = providerBody.chipDataAll.caArray
-          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].hardware_quantity : 0
+          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].value : 0
           break;
         case 'United States':
           providerBody.chipData = providerBody.chipDataAll.usArray
-          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].hardware_quantity : 0
+          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].value : 0
           break;
         case 'Memory':
           providerBody.chipData = providerBody.chipDataAll.memoryArray
@@ -1433,11 +1422,11 @@ export default defineComponent({
           break;
         case 'World':
           providerBody.chipData = providerBody.chipDataAll.all
-          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].hardware_quantity : 0
+          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].gpu_amount : 0
           break;
         default:
           providerBody.chipData = []
-          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].hardware_quantity : 0
+          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].value : 0
           break;
       }
     }
