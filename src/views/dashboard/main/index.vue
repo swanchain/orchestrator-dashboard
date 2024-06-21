@@ -17,7 +17,7 @@
 
     <div class="providers-overview mt-border">
       <div class="title">Providers Overview</div>
-      <div>
+      <div v-if="versionRef.value === 'v2'">
         <el-row :gutter="16">
           <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
             <div class="grid-content total-container" v-loading="providerBody.chipLoad">
@@ -68,43 +68,56 @@
             </div>
           </el-col>
         </el-row>
+        <el-row :gutter="16">
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="flex-row">
+            <div class="chart-container">
+              <div class="world-buttom flex-row">
+                <div class="tool flex-row center">
+                  <svg @click="roamMap(1)" width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8.00098 6H4.00098" stroke="#8F929B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M6.00098 11C8.7624 11 11.001 8.76142 11.001 6C11.001 3.23858 8.7624 1 6.00098 1C3.23955 1 1.00098 3.23858 1.00098 6C1.00098 8.76142 3.23955 11 6.00098 11Z" stroke="#8F929B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                    />
+                    <path d="M12.001 11.9998L9.53613 9.53491" stroke="#8F929B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </div>
+                <div class="tool flex-row center">
+                  <svg @click="roamMap(0)" width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6.00098 4V8" stroke="#8F929B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M8.00098 6H4.00098" stroke="#8F929B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M6.00098 11C8.7624 11 11.001 8.76142 11.001 6C11.001 3.23858 8.7624 1 6.00098 1C3.23955 1 1.00098 3.23858 1.00098 6C1.00098 8.76142 3.23955 11 6.00098 11Z" stroke="#8F929B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                    />
+                    <path d="M12.001 11.9998L9.53613 9.53491" stroke="#8F929B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </div>
+              </div>
+              <div class='chart' id='chart' v-loading="providersLoad" element-loading-background="rgba(0, 0, 0, 0)"></div>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="flex-row">
+            <div class="chip-data" v-loading="providerBody.chipLoad">
+              <div class="chip-filter flex-row flex-end">
+                <el-radio-group v-model="providerBody.chipFilter" text-color="#fff" fill="#3c85ff" @change="chipFilterMethod">
+                  <el-radio-button label="GPU" value="GPU" />
+                  <el-radio-button label="Memory" value="Memory" />
+                  <el-radio-button label="Storage" value="Storage" />
+                </el-radio-group>
+              </div>
+              <div class="no-result flex-row center" v-if="providerBody.chipData && providerBody.chipData.length === 0">There are no devices present in the selected country</div>
+              <div class="cont flex-row space-between" v-for="chip in providerBody.chipData" :key="chip">
+                <div class="absolute" :style="'width:' + ((chip.hardware_quantity||chip.storage_amount||chip.memory_amount) / providerBody.chipMaxData * 100) + '%;'"></div>
+                <div class="flex-row items-center">
+                  <div class="point"></div>
+                  <div class="text-region">{{chip.config_name || chip.region}}</div>
+                </div>
+                <div class="text-data">{{chip.hardware_quantity || chip.storage || chip.memory}}</div>
+              </div>
+            </div>
+          </el-col>
+        </el-row>
       </div>
-      <el-row :gutter="16">
-        <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="flex-row">
-          <div class="chart-container">
-            <div class="world-buttom flex-row">
-              <div class="tool flex-row center">
-                <svg @click="roamMap(1)" width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M8.00098 6H4.00098" stroke="#8F929B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                  <path d="M6.00098 11C8.7624 11 11.001 8.76142 11.001 6C11.001 3.23858 8.7624 1 6.00098 1C3.23955 1 1.00098 3.23858 1.00098 6C1.00098 8.76142 3.23955 11 6.00098 11Z" stroke="#8F929B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-                  />
-                  <path d="M12.001 11.9998L9.53613 9.53491" stroke="#8F929B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </div>
-              <div class="tool flex-row center">
-                <svg @click="roamMap(0)" width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M6.00098 4V8" stroke="#8F929B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                  <path d="M8.00098 6H4.00098" stroke="#8F929B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                  <path d="M6.00098 11C8.7624 11 11.001 8.76142 11.001 6C11.001 3.23858 8.7624 1 6.00098 1C3.23955 1 1.00098 3.23858 1.00098 6C1.00098 8.76142 3.23955 11 6.00098 11Z" stroke="#8F929B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-                  />
-                  <path d="M12.001 11.9998L9.53613 9.53491" stroke="#8F929B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </div>
-            </div>
-            <div class='chart' id='chart' v-loading="providersLoad" element-loading-background="rgba(0, 0, 0, 0)"></div>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="flex-row">
-          <div class="chip-data" v-loading="providerBody.chipLoad">
-            <div class="cont flex-row space-between" v-for="chip in providerBody.chipData" :key="chip">
-              <div class="absolute" :style="'width:' + (chip.hardware_quantity / providerBody.chipMaxData * 100) + '%;'"></div>
-              <div class="flex-row items-center">
-                <div class="point"></div>
-                <div class="text-region">{{chip.region}}</div>
-              </div>
-              <div class="text-data">{{chip.hardware_quantity}}</div>
-            </div>
-          </div>
+      <el-row :gutter="16" v-else>
+        <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="flex-row">
+          <div class='chart' id='chart' v-loading="providersLoad" element-loading-background="rgba(0, 0, 0, 0)"></div>
         </el-col>
       </el-row>
       <div class="border-row">
@@ -115,23 +128,23 @@
           <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
             <div class="grid-content">
               <h6 class="flex-row">
-                <span class="t">Network Providers</span>
+                <span class="t">Total CP Online</span>
               </h6>
               <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.data.total_providers ? system.$commonFun.replaceFormat(providerBody.data.total_providers):'-'}}</b>
             </div>
           </el-col>
-          <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+          <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
             <div class="grid-content">
               <h6 class="flex-row">
                 <span class="t">Active Applications</span>
               </h6>
               <b v-loading="providersLoad" class="flex-row font-bold color">{{system.$commonFun.replaceFormat(pagin.active_applications)}}</b>
             </div>
-          </el-col>
+          </el-col> -->
           <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
             <div class="grid-content">
               <h6 class="flex-row">
-                <span class="t">Total Deployments</span>
+                <span class="t">Total Task</span>
               </h6>
               <b v-loading="providersLoad" class="flex-row font-bold color">{{system.$commonFun.replaceFormat(pagin.total_deployments)}}</b>
             </div>
@@ -773,11 +786,11 @@
 
     <div class="providers-network">
       <div class="providers-cp" v-if="activeName === 'CP'">
-        <!-- <div class="search-body flex">
-          <el-input v-model="networkInput" placeholder="Search Providers" @chang="searchProvider" @input="searchProvider" />
+        <div class="search-body flex" v-if="versionRef.value === 'v2'">
+          <el-input v-model="networkInput" placeholder="CP Account Address" @chang="searchProvider" @input="searchProvider" />
           <el-button type="primary" :disabled="!networkInput ? true:false" round @click="searchProvider">Search</el-button>
           <el-button type="info" :disabled="!networkInput ? true:false" round @click="clearProvider">Clear</el-button>
-        </div> -->
+        </div>
         <el-table :data="providersData" @expand-change="expandChange" :row-key="getRowKeys" :expand-row-keys="expands" style="width: 100%" empty-text="No Data" v-loading="providersTableLoad">
           <el-table-column type="expand" width="40">
             <template #default="props">
@@ -1061,7 +1074,14 @@ export default defineComponent({
           storage: '-'
         }
       },
+      chipFilter: 'GPU',
       chipData: [],
+      chipDataAll: {
+        usArray: [],
+        caArray: [],
+        memoryArray: [],
+        storageArray: []
+      },
       chipMaxData: 0,
       chipLoad: false,
       storageData: {},
@@ -1108,18 +1128,20 @@ export default defineComponent({
     async function init () {
       providersTableLoad.value = true
       const page = pagin.pageNo > 0 ? pagin.pageNo - 1 : 0
-      const params = {
-        limit: pagin.pageSize,
-        offset: page * pagin.pageSize,
-        search_string: networkInput.value
-      }
-      const providerRes = await system.$commonFun.sendRequest(`${system.$baseurl}cp/cplist?${system.$Qs.stringify(params)}`, 'get')
+      const params = networkInput.value ? {
+        cp_account_address: networkInput.value
+      } : {
+          limit: pagin.pageSize,
+          offset: page * pagin.pageSize
+        }
+      const providerRes = await system.$commonFun.sendRequest(`${system.$baseurl}${networkInput.value ? 'cp/search_cp' : 'cp/cplist'}?${system.$Qs.stringify(params)}`, 'get')
       if (providerRes && providerRes.status === 'success') {
         pagin.total = providerRes.data.list_providers_cnt || 0
-        providersData.value = await getList(providerRes.data.providers)
+        providersData.value = await getList(networkInput.value?providerRes.data.provider:providerRes.data.providers)
       } else {
+        pagin.total = 0
         providersData.value = []
-        if (providerRes.status) system.$commonFun.messageTip(providerRes.status, providerRes.message)
+        if (providerRes.status) system.$commonFun.messageTip(providerRes.status === 'success' ? 'success' : 'error', providerRes.message)
       }
       providersTableLoad.value = false
     }
@@ -1144,7 +1166,7 @@ export default defineComponent({
       providersTableLoad.value = false
     }
     async function getList (list) {
-      let l = list || []
+      let l = Array.isArray(list) ? list : [list]
       l.forEach((element) => {
         element.gpu_list = []
         element.multiAddress = []
@@ -1203,17 +1225,45 @@ export default defineComponent({
       }
     }
     async function getHardwareMetricsTotal () {
-        providerBody.chipLoad = true
+      if (versionRef.value !== 'v2') return
+      providerBody.chipLoad = true
       try {
         const totalRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASELOGINAPI}cp/hardware_metrics`, 'get')
         if (totalRes && totalRes.status === "success" && totalRes.data) {
           providerBody.totalData.hardwareTotal = totalRes.data.total || {}
-          providerBody.chipData = await system.$commonFun.sortBoole(totalRes.data.chips) || []
+          providerBody.chipDataAll = await getChipList(totalRes.data)
+          providerBody.chipData = providerBody.chipDataAll.caArray
           providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].hardware_quantity : 0
-          providerBody.chipData = providerBody.chipData.slice(0, 9)
         }
       } catch{ }
-        providerBody.chipLoad = false
+      providerBody.chipLoad = false
+    }
+    async function getChipList (list) {
+      let array = {
+        usArray: [],
+        caArray: [],
+        memoryArray: [],
+        storageArray: []
+      }
+      try {
+        let arr = await system.$commonFun.sortBoole(list.chips) || []
+        let arrMemory = await list.memory.sort((a, b) => b.memory_amount - a.memory_amount) || []
+        let arrStorage = await list.storage.sort((a, b) => b.storage_amount - a.storage_amount) || []
+        arr = arr.filter(item => item.hardware_name !== 'CPU');
+        const [usArray, caArray] = splitArray(arr, (item) => item.region.indexOf('US') > -1);
+        array.usArray = usArray.slice(0, 8)
+        array.caArray = caArray.slice(0, 8)
+        array.memoryArray = arrMemory.slice(0, 8)
+        array.storageArray = arrStorage.slice(0, 8)
+        return array
+      } catch{ return array }
+    }
+    function splitArray (arr, conditionFn) {
+      return arr.reduce((acc, value) => {
+        const index = conditionFn(value) ? 0 : 1;
+        acc[index].push(value);
+        return acc;
+      }, [[], []]);
     }
     async function getOverview () {
       providersLoad.value = true
@@ -1224,7 +1274,8 @@ export default defineComponent({
           pagin.active_applications = overviewRes.data.active_applications
           providerBody.data = overviewRes.data || {}
           dataArr.value = overviewRes.data.map_info
-          drawChart(dataArr.value)
+          if (versionRef.value !== 'v2') drawV1Chart(dataArr.value)
+          else drawChart(canadaData)
           changetype()
         }
       } catch{ }
@@ -1287,6 +1338,7 @@ export default defineComponent({
       networkInput.value = ''
       networkZK.owner_addr = ''
       networkZK.node_id = ''
+      providerBody.chipFilter = 'GPU'
       providerBody.chipMaxData = 0
       providerBody.chipData = []
       providerBody.chipLoad = false
@@ -1302,17 +1354,60 @@ export default defineComponent({
       getGeneralStats()
     }
     let chart = null
+    let canadaData = [
+      {
+        name: 'Canada',
+        selected: true
+      }
+    ]
+    function chipFilterMethod (val) {
+      chart.clear()
+      switch (val) {
+        case 'GPU':
+          drawChart(canadaData)
+          worldChange('Canada')
+          break;
+        default:
+          drawV1Chart([])
+          worldChange(val)
+          break;
+      }
+    }
+    function worldChange (name) {
+      switch (name) {
+        case 'Canada':
+          providerBody.chipData = providerBody.chipDataAll.caArray
+          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].hardware_quantity : 0
+          break;
+        case 'United States':
+          providerBody.chipData = providerBody.chipDataAll.usArray
+          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].hardware_quantity : 0
+          break;
+        case 'Memory':
+          providerBody.chipData = providerBody.chipDataAll.memoryArray
+          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].memory_amount : 0
+          break;
+        case 'Storage':
+          providerBody.chipData = providerBody.chipDataAll.storageArray
+          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].storage_amount : 0
+          break;
+        default:
+          providerBody.chipData = []
+          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].hardware_quantity : 0
+          break;
+      }
+    }
     function resetMap () {
       chart.setOption({
-        geo: {
+        series: {
           center: undefined,
           zoom: 1.4
         }
       })
     }
     function roamMap (flag) {
-      const currentZoom = chart.getOption().geo[0].zoom
-      let increaseAmplitude = 1.1
+      const currentZoom = chart.getOption().series[0].zoom
+      let increaseAmplitude = 1.4
       if (flag === 1) {
         increaseAmplitude = 0.8
         if (currentZoom < 1) increaseAmplitude = 1
@@ -1320,12 +1415,12 @@ export default defineComponent({
         increaseAmplitude = 0 //reset
       }
       chart.setOption({
-        geo: {
+        series: {
           zoom: currentZoom * increaseAmplitude < 1 ? 1 : currentZoom * increaseAmplitude
         },
       })
     }
-    function drawChart (dataArr) {
+    function drawV1Chart (dataArr) {
       chart = echarts.init(document.getElementById('chart'))
       window.addEventListener('resize', function () {
         chart.resize()
@@ -1352,13 +1447,13 @@ export default defineComponent({
               iconStyle: {
                 borderColor: '#fff',
                 borderWidth: 2,
-                color: 'transparent' 
+                color: 'transparent'
               },
               emphasis: {
                 iconStyle: {
-                  borderColor: '#fff', 
+                  borderColor: '#fff',
                   borderWidth: 2,
-                  color: 'transparent' 
+                  color: 'transparent'
                 }
               }
             },
@@ -1394,7 +1489,7 @@ export default defineComponent({
             }
           },
           // aspectScale: 0.75,
-          roam: true, 
+          roam: versionRef.value === 'v2' ? true : false,
           toolbox: {
             show: true,
             feature: {
@@ -1421,7 +1516,7 @@ export default defineComponent({
             focus: 'none'
           },
           silent: true,
-          zoom: 1.4,
+          zoom: versionRef.value === 'v2' ? 1.4 : 1,
           scaleLimit: {
             min: 1
           },
@@ -1444,6 +1539,110 @@ export default defineComponent({
             data: dataArr,
             symbolSize: 8,
             zlevel: 1
+          }
+        ]
+      })
+    }
+    function drawChart (data) {
+      chart = echarts.init(document.getElementById('chart'))
+      window.addEventListener('resize', function () {
+        chart.resize()
+      })
+      chart.on('click', function (params) {
+        // console.log(params.name)
+        if (providerBody.chipFilter === 'GPU') worldChange(params.name)
+      });
+      chart.setOption({
+        grid: {
+          top: '2%',
+          left: '2%',
+          right: '2%',
+          bottom: '2%',
+          containLabel: true
+        },
+        toolbox: {
+          orient: 'vertical',
+          top: '2%',
+          right: '2%',
+          feature: {
+            dataZoom: { show: false },
+            restore: {
+              show: false,
+              textStyle: {
+                color: 'transparent'
+              },
+              iconStyle: {
+                borderColor: '#fff',
+                borderWidth: 2,
+                color: 'transparent'
+              },
+              emphasis: {
+                iconStyle: {
+                  borderColor: '#fff',
+                  borderWidth: 2,
+                  color: 'transparent'
+                }
+              }
+            },
+            // zoom: { show: true },
+          },
+          textStyle: {
+            color: '#fff',
+          }
+        },
+        tooltip: {
+          trigger: "item",
+          formatter: function (val) {
+            if (val.data && val.data.city) return val.data.city
+            else return val.name
+          },
+          // show: false,
+          padding: 5,
+          textStyle: {
+            fontSize: 8,
+            lineHeight: 10,
+            align: "left"
+          }
+        },
+        series: [
+          {
+            name: 'world',
+            type: 'map',
+            map: 'worldHq',
+            itemStyle: {
+              color: '#447dff',
+              shadowBlur: 0,
+              shadowColor: '#7ca3fb',
+              areaColor: '#565658',
+              borderColor: '#404042'
+            },
+            emphasis: {
+              label: {
+                show: true
+              },
+              itemStyle: {
+                areaColor: '#447dff'
+              }
+            },
+            symbolSize: 8,
+            zlevel: 1,
+            data: data,
+
+            roam: true,
+            selectedMode: 'single',
+            select: {
+              itemStyle: {
+                areaColor: '#447dff'
+              }
+            },
+            zoom: 1.4,
+            scaleLimit: {
+              min: 1
+            },
+            label: {
+              show: false,
+              fontSize: 0
+            }
           }
         ]
       })
@@ -1616,7 +1815,11 @@ export default defineComponent({
       store.dispatch('setVersion', key)
       system.$baseurl = `${process.env.VUE_APP_BASEAPI}${store.state.versionValue}/`
       // console.log(key, system.$baseurl)
-      resetMap()
+      if (versionRef.value === 'v2') {
+        providerBody.chipFilter = 'GPU'
+        drawChart(canadaData)
+        resetMap()
+      } else networkInput.value = ''
       echartReset()
       reset('init')
     }
@@ -1644,7 +1847,7 @@ export default defineComponent({
       accessToken, expands, activeName, cpLoad,
       versionRef, dataArr,
       handleSizeChange, handleCurrentChange, handleZKCurrentChange, searchProvider, searchZKProvider, clearProvider, expandChange, getRowKeys,
-      handleClick, handleSelect, versionMethod, roamMap
+      handleClick, handleSelect, versionMethod, roamMap, chipFilterMethod
     }
   }
 })
@@ -1810,7 +2013,7 @@ export default defineComponent({
           overflow: hidden;
           &.total-container {
             h6 {
-              width: 0.85rem;
+              width: 0.8rem;
               margin: 0 0.15rem 0 0;
             }
             b {
@@ -1958,14 +2161,28 @@ export default defineComponent({
         }
         .chip-data {
           width: 100%;
+          height: calc(100% - 0.35rem);
           margin: 0.35rem auto 0;
           flex-direction: column;
+          .chip-filter {
+            height: 40px;
+            .el-radio-button__inner {
+              background-color: transparent;
+              color: @theme-color;
+              border-color: @theme-color;
+            }
+          }
+          .no-result {
+            width: 94%;
+            height: calc(100% - 40px);
+            margin: auto;
+          }
           .cont {
             position: relative;
             flex-direction: row;
             width: calc(100% - 0.32rem);
             padding: 0.07rem 0.16rem;
-            margin: 0 0 0.1rem;
+            margin: 0.1rem 0 0;
             font-size: 0.18rem;
             font-weight: 700;
             letter-spacing: 1px;

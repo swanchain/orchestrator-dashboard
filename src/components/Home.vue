@@ -87,13 +87,13 @@ export default defineComponent({
         max-width: 1024px;
       }
       @media (min-width: 1440px) {
-        max-width: 1190px;
+        max-width: 1300px;
       }
       @media (min-width: 1800px) {
-        max-width: 1360px;
+        max-width: 1440px;
       }
       @media (min-width: 1920px) {
-        max-width: 1440px;
+        max-width: 1640px;
       }
       @media (max-width: 600px) {
         width: calc(100% - 0.32rem);
