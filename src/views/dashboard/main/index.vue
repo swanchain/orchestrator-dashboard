@@ -804,9 +804,9 @@
         <el-table :data="providersData" @expand-change="expandChange" :row-key="getRowKeys" :expand-row-keys="expands" style="width: 100%" empty-text="No Data" v-loading="providersTableLoad">
           <el-table-column type="expand" width="40">
             <template #default="props">
-              <div class="service-body" v-if="props.row.machines">
+              <div class="service-body" v-if="props.row.machines && props.row.machines.length>0">
                 <div v-for="n in props.row.machines" :key="n" class="list">
-                  <div class="li-title">CP Account Address: {{scope.row.cp_account_address}}</div>
+                  <div class="li-title">CP Account Address: {{props.row.cp_account_address}}</div>
                   <ul>
                     <li v-for="(child, vcpuKeys, k) in n.specs" :key="k" v-show="vcpuKeys === 'vcpu'">
                       <div class="li-body">
@@ -863,7 +863,7 @@
                   </ul>
                 </div>
               </div>
-              <div class="service-body" v-else>No Data</div>
+              <div class="service-body text-center" v-else>No Data</div>
             </template>
           </el-table-column>
           <el-table-column prop="multiAddress" label="Name" min-width="120">
@@ -960,7 +960,7 @@
                   </ul>
                 </div>
               </div>
-              <div class="service-body" v-else>No Data</div>
+              <div class="service-body text-center" v-else>No Data</div>
             </template>
           </el-table-column>
           <el-table-column prop="name" label="Name" min-width="120">
@@ -1341,11 +1341,11 @@ export default defineComponent({
       // console.log(row, expandedRows)
       if (expandedRows.length) {
         expands.value = [];
-        if (row) expands.value.push(row.node_id);
+        if (row) expands.value.push(row.cp_account_address);
       } else expands.value = [];
     }
     let getRowKeys = (row) => {
-      return row.node_id;
+      return row.cp_account_address;
     }
     function reset (type) {
       pagin.total = 0
@@ -2556,6 +2556,9 @@ export default defineComponent({
             // color: #333;
             // border-top: rgb(220, 223, 230) 1px solid;
             // border-bottom: rgb(220, 223, 230) 1px solid;
+            &.text-center {
+              text-align: center;
+            }
             .tit {
               margin: 0.2rem 0 0;
               font-size: 16px;
@@ -2582,7 +2585,6 @@ export default defineComponent({
               ul {
                 display: flex;
                 align-items: stretch;
-                justify-content: space-between;
                 flex-wrap: wrap;
                 margin: 0 auto 0.25rem;
                 @media screen and (max-width: 768px) {
