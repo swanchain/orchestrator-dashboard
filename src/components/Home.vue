@@ -86,6 +86,12 @@ export default defineComponent({
       @media (min-width: 1200px) {
         max-width: 1024px;
       }
+      @media (min-width: 1260px) {
+        max-width: 1160px;
+      }
+      @media (min-width: 1366px) {
+        max-width: 1260px;
+      }
       @media (min-width: 1440px) {
         max-width: 1300px;
       }

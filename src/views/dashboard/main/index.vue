@@ -141,23 +141,15 @@
               <h6 class="flex-row">
                 <span class="t">Total CP Online</span>
               </h6>
-              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.data.total_providers ? system.$commonFun.replaceFormat(providerBody.data.total_providers):'-'}}</b>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_computer_providers):'-'}}</b>
             </div>
           </el-col>
-          <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-            <div class="grid-content">
-              <h6 class="flex-row">
-                <span class="t">Active Applications</span>
-              </h6>
-              <b v-loading="providersLoad" class="flex-row font-bold color">{{system.$commonFun.replaceFormat(pagin.active_applications)}}</b>
-            </div>
-          </el-col> -->
           <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
             <div class="grid-content">
               <h6 class="flex-row">
                 <span class="t">Total Task</span>
               </h6>
-              <b v-loading="providersLoad" class="flex-row font-bold color">{{system.$commonFun.replaceFormat(pagin.total_deployments)}}</b>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_task):'-'}}</b>
             </div>
           </el-col>
           <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
@@ -206,7 +198,7 @@
               <h6 class="flex-row">
                 <span class="t">total GPU hours</span>
               </h6>
-              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_gpu_hours):'-'}}</b>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(system.$commonFun.timeFormat(providerBody.generalData.total_gpu_hours)):'-'}}</b>
             </div>
           </el-col>
         </el-row>
@@ -802,12 +794,19 @@
           <el-button type="primary" :disabled="!networkInput ? true:false" round @click="searchProvider">Search</el-button>
           <el-button type="info" :disabled="!networkInput ? true:false" round @click="clearProvider">Clear</el-button>
         </div>
+        <div class="flex-row flex-end item-label m">
+          <el-select v-model="onlineRef.value" placeholder="Select" size="small" @change="onlineMethod">
+            <el-option v-for="item in onlineRef.options" :key="item.value" :label="item.label" :value="item.value">
+              <div class="font-14">{{item.label}}</div>
+            </el-option>
+          </el-select>
+        </div>
         <el-table :data="providersData" @expand-change="expandChange" :row-key="getRowKeys" :expand-row-keys="expands" style="width: 100%" empty-text="No Data" v-loading="providersTableLoad">
           <el-table-column type="expand" width="40">
             <template #default="props">
-              <div class="service-body" v-if="props.row.computer_provider">
-                <div v-for="n in props.row.computer_provider.machines" :key="n" class="list">
-                  <div class="li-title">Machine ID: {{n.machine_id}}</div>
+              <div class="service-body" v-if="props.row.machines && props.row.machines.length>0">
+                <div v-for="n in props.row.machines" :key="n" class="list">
+                  <div class="li-title">CP Account Address: {{props.row.cp_account_address}}</div>
                   <ul>
                     <li v-for="(child, vcpuKeys, k) in n.specs" :key="k" v-show="vcpuKeys === 'vcpu'">
                       <div class="li-body">
@@ -864,7 +863,7 @@
                   </ul>
                 </div>
               </div>
-              <div class="service-body" v-else>No Data</div>
+              <div class="service-body text-center" v-else>No Data</div>
             </template>
           </el-table-column>
           <el-table-column prop="multiAddress" label="Name" min-width="120">
@@ -877,12 +876,8 @@
             </template>
           </el-table-column>
           <!-- <el-table-column prop="country" label="Country" /> -->
-          <el-table-column prop="computer_provider.active_deployment" label="Active deployment" width="130" />
-          <el-table-column prop="computer_provider.score" label="Score" width="120">
-            <template #default="scope">
-              <span>{{scope.row.computer_provider.score || scope.row.score}}</span>
-            </template>
-          </el-table-column>
+          <el-table-column prop="active_deployment" label="Active deployment" width="130" />
+          <el-table-column prop="score" label="Score" width="120" />
           <el-table-column prop="gpu_list" label="GPU" min-width="140">
             <template #default="scope">
               <div class="badge">
@@ -897,7 +892,8 @@
           <el-table-column prop="region" label="Region" min-width="100" />
           <el-table-column prop="uptime" label="Uptime">
             <template #default="scope">
-              <div>
+              <div v-if="scope.row.uptime === null">Waiting for calculation</div>
+              <div v-else>
                 {{system.$commonFun.unifyNumber(scope.row.uptime)}}%
               </div>
             </template>
@@ -964,7 +960,7 @@
                   </ul>
                 </div>
               </div>
-              <div class="service-body" v-else>No Data</div>
+              <div class="service-body text-center" v-else>No Data</div>
             </template>
           </el-table-column>
           <el-table-column prop="name" label="Name" min-width="120">
@@ -1090,8 +1086,7 @@ export default defineComponent({
       chipData: [],
       chipDataAll: {
         all: [],
-        usArray: [],
-        caArray: [],
+        worldArray: [],
         memoryArray: [],
         storageArray: []
       },
@@ -1129,6 +1124,18 @@ export default defineComponent({
           value: 'v2'
         }]
     })
+    const onlineRef = reactive({
+      value: 1,
+      options: [
+        {
+          value: 1,
+          label: 'Active'
+        },
+        {
+          value: 0,
+          label: 'Total'
+        }]
+    })
 
     function handleSizeChange (val) { }
     async function handleCurrentChange (currentPage) {
@@ -1146,7 +1153,8 @@ export default defineComponent({
         cp_account_address: networkInput.value
       } : {
           limit: pagin.pageSize,
-          offset: page * pagin.pageSize
+          offset: page * pagin.pageSize,
+          online: onlineRef.value
         }
       const providerRes = await system.$commonFun.sendRequest(`${system.$baseurl}${networkInput.value ? 'cp/search_cp' : 'cp/cplist'}?${system.$Qs.stringify(params)}`, 'get')
       if (providerRes && providerRes.status === 'success') {
@@ -1185,7 +1193,8 @@ export default defineComponent({
         element.gpu_list = []
         element.multiAddress = []
         try {
-          element.name.forEach(n => {
+          const n = element.name || element.multi_address
+          n.forEach(n => {
             const ip = n.split('/')
             const address = `${ip[2]}:${ip[4]}`
             element.multiAddress.push(address)
@@ -1194,21 +1203,19 @@ export default defineComponent({
           element.multiAddress.push(element.name)
         }
         try {
-          if (element.computer_provider.machines && element.computer_provider.machines.length > 0) {
-            element.computer_provider.machines.forEach((machines) => {
-              if (machines.specs.gpu.details && machines.specs.gpu.details.length > 0) {
-                machines.specs.gpu.details.forEach((gpu) => {
-                  if (element.gpu_list.indexOf(gpu.product_name) < 0) element.gpu_list.push(gpu.product_name)
-                  // const field = 'name';
-                  // const containsValue = element.gpu_list.some(item => item[field].includes(gpu.product_name));
-                  // if (!containsValue) element.gpu_list.push({
-                  //   name: gpu.product_name,
-                  //   status: gpu.status
-                  // })
-                })
-              }
-            })
-          }
+          element.machines.forEach((machines) => {
+            if (machines.specs.gpu.details && machines.specs.gpu.details.length > 0) {
+              machines.specs.gpu.details.forEach((gpu) => {
+                if (element.gpu_list.indexOf(gpu.product_name) < 0) element.gpu_list.push(gpu.product_name)
+                // const field = 'name';
+                // const containsValue = element.gpu_list.some(item => item[field].includes(gpu.product_name));
+                // if (!containsValue) element.gpu_list.push({
+                //   name: gpu.product_name,
+                //   status: gpu.status
+                // })
+              })
+            }
+          })
         } catch{ }
       })
       return l
@@ -1246,8 +1253,7 @@ export default defineComponent({
         if (totalRes && totalRes.status === "success" && totalRes.data) {
           providerBody.totalData.hardwareTotal = totalRes.data.total || {}
           providerBody.chipDataAll = await getChipList(totalRes.data)
-          providerBody.chipData = providerBody.chipDataAll.caArray
-          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].value : 0
+          worldChange('Canada')
         }
       } catch{ }
       providerBody.chipLoad = false
@@ -1255,8 +1261,7 @@ export default defineComponent({
     async function getChipList (list) {
       let array = {
         all: [],
-        usArray: [],
-        caArray: [],
+        worldArray: [],
         memoryArray: [],
         storageArray: []
       }
@@ -1264,27 +1269,28 @@ export default defineComponent({
         let arr = list.world_detail || []
         let arrMemory = await list.memory.sort((a, b) => b.memory_amount - a.memory_amount) || []
         let arrStorage = await list.storage.sort((a, b) => b.storage_amount - a.storage_amount) || []
-        const [usArray, caArray] = splitArray(arr, (item) => item.region.indexOf('us') > -1)
-        array.all = list.gpu_total
-        array.usArray = await system.$commonFun.sortBoole(usArray)
-        array.caArray = await system.$commonFun.sortBoole(caArray)
+        array.all = await reduceMethod(list.gpu_total, 'gpu', 'gpu_amount')
+        array.worldArray = arr
         array.memoryArray = arrMemory
         array.storageArray = arrStorage
         return array
       } catch{ return array }
     }
-    function splitArray (arr, conditionFn) {
-      return arr.reduce((acc, value) => {
-        const index = conditionFn(value) ? 0 : 1;
-        const res = [].concat(value.gpu_count)
-        res.forEach(r => acc[index].push(r))
-        return acc;
-      }, [[], []]);
+    async function reduceMethod (arr, field, valueAmout) {
+      return arr.reduce((accumulator, current) => {
+        let existing = accumulator.find(item => item[field].toLowerCase() === current[field].toLowerCase());
+        if (existing) {
+          existing[valueAmout] += current[valueAmout];
+        } else {
+          accumulator.push({ ...current });
+        }
+        return accumulator;
+      }, [])
     }
     async function getOverview () {
       providersLoad.value = true
       try {
-        const overviewRes = await system.$commonFun.sendRequest(`${system.$baseurl}cp/overview`, 'get')
+        const overviewRes = await system.$commonFun.sendRequest(`${system.$baseurl}cp/overview?online=1`, 'get')
         if (overviewRes && overviewRes.status === 'success') {
           pagin.total_deployments = overviewRes.data.total_deployments
           pagin.active_applications = overviewRes.data.active_applications
@@ -1335,11 +1341,11 @@ export default defineComponent({
       // console.log(row, expandedRows)
       if (expandedRows.length) {
         expands.value = [];
-        if (row) expands.value.push(row.node_id);
+        if (row) expands.value.push(row.cp_account_address);
       } else expands.value = [];
     }
     let getRowKeys = (row) => {
-      return row.node_id;
+      return row.cp_account_address;
     }
     function reset (type) {
       pagin.total = 0
@@ -1401,17 +1407,14 @@ export default defineComponent({
       providerBody.chipOverview = !providerBody.chipOverview
       chipFilterMethod(overview)
     }
-    function worldChange (name) {
+    function findObjectByValue (array, field, value) {
+      return array.find(obj => obj[field] === value);
+    }
+    async function worldChange (name) {
       providerBody.chipWorld = name
-      switch (name) {
-        case 'Canada':
-          providerBody.chipData = providerBody.chipDataAll.caArray
-          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].value : 0
-          break;
-        case 'United States':
-          providerBody.chipData = providerBody.chipDataAll.usArray
-          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].value : 0
-          break;
+      let list = [], gpuList = []
+      let worldName = await system.$commonFun.acronymsMethod(name)
+      switch (worldName) {
         case 'Memory':
           providerBody.chipData = providerBody.chipDataAll.memoryArray
           providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].memory_amount : 0
@@ -1425,7 +1428,12 @@ export default defineComponent({
           providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].gpu_amount : 0
           break;
         default:
-          providerBody.chipData = []
+          list = await findObjectByValue(providerBody.chipDataAll.worldArray, 'region', worldName)
+          if (list && list.gpu_count && list.gpu_count.length > 0) {
+            gpuList = await reduceMethod(list.gpu_count, 'name', 'value')
+            gpuList = await system.$commonFun.sortBoole(gpuList)
+          } else gpuList = []
+          providerBody.chipData = gpuList
           providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].value : 0
           break;
       }
@@ -1855,6 +1863,10 @@ export default defineComponent({
       echartReset()
       reset('init')
     }
+    function onlineMethod (key) {
+      init()
+      // getOverview()
+    }
     onActivated(async () => {
       echarts.registerMap('worldHq', worldGeoJSON)
       reset('init')
@@ -1877,9 +1889,9 @@ export default defineComponent({
       badgeIcon01,
       badgeIcon02,
       accessToken, expands, activeName, cpLoad,
-      versionRef, dataArr,
+      versionRef, onlineRef, dataArr,
       handleSizeChange, handleCurrentChange, handleZKCurrentChange, searchProvider, searchZKProvider, clearProvider, expandChange, getRowKeys,
-      handleClick, handleSelect, versionMethod, roamMap, chipFilterMethod, worldOverview
+      handleClick, handleSelect, versionMethod, onlineMethod, roamMap, chipFilterMethod, worldOverview
     }
   }
 })
@@ -1915,6 +1927,17 @@ export default defineComponent({
     width: 100%;
     margin: 0.1rem 0 0.3rem;
     line-height: 1;
+    &.m {
+      margin: 0.3rem 0 0;
+      :deep(.el-select) {
+        .el-select__wrapper {
+          width: 115px;
+          @media screen and (max-width: 1800px) {
+            width: 100px;
+          }
+        }
+      }
+    }
     h1 {
       margin: 0 0.15rem 0 0;
     }
@@ -1963,6 +1986,9 @@ export default defineComponent({
       margin: 0.35rem 0 0;
       border: 1px solid #3a67cf;
       border-radius: 0.14rem;
+      &.m {
+        margin: 0;
+      }
       .title.top {
         margin: 0;
         cursor: pointer;
@@ -2530,6 +2556,9 @@ export default defineComponent({
             // color: #333;
             // border-top: rgb(220, 223, 230) 1px solid;
             // border-bottom: rgb(220, 223, 230) 1px solid;
+            &.text-center {
+              text-align: center;
+            }
             .tit {
               margin: 0.2rem 0 0;
               font-size: 16px;
@@ -2556,7 +2585,6 @@ export default defineComponent({
               ul {
                 display: flex;
                 align-items: stretch;
-                justify-content: space-between;
                 flex-wrap: wrap;
                 margin: 0 auto 0.25rem;
                 @media screen and (max-width: 768px) {
