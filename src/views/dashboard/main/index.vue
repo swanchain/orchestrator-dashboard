@@ -1090,8 +1090,7 @@ export default defineComponent({
       chipData: [],
       chipDataAll: {
         all: [],
-        usArray: [],
-        caArray: [],
+        worldArray: [],
         memoryArray: [],
         storageArray: []
       },
@@ -1246,8 +1245,7 @@ export default defineComponent({
         if (totalRes && totalRes.status === "success" && totalRes.data) {
           providerBody.totalData.hardwareTotal = totalRes.data.total || {}
           providerBody.chipDataAll = await getChipList(totalRes.data)
-          providerBody.chipData = providerBody.chipDataAll.caArray
-          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].value : 0
+          worldChange('Canada')
         }
       } catch{ }
       providerBody.chipLoad = false
@@ -1255,8 +1253,7 @@ export default defineComponent({
     async function getChipList (list) {
       let array = {
         all: [],
-        usArray: [],
-        caArray: [],
+        worldArray: [],
         memoryArray: [],
         storageArray: []
       }
@@ -1264,22 +1261,23 @@ export default defineComponent({
         let arr = list.world_detail || []
         let arrMemory = await list.memory.sort((a, b) => b.memory_amount - a.memory_amount) || []
         let arrStorage = await list.storage.sort((a, b) => b.storage_amount - a.storage_amount) || []
-        const [usArray, caArray] = splitArray(arr, (item) => item.region.indexOf('us') > -1)
-        array.all = list.gpu_total
-        array.usArray = await system.$commonFun.sortBoole(usArray)
-        array.caArray = await system.$commonFun.sortBoole(caArray)
+        array.all = await reduceMethod(list.gpu_total, 'gpu', 'gpu_amount')
+        array.worldArray = arr
         array.memoryArray = arrMemory
         array.storageArray = arrStorage
         return array
       } catch{ return array }
     }
-    function splitArray (arr, conditionFn) {
-      return arr.reduce((acc, value) => {
-        const index = conditionFn(value) ? 0 : 1;
-        const res = [].concat(value.gpu_count)
-        res.forEach(r => acc[index].push(r))
-        return acc;
-      }, [[], []]);
+    async function reduceMethod (arr, field, valueAmout) {
+      return arr.reduce((accumulator, current) => {
+        let existing = accumulator.find(item => item[field].toLowerCase() === current[field].toLowerCase());
+        if (existing) {
+          existing[valueAmout] += current[valueAmout];
+        } else {
+          accumulator.push({ ...current });
+        }
+        return accumulator;
+      }, [])
     }
     async function getOverview () {
       providersLoad.value = true
@@ -1401,17 +1399,14 @@ export default defineComponent({
       providerBody.chipOverview = !providerBody.chipOverview
       chipFilterMethod(overview)
     }
-    function worldChange (name) {
+    function findObjectByValue (array, field, value) {
+      return array.find(obj => obj[field] === value);
+    }
+    async function worldChange (name) {
       providerBody.chipWorld = name
-      switch (name) {
-        case 'Canada':
-          providerBody.chipData = providerBody.chipDataAll.caArray
-          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].value : 0
-          break;
-        case 'United States':
-          providerBody.chipData = providerBody.chipDataAll.usArray
-          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].value : 0
-          break;
+      let list = [], gpuList = []
+      let worldName = await system.$commonFun.acronymsMethod(name)
+      switch (worldName) {
         case 'Memory':
           providerBody.chipData = providerBody.chipDataAll.memoryArray
           providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].memory_amount : 0
@@ -1425,7 +1420,12 @@ export default defineComponent({
           providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].gpu_amount : 0
           break;
         default:
-          providerBody.chipData = []
+          list = await findObjectByValue(providerBody.chipDataAll.worldArray, 'region', worldName)
+          if (list && list.gpu_count && list.gpu_count.length > 0) {
+            gpuList = await reduceMethod(list.gpu_count, 'name', 'value')
+            gpuList = await system.$commonFun.sortBoole(gpuList)
+          } else gpuList = []
+          providerBody.chipData = gpuList
           providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].value : 0
           break;
       }

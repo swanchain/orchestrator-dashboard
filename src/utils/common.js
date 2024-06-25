@@ -511,6 +511,43 @@ async function sortBoole (arr) {
   return arr.sort((a, b) => b.value - a.value)
 }
 
+async function acronymsMethod (name) {
+  switch (name) {
+    case 'Malaysia':
+      return 'my'
+    case 'Canada':
+      return 'ca'
+    case 'United States':
+      return 'us'
+    case 'Japan':
+      return 'jp'
+    case 'China':
+      return 'cn'
+    case 'Taiwan':
+      return 'tw'
+    case 'Hong Kong':
+      return 'hk'
+    case 'Indonesia':
+      return 'id'
+    case 'Philippines':
+      return 'ph'
+    case 'Thailand':
+      return 'th'
+    case 'Germany':
+      return 'de'
+    case 'Ukraine':
+      return 'ua'
+    case 'Memory':
+      return 'Memory'
+    case 'Storage':
+      return 'Storage'
+    case 'World':
+      return 'World'
+    default:
+      return ''
+  }
+}
+
 export default {
   sendRequest,
   timeout,
@@ -540,5 +577,6 @@ export default {
   floorFormat,
   unifyNumber,
   AddFormat,
-  sortBoole
+  sortBoole,
+  acronymsMethod
 }
