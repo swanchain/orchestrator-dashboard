@@ -141,7 +141,9 @@
               <h6 class="flex-row">
                 <span class="t">Total CP Online</span>
               </h6>
-              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_computer_providers):'-'}}</b>
+              <b v-if="versionRef.value === 'v1'" v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.data.total_providers ? system.$commonFun.replaceFormat(providerBody.data.total_providers):'-'}}</b>
+              <b v-else v-loading="providersLoad" class="flex-row font-bold color">{{pagin.total ? system.$commonFun.replaceFormat(pagin.total):'-'}}</b>
+              <!-- <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_computer_providers):'-'}}</b> -->
             </div>
           </el-col>
           <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
@@ -149,7 +151,8 @@
               <h6 class="flex-row">
                 <span class="t">Total Task</span>
               </h6>
-              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_task):'-'}}</b>
+              <b v-if="versionRef.value === 'v1'" v-loading="providersLoad" class="flex-row font-bold color">{{pagin.active_applications?system.$commonFun.replaceFormat(pagin.active_applications):'-'}}</b>
+              <b v-else v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_task):'-'}}</b>
             </div>
           </el-col>
           <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
@@ -794,13 +797,13 @@
           <el-button type="primary" :disabled="!networkInput ? true:false" round @click="searchProvider">Search</el-button>
           <el-button type="info" :disabled="!networkInput ? true:false" round @click="clearProvider">Clear</el-button>
         </div>
-        <div class="flex-row flex-end item-label m">
+        <!-- <div class="flex-row flex-end item-label m">
           <el-select v-model="onlineRef.value" placeholder="Select" size="small" @change="onlineMethod">
             <el-option v-for="item in onlineRef.options" :key="item.value" :label="item.label" :value="item.value">
               <div class="font-14">{{item.label}}</div>
             </el-option>
           </el-select>
-        </div>
+        </div> -->
         <el-table :data="providersData" @expand-change="expandChange" :row-key="getRowKeys" :expand-row-keys="expands" style="width: 100%" empty-text="No Data" v-loading="providersTableLoad">
           <el-table-column type="expand" width="40">
             <template #default="props">
