@@ -1261,20 +1261,23 @@ export default defineComponent({
         let arr = list.world_detail || []
         let arrMemory = await list.memory.sort((a, b) => b.memory_amount - a.memory_amount) || []
         let arrStorage = await list.storage.sort((a, b) => b.storage_amount - a.storage_amount) || []
-        array.all = list.gpu_total.reduce((accumulator, current) => {
-          let existing = accumulator.find(item => item.gpu.toLowerCase() === current.gpu.toLowerCase());
-          if (existing) {
-            existing.gpu_amount += current.gpu_amount;
-          } else {
-            accumulator.push({ ...current });
-          }
-          return accumulator;
-        }, [])
+        array.all = await reduceMethod(list.gpu_total, 'gpu', 'gpu_amount')
         array.worldArray = arr
         array.memoryArray = arrMemory
         array.storageArray = arrStorage
         return array
       } catch{ return array }
+    }
+    async function reduceMethod (arr, field, valueAmout) {
+      return arr.reduce((accumulator, current) => {
+        let existing = accumulator.find(item => item[field].toLowerCase() === current[field].toLowerCase());
+        if (existing) {
+          existing[valueAmout] += current[valueAmout];
+        } else {
+          accumulator.push({ ...current });
+        }
+        return accumulator;
+      }, [])
     }
     async function getOverview () {
       providersLoad.value = true
@@ -1401,7 +1404,7 @@ export default defineComponent({
     }
     async function worldChange (name) {
       providerBody.chipWorld = name
-      let list = []
+      let list = [], gpuList = []
       let worldName = await system.$commonFun.acronymsMethod(name)
       switch (worldName) {
         case 'Memory':
@@ -1418,7 +1421,11 @@ export default defineComponent({
           break;
         default:
           list = await findObjectByValue(providerBody.chipDataAll.worldArray, 'region', worldName)
-          providerBody.chipData = list && list.gpu_count && list.gpu_count.length > 0 ? await system.$commonFun.sortBoole(list.gpu_count) : []
+          if (list && list.gpu_count && list.gpu_count.length > 0) {
+            gpuList = await reduceMethod(list.gpu_count, 'name', 'value')
+            gpuList = await system.$commonFun.sortBoole(gpuList)
+          } else gpuList = []
+          providerBody.chipData = gpuList
           providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].value : 0
           break;
       }
