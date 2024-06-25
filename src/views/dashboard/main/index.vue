@@ -131,15 +131,7 @@
           <div class='chart' id='chart' v-loading="providersLoad" element-loading-background="rgba(0, 0, 0, 0)"></div>
         </el-col>
       </el-row>
-
-      <div class="flex-row flex-end item-label m">
-        <el-select v-model="onlineRef.value" placeholder="Select" size="small" @change="onlineMethod">
-          <el-option v-for="item in onlineRef.options" :key="item.value" :label="item.label" :value="item.value">
-            <div class="font-14">{{item.label}}</div>
-          </el-option>
-        </el-select>
-      </div>
-      <div class="border-row m">
+      <div class="border-row">
         <div class="title top flex-row space-between">
           FCP (Fog Computing Provider)
         </div>
@@ -802,12 +794,19 @@
           <el-button type="primary" :disabled="!networkInput ? true:false" round @click="searchProvider">Search</el-button>
           <el-button type="info" :disabled="!networkInput ? true:false" round @click="clearProvider">Clear</el-button>
         </div>
+        <div class="flex-row flex-end item-label m">
+          <el-select v-model="onlineRef.value" placeholder="Select" size="small" @change="onlineMethod">
+            <el-option v-for="item in onlineRef.options" :key="item.value" :label="item.label" :value="item.value">
+              <div class="font-14">{{item.label}}</div>
+            </el-option>
+          </el-select>
+        </div>
         <el-table :data="providersData" @expand-change="expandChange" :row-key="getRowKeys" :expand-row-keys="expands" style="width: 100%" empty-text="No Data" v-loading="providersTableLoad">
           <el-table-column type="expand" width="40">
             <template #default="props">
-              <div class="service-body" v-if="props.row.machines">
+              <div class="service-body" v-if="props.row.machines && props.row.machines.length>0">
                 <div v-for="n in props.row.machines" :key="n" class="list">
-                  <div class="li-title">CP Account Address: {{scope.row.cp_account_address}}</div>
+                  <div class="li-title">CP Account Address: {{props.row.cp_account_address}}</div>
                   <ul>
                     <li v-for="(child, vcpuKeys, k) in n.specs" :key="k" v-show="vcpuKeys === 'vcpu'">
                       <div class="li-body">
@@ -864,7 +863,7 @@
                   </ul>
                 </div>
               </div>
-              <div class="service-body" v-else>No Data</div>
+              <div class="service-body text-center" v-else>No Data</div>
             </template>
           </el-table-column>
           <el-table-column prop="multiAddress" label="Name" min-width="120">
@@ -961,7 +960,7 @@
                   </ul>
                 </div>
               </div>
-              <div class="service-body" v-else>No Data</div>
+              <div class="service-body text-center" v-else>No Data</div>
             </template>
           </el-table-column>
           <el-table-column prop="name" label="Name" min-width="120">
@@ -1194,7 +1193,8 @@ export default defineComponent({
         element.gpu_list = []
         element.multiAddress = []
         try {
-          element.name.forEach(n => {
+          const n = element.name || element.multi_address
+          n.forEach(n => {
             const ip = n.split('/')
             const address = `${ip[2]}:${ip[4]}`
             element.multiAddress.push(address)
@@ -1290,7 +1290,7 @@ export default defineComponent({
     async function getOverview () {
       providersLoad.value = true
       try {
-        const overviewRes = await system.$commonFun.sendRequest(`${system.$baseurl}cp/overview?online=${onlineRef.value}`, 'get')
+        const overviewRes = await system.$commonFun.sendRequest(`${system.$baseurl}cp/overview?online=1`, 'get')
         if (overviewRes && overviewRes.status === 'success') {
           pagin.total_deployments = overviewRes.data.total_deployments
           pagin.active_applications = overviewRes.data.active_applications
@@ -1341,11 +1341,11 @@ export default defineComponent({
       // console.log(row, expandedRows)
       if (expandedRows.length) {
         expands.value = [];
-        if (row) expands.value.push(row.node_id);
+        if (row) expands.value.push(row.cp_account_address);
       } else expands.value = [];
     }
     let getRowKeys = (row) => {
-      return row.node_id;
+      return row.cp_account_address;
     }
     function reset (type) {
       pagin.total = 0
@@ -1865,7 +1865,7 @@ export default defineComponent({
     }
     function onlineMethod (key) {
       init()
-      getOverview()
+      // getOverview()
     }
     onActivated(async () => {
       echarts.registerMap('worldHq', worldGeoJSON)
@@ -1928,7 +1928,7 @@ export default defineComponent({
     margin: 0.1rem 0 0.3rem;
     line-height: 1;
     &.m {
-      margin: 0.3rem 0 0.1rem;
+      margin: 0.3rem 0 0;
       :deep(.el-select) {
         .el-select__wrapper {
           width: 115px;
@@ -2556,6 +2556,9 @@ export default defineComponent({
             // color: #333;
             // border-top: rgb(220, 223, 230) 1px solid;
             // border-bottom: rgb(220, 223, 230) 1px solid;
+            &.text-center {
+              text-align: center;
+            }
             .tit {
               margin: 0.2rem 0 0;
               font-size: 16px;
@@ -2582,7 +2585,6 @@ export default defineComponent({
               ul {
                 display: flex;
                 align-items: stretch;
-                justify-content: space-between;
                 flex-wrap: wrap;
                 margin: 0 auto 0.25rem;
                 @media screen and (max-width: 768px) {
