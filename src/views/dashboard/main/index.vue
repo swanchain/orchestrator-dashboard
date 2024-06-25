@@ -131,7 +131,15 @@
           <div class='chart' id='chart' v-loading="providersLoad" element-loading-background="rgba(0, 0, 0, 0)"></div>
         </el-col>
       </el-row>
-      <div class="border-row">
+
+      <div class="flex-row flex-end item-label m">
+        <el-select v-model="onlineRef.value" placeholder="Select" size="small" @change="onlineMethod">
+          <el-option v-for="item in onlineRef.options" :key="item.value" :label="item.label" :value="item.value">
+            <div class="font-14">{{item.label}}</div>
+          </el-option>
+        </el-select>
+      </div>
+      <div class="border-row m">
         <div class="title top flex-row space-between">
           FCP (Fog Computing Provider)
         </div>
@@ -141,23 +149,15 @@
               <h6 class="flex-row">
                 <span class="t">Total CP Online</span>
               </h6>
-              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.data.total_providers ? system.$commonFun.replaceFormat(providerBody.data.total_providers):'-'}}</b>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_computer_providers):'-'}}</b>
             </div>
           </el-col>
-          <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-            <div class="grid-content">
-              <h6 class="flex-row">
-                <span class="t">Active Applications</span>
-              </h6>
-              <b v-loading="providersLoad" class="flex-row font-bold color">{{system.$commonFun.replaceFormat(pagin.active_applications)}}</b>
-            </div>
-          </el-col> -->
           <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
             <div class="grid-content">
               <h6 class="flex-row">
                 <span class="t">Total Task</span>
               </h6>
-              <b v-loading="providersLoad" class="flex-row font-bold color">{{system.$commonFun.replaceFormat(pagin.total_deployments)}}</b>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_task):'-'}}</b>
             </div>
           </el-col>
           <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
@@ -805,9 +805,9 @@
         <el-table :data="providersData" @expand-change="expandChange" :row-key="getRowKeys" :expand-row-keys="expands" style="width: 100%" empty-text="No Data" v-loading="providersTableLoad">
           <el-table-column type="expand" width="40">
             <template #default="props">
-              <div class="service-body" v-if="props.row.computer_provider">
-                <div v-for="n in props.row.computer_provider.machines" :key="n" class="list">
-                  <div class="li-title">Machine ID: {{n.machine_id}}</div>
+              <div class="service-body" v-if="props.row.machines">
+                <div v-for="n in props.row.machines" :key="n" class="list">
+                  <div class="li-title">CP Account Address: {{scope.row.cp_account_address}}</div>
                   <ul>
                     <li v-for="(child, vcpuKeys, k) in n.specs" :key="k" v-show="vcpuKeys === 'vcpu'">
                       <div class="li-body">
@@ -877,12 +877,8 @@
             </template>
           </el-table-column>
           <!-- <el-table-column prop="country" label="Country" /> -->
-          <el-table-column prop="computer_provider.active_deployment" label="Active deployment" width="130" />
-          <el-table-column prop="computer_provider.score" label="Score" width="120">
-            <template #default="scope">
-              <span>{{scope.row.computer_provider.score || scope.row.score}}</span>
-            </template>
-          </el-table-column>
+          <el-table-column prop="active_deployment" label="Active deployment" width="130" />
+          <el-table-column prop="score" label="Score" width="120" />
           <el-table-column prop="gpu_list" label="GPU" min-width="140">
             <template #default="scope">
               <div class="badge">
@@ -897,7 +893,8 @@
           <el-table-column prop="region" label="Region" min-width="100" />
           <el-table-column prop="uptime" label="Uptime">
             <template #default="scope">
-              <div>
+              <div v-if="scope.row.uptime === null">Waiting for calculation</div>
+              <div v-else>
                 {{system.$commonFun.unifyNumber(scope.row.uptime)}}%
               </div>
             </template>
@@ -1128,6 +1125,18 @@ export default defineComponent({
           value: 'v2'
         }]
     })
+    const onlineRef = reactive({
+      value: 1,
+      options: [
+        {
+          value: 1,
+          label: 'Active'
+        },
+        {
+          value: 0,
+          label: 'Total'
+        }]
+    })
 
     function handleSizeChange (val) { }
     async function handleCurrentChange (currentPage) {
@@ -1145,7 +1154,8 @@ export default defineComponent({
         cp_account_address: networkInput.value
       } : {
           limit: pagin.pageSize,
-          offset: page * pagin.pageSize
+          offset: page * pagin.pageSize,
+          online: onlineRef.value
         }
       const providerRes = await system.$commonFun.sendRequest(`${system.$baseurl}${networkInput.value ? 'cp/search_cp' : 'cp/cplist'}?${system.$Qs.stringify(params)}`, 'get')
       if (providerRes && providerRes.status === 'success') {
@@ -1193,21 +1203,19 @@ export default defineComponent({
           element.multiAddress.push(element.name)
         }
         try {
-          if (element.computer_provider.machines && element.computer_provider.machines.length > 0) {
-            element.computer_provider.machines.forEach((machines) => {
-              if (machines.specs.gpu.details && machines.specs.gpu.details.length > 0) {
-                machines.specs.gpu.details.forEach((gpu) => {
-                  if (element.gpu_list.indexOf(gpu.product_name) < 0) element.gpu_list.push(gpu.product_name)
-                  // const field = 'name';
-                  // const containsValue = element.gpu_list.some(item => item[field].includes(gpu.product_name));
-                  // if (!containsValue) element.gpu_list.push({
-                  //   name: gpu.product_name,
-                  //   status: gpu.status
-                  // })
-                })
-              }
-            })
-          }
+          element.machines.forEach((machines) => {
+            if (machines.specs.gpu.details && machines.specs.gpu.details.length > 0) {
+              machines.specs.gpu.details.forEach((gpu) => {
+                if (element.gpu_list.indexOf(gpu.product_name) < 0) element.gpu_list.push(gpu.product_name)
+                // const field = 'name';
+                // const containsValue = element.gpu_list.some(item => item[field].includes(gpu.product_name));
+                // if (!containsValue) element.gpu_list.push({
+                //   name: gpu.product_name,
+                //   status: gpu.status
+                // })
+              })
+            }
+          })
         } catch{ }
       })
       return l
@@ -1282,7 +1290,7 @@ export default defineComponent({
     async function getOverview () {
       providersLoad.value = true
       try {
-        const overviewRes = await system.$commonFun.sendRequest(`${system.$baseurl}cp/overview`, 'get')
+        const overviewRes = await system.$commonFun.sendRequest(`${system.$baseurl}cp/overview?online=${onlineRef.value}`, 'get')
         if (overviewRes && overviewRes.status === 'success') {
           pagin.total_deployments = overviewRes.data.total_deployments
           pagin.active_applications = overviewRes.data.active_applications
@@ -1855,6 +1863,10 @@ export default defineComponent({
       echartReset()
       reset('init')
     }
+    function onlineMethod (key) {
+      init()
+      getOverview()
+    }
     onActivated(async () => {
       echarts.registerMap('worldHq', worldGeoJSON)
       reset('init')
@@ -1877,9 +1889,9 @@ export default defineComponent({
       badgeIcon01,
       badgeIcon02,
       accessToken, expands, activeName, cpLoad,
-      versionRef, dataArr,
+      versionRef, onlineRef, dataArr,
       handleSizeChange, handleCurrentChange, handleZKCurrentChange, searchProvider, searchZKProvider, clearProvider, expandChange, getRowKeys,
-      handleClick, handleSelect, versionMethod, roamMap, chipFilterMethod, worldOverview
+      handleClick, handleSelect, versionMethod, onlineMethod, roamMap, chipFilterMethod, worldOverview
     }
   }
 })
@@ -1915,6 +1927,14 @@ export default defineComponent({
     width: 100%;
     margin: 0.1rem 0 0.3rem;
     line-height: 1;
+    &.m {
+      margin: 0.3rem 0 0.1rem;
+      :deep(.el-select) {
+        .el-select__wrapper {
+          width: 100px;
+        }
+      }
+    }
     h1 {
       margin: 0 0.15rem 0 0;
     }
@@ -1963,6 +1983,9 @@ export default defineComponent({
       margin: 0.35rem 0 0;
       border: 1px solid #3a67cf;
       border-radius: 0.14rem;
+      &.m {
+        margin: 0;
+      }
       .title.top {
         margin: 0;
         cursor: pointer;
