@@ -401,6 +401,12 @@ function filNumformat (data) {
   return `${replaceFormat(price_regular[0] * 365)} FIL/GiB/year` || '0 FIL/GiB/year'
 }
 
+function cutsNumformat (data) {
+  if (!data) return
+  const num_regular = data ? data.split(" ") : []
+  return num_regular[1] ? `${replaceFormat(num_regular[0])} ${replaceFormat(num_regular[1])}` : replaceFormat(num_regular[0])
+}
+
 function timeFormat (data) {
   if (!data) return
   const d = data / 60 / 60
@@ -566,6 +572,7 @@ export default {
   storageNumformat,
   fixedformat,
   filNumformat,
+  cutsNumformat,
   timeFormat,
   getUnit,
   goLink,

@@ -57,13 +57,13 @@
                 <h6 class="flex-row flex-end">
                   <span class="t">Storage</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.totalData.hardwareTotal ? providerBody.totalData.hardwareTotal.storage:'-'}}</b>
+                <b class="flex-row font-bold color">{{providerBody.totalData.hardwareTotal ? system.$commonFun.cutsNumformat(providerBody.totalData.hardwareTotal.storage):'-'}}</b>
               </div>
               <div class="flex-row">
                 <h6 class="flex-row flex-end">
                   <span class="t">Memory</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.totalData.hardwareTotal ? providerBody.totalData.hardwareTotal.memory:'-'}}</b>
+                <b class="flex-row font-bold color">{{providerBody.totalData.hardwareTotal ? system.$commonFun.cutsNumformat(providerBody.totalData.hardwareTotal.memory):'-'}}</b>
               </div>
             </div>
           </el-col>
@@ -113,14 +113,16 @@
                   <el-radio-button label="Storage" value="Storage" />
                 </el-radio-group>
               </div>
-              <div class="no-result flex-row center" v-if="providerBody.chipData && providerBody.chipData.length === 0">There are no devices present in the selected country</div>
-              <div class="cont flex-row space-between" v-for="chip in providerBody.chipData.slice(0, 8)" :key="chip">
-                <div class="absolute" :style="'width:' + ((chip.value||chip.gpu_amount||chip.storage_amount||chip.memory_amount) / providerBody.chipMaxData * 100) + '%;'"></div>
-                <div class="flex-row items-center">
-                  <div class="point"></div>
-                  <div class="text-region">{{chip.name || chip.gpu || chip.region}}</div>
+              <div class="cont-flex">
+                <div class="no-result flex-row center" v-if="providerBody.chipData && providerBody.chipData.length === 0">There are no devices present in the selected country</div>
+                <div class="cont flex-row space-between" v-for="chip in providerBody.chipData" :key="chip">
+                  <div class="absolute" :style="'width:' + ((chip.value||chip.gpu_amount||chip.storage_amount||chip.memory_amount) / providerBody.chipMaxData * 100) + '%;'"></div>
+                  <div class="flex-row items-center">
+                    <div class="point"></div>
+                    <div class="text-region">{{chip.name || chip.gpu || chip.region}}</div>
+                  </div>
+                  <div class="text-data">{{chip.value || chip.gpu_amount || chip.storage || chip.memory}}</div>
                 </div>
-                <div class="text-data">{{chip.value || chip.gpu_amount || chip.storage || chip.memory}}</div>
               </div>
             </div>
           </el-col>
@@ -1084,8 +1086,8 @@ export default defineComponent({
           storage: '-'
         }
       },
-      chipWorld: 'Canada',
-      chipFilter: 'GPU',
+      chipWorld: 'World',
+      chipFilter: 'GPUWorld',
       chipData: [],
       chipDataAll: {
         all: [],
@@ -1095,7 +1097,7 @@ export default defineComponent({
       },
       chipMaxData: 0,
       chipLoad: false,
-      chipOverview: false,
+      chipOverview: true,
       storageData: {},
       providerData: {},
       generalData: {},
@@ -1256,7 +1258,7 @@ export default defineComponent({
         if (totalRes && totalRes.status === "success" && totalRes.data) {
           providerBody.totalData.hardwareTotal = totalRes.data.total || {}
           providerBody.chipDataAll = await getChipList(totalRes.data)
-          worldChange('Canada')
+          worldChange('World')
         }
       } catch{ }
       providerBody.chipLoad = false
@@ -1299,8 +1301,8 @@ export default defineComponent({
           pagin.active_applications = overviewRes.data.active_applications
           providerBody.data = overviewRes.data || {}
           dataArr.value = overviewRes.data.map_info
-          if (versionRef.value !== 'v2') drawV1Chart(dataArr.value)
-          else drawChart(canadaData)
+          drawV1Chart(dataArr.value)
+          worldChange('World')
           changetype()
         }
       } catch{ }
@@ -1363,12 +1365,12 @@ export default defineComponent({
       networkInput.value = ''
       networkZK.owner_addr = ''
       networkZK.node_id = ''
-      providerBody.chipWorld = ' Canada'
-      providerBody.chipFilter = 'GPU'
+      providerBody.chipWorld = ' World'
+      providerBody.chipFilter = 'GPUWorld'
       providerBody.chipMaxData = 0
       providerBody.chipData = []
       providerBody.chipLoad = false
-      providerBody.chipOverview = false
+      providerBody.chipOverview = true
       if (type) init()
       getOverview()
       getHardwareMetricsTotal()
@@ -1388,18 +1390,18 @@ export default defineComponent({
       }
     ]
     function chipFilterMethod (val) {
-      chart.clear()
+      try { chart.clear() } catch{ }
       switch (val) {
         case 'GPU':
           drawChart(canadaData)
           worldChange('Canada')
           break;
         case 'GPUWorld':
-          drawV1Chart([])
+          drawV1Chart(dataArr.value)
           worldChange('World')
           break;
         default:
-          drawV1Chart([])
+          drawV1Chart(dataArr.value)
           worldChange(val)
           break;
       }
@@ -1582,7 +1584,8 @@ export default defineComponent({
             },
             data: dataArr,
             symbolSize: 8,
-            zlevel: 1
+            zlevel: 1,
+            animation: versionRef.value === 'v2' ? false : true,
           }
         ]
       })
@@ -1860,7 +1863,8 @@ export default defineComponent({
       system.$baseurl = `${process.env.VUE_APP_BASEAPI}${store.state.versionValue}/`
       // console.log(key, system.$baseurl)
       if (versionRef.value === 'v2') {
-        drawChart(canadaData)
+        drawV1Chart(dataArr.value)
+        worldChange('World')
         resetMap()
       } else networkInput.value = ''
       echartReset()
@@ -2246,6 +2250,7 @@ export default defineComponent({
           height: calc(100% - 0.35rem);
           margin: 0.35rem auto 0;
           flex-direction: column;
+          overflow: hidden;
           .chip-filter {
             height: 40px;
             .world-name {
@@ -2273,47 +2278,70 @@ export default defineComponent({
             height: calc(100% - 40px);
             margin: auto;
           }
-          .cont {
-            position: relative;
-            flex-direction: row;
-            width: calc(100% - 0.32rem);
-            padding: 0.07rem 0.16rem;
-            margin: 0.1rem 0 0;
-            font-size: 0.18rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            color: #fff;
-            z-index: 9;
+          .cont-flex {
+            height: 420px;
+            overflow-y: scroll;
+            scrollbar-width: none;
+            scrollbar-color: rgba(60, 70, 110, 0.6) rgba(13, 14, 18, 1);
+            @media screen and (max-width: 992px) {
+              height: 320px;
+            }
             @media screen and (max-width: 600px) {
-              padding: 0.12rem 0.16rem;
-              font-size: 12px;
+              height: 220px;
             }
-            .absolute {
-              position: absolute;
-              top: 0;
-              left: 0;
-              right: 0;
-              bottom: 0;
-              background: linear-gradient(
-                45deg,
-                rgba(60, 133, 255, 0),
-                #3c85ff
-              );
-              border-radius: 10px;
-              z-index: -1;
+            &::-webkit-scrollbar-track {
+              background: rgba(13, 14, 18, 1);
+              border-radius: 4px;
             }
-            .items-center {
-              .point {
-                width: 12px;
-                height: 12px;
-                background-color: #52555f;
-                border-radius: 100%;
+            &::-webkit-scrollbar {
+              width: 4px;
+              background: rgba(60, 70, 110, 0.6);
+            }
+            &::-webkit-scrollbar-thumb {
+              background: rgba(60, 70, 110, 0.6);
+            }
+            .cont {
+              position: relative;
+              flex-direction: row;
+              width: calc(100% - 0.32rem);
+              padding: 0.07rem 0.16rem;
+              margin: 0.1rem 0 0;
+              font-size: 0.18rem;
+              font-weight: 700;
+              letter-spacing: 1px;
+              color: #fff;
+              z-index: 9;
+              @media screen and (max-width: 600px) {
+                padding: 0.12rem 0.16rem;
+                font-size: 12px;
               }
-              .text-region {
-                margin: 0 0 0 0.11rem;
+              .absolute {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(
+                  45deg,
+                  rgba(60, 133, 255, 0),
+                  #3c85ff
+                );
+                border-radius: 10px;
+                z-index: -1;
               }
-            }
-            .text-data {
+              .items-center {
+                .point {
+                  width: 12px;
+                  height: 12px;
+                  background-color: #52555f;
+                  border-radius: 100%;
+                }
+                .text-region {
+                  margin: 0 0 0 0.11rem;
+                }
+              }
+              .text-data {
+              }
             }
           }
         }
