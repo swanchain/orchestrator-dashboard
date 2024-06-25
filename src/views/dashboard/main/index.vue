@@ -206,7 +206,7 @@
               <h6 class="flex-row">
                 <span class="t">total GPU hours</span>
               </h6>
-              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_gpu_hours):'-'}}</b>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(system.$commonFun.timeFormat(providerBody.generalData.total_gpu_hours)):'-'}}</b>
             </div>
           </el-col>
         </el-row>
@@ -1931,7 +1931,10 @@ export default defineComponent({
       margin: 0.3rem 0 0.1rem;
       :deep(.el-select) {
         .el-select__wrapper {
-          width: 100px;
+          width: 115px;
+          @media screen and (max-width: 1800px) {
+            width: 100px;
+          }
         }
       }
     }
