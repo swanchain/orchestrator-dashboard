@@ -867,7 +867,7 @@
               <div class="service-body" v-else>No Data</div>
             </template>
           </el-table-column>
-          <el-table-column prop="multiAddress" label="Multi Address" min-width="120">
+          <el-table-column prop="multiAddress" label="Name" min-width="120">
             <template #default="scope">
               <div class="badge">
                 <img v-if="scope.$index < 2 && pagin.pageNo <= 1" :src="badgeIcon01" alt="">

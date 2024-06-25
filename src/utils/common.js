@@ -508,7 +508,7 @@ function AddFormat (num1, num2) {
 
 async function sortBoole (arr) {
   if (!arr || (arr && arr.length === 0)) return []
-  return arr.sort((a, b) => b.hardware_quantity - a.hardware_quantity)
+  return arr.sort((a, b) => b.value - a.value)
 }
 
 export default {
