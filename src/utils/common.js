@@ -520,29 +520,29 @@ async function sortBoole (arr) {
 async function acronymsMethod (name) {
   switch (name) {
     case 'Malaysia':
-      return 'my'
+      return 'MY'
     case 'Canada':
-      return 'ca'
+      return 'CA'
     case 'United States':
-      return 'us'
+      return 'US'
     case 'Japan':
-      return 'jp'
+      return 'JP'
     case 'China':
-      return 'cn'
+      return 'CN'
     case 'Taiwan':
-      return 'tw'
+      return 'TW'
     case 'Hong Kong':
-      return 'hk'
+      return 'HK'
     case 'Indonesia':
-      return 'id'
+      return 'ID'
     case 'Philippines':
-      return 'ph'
+      return 'PH'
     case 'Thailand':
-      return 'th'
+      return 'TH'
     case 'Germany':
-      return 'de'
+      return 'DE'
     case 'Ukraine':
-      return 'ua'
+      return 'UA'
     case 'Memory':
       return 'Memory'
     case 'Storage':
