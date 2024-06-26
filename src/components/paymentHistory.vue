@@ -110,8 +110,8 @@
                   </template>
                 </el-popover>
               </span>
-              <el-button type="primary" v-else-if="scope.row.status && scope.row.status.toLowerCase() === 'rewardable'" plain @click="rewardFun(scope.row, 1)">Claim Reward
-              </el-button>
+              <span v-else-if="scope.row.status && scope.row.status.toLowerCase() === 'rewardable'" plain>Rewarded
+              </span>
               <el-button type="primary" v-else-if="scope.row.status && scope.row.status.toLowerCase() === 'terminate failed'" plain @click="retryFun(scope.row)">Retry Terminate
               </el-button>
               <span v-else>{{ scope.row.status }}</span>

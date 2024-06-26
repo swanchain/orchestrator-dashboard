@@ -25,7 +25,7 @@
                 <h6 class="flex-row flex-end">
                   <span class="t">Providers</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.data ? system.$commonFun.replaceFormat(providerBody.data.total_online_computers):'-'}}</b>
+                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.providers ? system.$commonFun.replaceFormat(providerBody.data.total_online_computers+(providerBody.ubiData.providers.count||0)):'-'}}</b>
               </div>
               <div class="flex-row">
                 <h6 class="flex-row flex-end">
@@ -41,13 +41,13 @@
                 <h6 class="flex-row flex-end">
                   <span class="t">CPU</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.data ? system.$commonFun.replaceFormat(providerBody.data.total_cpu):'-'}}</b>
+                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.providers ? system.$commonFun.replaceFormat(providerBody.data.total_cpu+(providerBody.ubiData.providers.vcpu.total||0)):'-'}}</b>
               </div>
               <div class="flex-row">
                 <h6 class="flex-row flex-end">
                   <span class="t">GPU</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.data ? system.$commonFun.replaceFormat(providerBody.data.total_gpu):'-'}}</b>
+                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.providers ? system.$commonFun.replaceFormat(providerBody.data.total_gpu+(providerBody.ubiData.providers.gpu.total||0)):'-'}}</b>
               </div>
             </div>
           </el-col>
@@ -57,13 +57,13 @@
                 <h6 class="flex-row flex-end">
                   <span class="t">Storage</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.data ? system.$commonFun.sizeChange(providerBody.data.total_storage):'-'}}</b>
+                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.providers ? system.$commonFun.sizeChange(providerBody.data.total_storage+(providerBody.ubiData.providers.storage.total||0)):'-'}}</b>
               </div>
               <div class="flex-row">
                 <h6 class="flex-row flex-end">
                   <span class="t">Memory</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.data ? system.$commonFun.sizeChange(providerBody.data.total_memory):'-'}}</b>
+                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.providers ? system.$commonFun.sizeChange(providerBody.data.total_memory+(providerBody.ubiData.providers.memory.total||0)):'-'}}</b>
               </div>
             </div>
           </el-col>
@@ -1290,7 +1290,7 @@ export default defineComponent({
           element.multiAddress.push(element.name)
         }
         try {
-          element.machines = element.machines || element.computer_provider?.machines || []
+          element.machines = element.machines || element.computer_provider ?.machines || []
           element.machines.forEach((machines) => {
             if (machines.specs.gpu.details && machines.specs.gpu.details.length > 0) {
               machines.specs.gpu.details.forEach((gpu) => {
