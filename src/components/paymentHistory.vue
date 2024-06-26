@@ -29,7 +29,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="cp_account_address" label="cp_account_address" min-width="100">
+        <el-table-column prop="cp_account_address" label="Account Address" min-width="100">
           <template #default="scope">
             <div class="flex-row center copy-style" @click="system.$commonFun.copyContent(scope.row.cp_account_address, 'Copied')">
               {{ system.$commonFun.hiddAddress(scope.row.cp_account_address) }}
