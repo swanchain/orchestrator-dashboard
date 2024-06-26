@@ -801,7 +801,108 @@
           <el-button type="primary" :disabled="!networkInput ? true:false" round @click="searchProvider">Search</el-button>
           <el-button type="info" :disabled="!networkInput ? true:false" round @click="clearProvider">Clear</el-button>
         </div>
-        <el-table :data="providersData" @expand-change="expandChange" :row-key="getRowKeys" :expand-row-keys="expands" style="width: 100%" empty-text="No Data" v-loading="providersTableLoad">
+        <el-table v-if="versionRef.value === 'v1'" :data="providersData" @expand-change="expandChange" :row-key="getRowKeys" :expand-row-keys="expands" style="width: 100%" empty-text="No Data" v-loading="providersTableLoad">
+          <el-table-column type="expand" width="40">
+            <template #default="props">
+              <div class="service-body" v-if="props.row.computer_provider">
+                <div v-for="n in props.row.computer_provider.machines" :key="n" class="list">
+                  <div class="li-title">Machine ID: {{n.machine_id}}</div>
+                  <ul>
+                    <li v-for="(child, vcpuKeys, k) in n.specs" :key="k" v-show="vcpuKeys === 'vcpu'">
+                      <div class="li-body">
+                        <p :class="{'t':true, 't-capitalize': vcpuKeys === 'vcpu'}">{{vcpuKeys}}</p>
+                        <p>
+                          <strong>{{child.free}}</strong>free</p>
+                        <p>
+                          <strong>{{child.total}}</strong>total</p>
+                        <p>
+                          <strong>{{child.used}}</strong>used</p>
+                      </div>
+                    </li>
+                    <li v-for="(child, memoryKeys, k) in n.specs" :key="k" v-show="memoryKeys === 'memory'">
+                      <div class="li-body">
+                        <p :class="{'t':true, 't-capitalize': memoryKeys === 'vcpu'}">{{memoryKeys}}</p>
+                        <p>
+                          <strong>{{child.free}}</strong>free</p>
+                        <p>
+                          <strong>{{child.total}}</strong>total</p>
+                        <p>
+                          <strong>{{child.used}}</strong>used</p>
+                      </div>
+                    </li>
+                    <li v-for="(child, storageKeys, k) in n.specs" :key="k" v-show="storageKeys === 'storage'">
+                      <div class="li-body">
+                        <p :class="{'t':true, 't-capitalize': storageKeys === 'vcpu'}">{{storageKeys}}</p>
+                        <p>
+                          <strong>{{child.free}}</strong>free</p>
+                        <p>
+                          <strong>{{child.total}}</strong>total</p>
+                        <p>
+                          <strong>{{child.used}}</strong>used</p>
+                      </div>
+                    </li>
+                  </ul>
+                  <div class="li-title">GPU Source</div>
+                  <ul>
+                    <li class="m-r" v-for="(child, gpuKeys, k) in n.specs" :key="k" v-show="gpuKeys === 'gpu'" style="width:100%;">
+                      <div class="flex-row">
+                        <div v-for="g in child.details" :key="g" :class="{'li-body':true}">
+                          <p :class="{'t':true, 't-capitalize': gpuKeys === 'gpu'}">{{g.product_name}} ({{gpuKeys}})</p>
+                          <p>
+                            <strong>{{g.fb_memory_usage.free}}</strong>free</p>
+                          <p>
+                            <strong>{{g.fb_memory_usage.total}}</strong>total</p>
+                          <p>
+                            <strong>{{g.fb_memory_usage.used}}</strong>used</p>
+                          <p>Status:
+                            <strong>{{g.status}}</strong>
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="service-body" v-else>No Data</div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="multiAddress" label="Name" min-width="120">
+            <template #default="scope">
+              <div class="badge">
+                <img v-if="scope.$index < 2 && pagin.pageNo <= 1" :src="badgeIcon01" alt="">
+                <img v-else :src="badgeIcon02" alt="">
+                <span v-for="address in scope.row.multiAddress" :key="address">{{address}}</span>
+              </div>
+            </template>
+          </el-table-column>
+          <!-- <el-table-column prop="country" label="Country" /> -->
+          <el-table-column prop="computer_provider.active_deployment" label="Active deployment" width="130" />
+          <el-table-column prop="computer_provider.score" label="Score" width="120">
+            <template #default="scope">
+              <span>{{scope.row.computer_provider.score || scope.row.score}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="gpu_list" label="GPU" min-width="140">
+            <template #default="scope">
+              <div class="badge">
+                <div class="flex-row machines-style">
+                  <span v-for="(gpu, g) in scope.row.gpu_list" :key="g">
+                    {{gpu}}
+                  </span>
+                </div>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="region" label="Region" min-width="100" />
+          <el-table-column prop="uptime" label="Uptime">
+            <template #default="scope">
+              <div>
+                {{system.$commonFun.unifyNumber(scope.row.uptime)}}%
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-table v-else :data="providersData" @expand-change="expandV2Change" :row-key="getRowKeysV2" :expand-row-keys="expands" style="width: 100%" empty-text="No Data" v-loading="providersTableLoad">
           <el-table-column type="expand" width="40">
             <template #default="props">
               <div class="service-body" v-if="props.row.machines && props.row.machines.length>0">
@@ -1189,6 +1290,7 @@ export default defineComponent({
           element.multiAddress.push(element.name)
         }
         try {
+          element.machines = element.machines || element.computer_provider?.machines || []
           element.machines.forEach((machines) => {
             if (machines.specs.gpu.details && machines.specs.gpu.details.length > 0) {
               machines.specs.gpu.details.forEach((gpu) => {
@@ -1314,15 +1416,25 @@ export default defineComponent({
         init()
       }
     }
-    function expandChange (row, expandedRows) {
+    function expandV2Change (row, expandedRows) {
       // console.log(row, expandedRows)
       if (expandedRows.length) {
         expands.value = [];
         if (row) expands.value.push(row.cp_account_address);
       } else expands.value = [];
     }
-    let getRowKeys = (row) => {
+    function expandChange (row, expandedRows) {
+      // console.log(row, expandedRows)
+      if (expandedRows.length) {
+        expands.value = [];
+        if (row) expands.value.push(row.node_id);
+      } else expands.value = [];
+    }
+    let getRowKeysV2 = (row) => {
       return row.cp_account_address;
+    }
+    let getRowKeys = (row) => {
+      return row.node_id;
     }
     function reset (type) {
       pagin.total = 0
@@ -1863,7 +1975,7 @@ export default defineComponent({
       badgeIcon02,
       accessToken, expands, activeName, cpLoad,
       versionRef, dataArr,
-      handleSizeChange, handleCurrentChange, handleZKCurrentChange, searchProvider, searchZKProvider, clearProvider, expandChange, getRowKeys,
+      handleSizeChange, handleCurrentChange, handleZKCurrentChange, searchProvider, searchZKProvider, clearProvider, expandChange, expandV2Change, getRowKeys, getRowKeysV2,
       handleClick, handleSelect, versionMethod, roamMap, chipFilterMethod, worldOverview
     }
   }
