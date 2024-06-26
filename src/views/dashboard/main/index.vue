@@ -20,50 +20,50 @@
       <div v-if="versionRef.value === 'v2'">
         <el-row :gutter="16">
           <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
-            <div class="grid-content total-container" v-loading="providerBody.chipLoad">
+            <div class="grid-content total-container" v-loading="providersLoad">
               <div class="flex-row">
                 <h6 class="flex-row flex-end">
                   <span class="t">Providers</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.totalData.hardwareTotal ? system.$commonFun.replaceFormat(providerBody.totalData.hardwareTotal.provider):'-'}}</b>
+                <b class="flex-row font-bold color">{{providerBody.data ? system.$commonFun.replaceFormat(providerBody.data.total_online_computers):'-'}}</b>
               </div>
               <div class="flex-row">
                 <h6 class="flex-row flex-end">
                   <span class="t">Location</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.totalData.hardwareTotal ? system.$commonFun.replaceFormat(providerBody.totalData.hardwareTotal.location):'-'}}</b>
+                <b class="flex-row font-bold color">{{providerBody.data ? system.$commonFun.replaceFormat(providerBody.data.total_cp_locations):'-'}}</b>
               </div>
             </div>
           </el-col>
           <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
-            <div class="grid-content total-container" v-loading="providerBody.chipLoad">
+            <div class="grid-content total-container" v-loading="providersLoad">
               <div class="flex-row">
                 <h6 class="flex-row flex-end">
                   <span class="t">CPU</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.totalData.hardwareTotal ? system.$commonFun.replaceFormat(providerBody.totalData.hardwareTotal.CPU):'-'}}</b>
+                <b class="flex-row font-bold color">{{providerBody.data ? system.$commonFun.replaceFormat(providerBody.data.total_cpu):'-'}}</b>
               </div>
               <div class="flex-row">
                 <h6 class="flex-row flex-end">
                   <span class="t">GPU</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.totalData.hardwareTotal ? system.$commonFun.replaceFormat(providerBody.totalData.hardwareTotal.GPU):'-'}}</b>
+                <b class="flex-row font-bold color">{{providerBody.data ? system.$commonFun.replaceFormat(providerBody.data.total_gpu):'-'}}</b>
               </div>
             </div>
           </el-col>
           <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
-            <div class="grid-content total-container" v-loading="providerBody.chipLoad">
+            <div class="grid-content total-container" v-loading="providersLoad">
               <div class="flex-row">
                 <h6 class="flex-row flex-end">
                   <span class="t">Storage</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.totalData.hardwareTotal ? system.$commonFun.cutsNumformat(providerBody.totalData.hardwareTotal.storage):'-'}}</b>
+                <b class="flex-row font-bold color">{{providerBody.data ? system.$commonFun.sizeChange(providerBody.data.total_storage):'-'}}</b>
               </div>
               <div class="flex-row">
                 <h6 class="flex-row flex-end">
                   <span class="t">Memory</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.totalData.hardwareTotal ? system.$commonFun.cutsNumformat(providerBody.totalData.hardwareTotal.memory):'-'}}</b>
+                <b class="flex-row font-bold color">{{providerBody.data ? system.$commonFun.sizeChange(providerBody.data.total_memory):'-'}}</b>
               </div>
             </div>
           </el-col>
@@ -95,7 +95,7 @@
             </div>
           </el-col>
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="flex-row">
-            <div class="chip-data" v-loading="providerBody.chipLoad">
+            <div class="chip-data" v-loading="providersLoad">
               <div class="chip-filter flex-row space-between">
                 <div class="world-name flex-row">
                   <div class="flex-row" v-if="providerBody.chipFilter.indexOf('GPU')>-1">
@@ -116,12 +116,14 @@
               <div class="cont-flex">
                 <div class="no-result flex-row center" v-if="providerBody.chipData && providerBody.chipData.length === 0">There are no devices present in the selected country</div>
                 <div class="cont flex-row space-between" v-for="chip in providerBody.chipData" :key="chip">
-                  <div class="absolute" :style="'width:' + ((chip.value||chip.gpu_amount||chip.storage_amount||chip.memory_amount) / providerBody.chipMaxData * 100) + '%;'"></div>
+                  <div class="absolute" :style="'width:' + ((chip.value||chip.gpu_count||chip.storage_amount||chip.memory_amount) / providerBody.chipMaxData * 100) + '%;'"></div>
                   <div class="flex-row items-center">
                     <div class="point"></div>
-                    <div class="text-region">{{chip.name || chip.gpu || chip.region}}</div>
+                    <div class="text-region">{{chip.name || chip.gpu_name || chip.region}}</div>
                   </div>
-                  <div class="text-data">{{chip.value || chip.gpu_amount || chip.storage || chip.memory}}</div>
+                  <div class="text-data" v-if="chip.storage_amount">{{system.$commonFun.sizeChange(chip.storage_amount)}}</div>
+                  <div class="text-data" v-else-if="chip.memory_amount">{{system.$commonFun.sizeChange(chip.memory_amount)}}</div>
+                  <div class="text-data" v-else>{{chip.value || chip.gpu_count}}</div>
                 </div>
               </div>
             </div>
@@ -144,7 +146,7 @@
                 <span class="t">Total CP Online</span>
               </h6>
               <b v-if="versionRef.value === 'v1'" v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.data.total_providers ? system.$commonFun.replaceFormat(providerBody.data.total_providers):'-'}}</b>
-              <b v-else v-loading="providersLoad" class="flex-row font-bold color">{{pagin.total ? system.$commonFun.replaceFormat(pagin.total):'-'}}</b>
+              <b v-else v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.data ? system.$commonFun.replaceFormat(providerBody.data.total_online_computers):'-'}}</b>
               <!-- <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_computer_providers):'-'}}</b> -->
             </div>
           </el-col>
@@ -799,13 +801,6 @@
           <el-button type="primary" :disabled="!networkInput ? true:false" round @click="searchProvider">Search</el-button>
           <el-button type="info" :disabled="!networkInput ? true:false" round @click="clearProvider">Clear</el-button>
         </div>
-        <!-- <div class="flex-row flex-end item-label m">
-          <el-select v-model="onlineRef.value" placeholder="Select" size="small" @change="onlineMethod">
-            <el-option v-for="item in onlineRef.options" :key="item.value" :label="item.label" :value="item.value">
-              <div class="font-14">{{item.label}}</div>
-            </el-option>
-          </el-select>
-        </div> -->
         <el-table :data="providersData" @expand-change="expandChange" :row-key="getRowKeys" :expand-row-keys="expands" style="width: 100%" empty-text="No Data" v-loading="providersTableLoad">
           <el-table-column type="expand" width="40">
             <template #default="props">
@@ -813,9 +808,9 @@
                 <div v-for="n in props.row.machines" :key="n" class="list">
                   <div class="li-title">CP Account Address: {{props.row.cp_account_address}}</div>
                   <ul>
-                    <li v-for="(child, vcpuKeys, k) in n.specs" :key="k" v-show="vcpuKeys === 'vcpu'">
+                    <li v-for="(child, vcpuKeys, k) in n.specs" :key="k" v-show="vcpuKeys === 'cpu'">
                       <div class="li-body">
-                        <p :class="{'t':true, 't-capitalize': vcpuKeys === 'vcpu'}">{{vcpuKeys}}</p>
+                        <p :class="{'t':true, 't-capitalize': vcpuKeys === 'cpu'}">{{vcpuKeys}}</p>
                         <p>
                           <strong>{{child.free}}</strong>free</p>
                         <p>
@@ -1096,7 +1091,6 @@ export default defineComponent({
         storageArray: []
       },
       chipMaxData: 0,
-      chipLoad: false,
       chipOverview: true,
       storageData: {},
       providerData: {},
@@ -1129,18 +1123,6 @@ export default defineComponent({
           value: 'v2'
         }]
     })
-    const onlineRef = reactive({
-      value: 1,
-      options: [
-        {
-          value: 1,
-          label: 'Active'
-        },
-        {
-          value: 0,
-          label: 'Total'
-        }]
-    })
 
     function handleSizeChange (val) { }
     async function handleCurrentChange (currentPage) {
@@ -1158,8 +1140,7 @@ export default defineComponent({
         cp_account_address: networkInput.value
       } : {
           limit: pagin.pageSize,
-          offset: page * pagin.pageSize,
-          online: onlineRef.value
+          offset: page * pagin.pageSize
         }
       const providerRes = await system.$commonFun.sendRequest(`${system.$baseurl}${networkInput.value ? 'cp/search_cp' : 'cp/cplist'}?${system.$Qs.stringify(params)}`, 'get')
       if (providerRes && providerRes.status === 'success') {
@@ -1250,19 +1231,6 @@ export default defineComponent({
         providerBody.totalData.smart_contracts = statsRes.smart_contracts || ''
       }
     }
-    async function getHardwareMetricsTotal () {
-      if (versionRef.value !== 'v2') return
-      providerBody.chipLoad = true
-      try {
-        const totalRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASELOGINAPI}cp/hardware_metrics`, 'get')
-        if (totalRes && totalRes.status === "success" && totalRes.data) {
-          providerBody.totalData.hardwareTotal = totalRes.data.total || {}
-          providerBody.chipDataAll = await getChipList(totalRes.data)
-          worldChange('World')
-        }
-      } catch{ }
-      providerBody.chipLoad = false
-    }
     async function getChipList (list) {
       let array = {
         all: [],
@@ -1272,9 +1240,10 @@ export default defineComponent({
       }
       try {
         let arr = list.world_detail || []
-        let arrMemory = await list.memory.sort((a, b) => b.memory_amount - a.memory_amount) || []
-        let arrStorage = await list.storage.sort((a, b) => b.storage_amount - a.storage_amount) || []
-        array.all = await reduceMethod(list.gpu_total, 'gpu', 'gpu_amount')
+        let arrMemory = list.amount_of_memory_by_country ? await list.amount_of_memory_by_country.sort((a, b) => b.memory_amount - a.memory_amount) : []
+        let arrStorage = list.amount_of_storage_by_country ? await list.amount_of_storage_by_country.sort((a, b) => b.storage_amount - a.storage_amount) : []
+        array.all = await reduceMethod(list.gpu_classification_count, 'gpu_name', 'gpu_count')
+        array.all = array.all ? await array.all.sort((a, b) => b.gpu_count - a.gpu_count) : []
         array.worldArray = arr
         array.memoryArray = arrMemory
         array.storageArray = arrStorage
@@ -1282,25 +1251,28 @@ export default defineComponent({
       } catch{ return array }
     }
     async function reduceMethod (arr, field, valueAmout) {
-      return arr.reduce((accumulator, current) => {
-        let existing = accumulator.find(item => item[field].toLowerCase() === current[field].toLowerCase());
-        if (existing) {
-          existing[valueAmout] += current[valueAmout];
-        } else {
-          accumulator.push({ ...current });
-        }
-        return accumulator;
-      }, [])
+      try {
+        return arr.reduce((accumulator, current) => {
+          let existing = accumulator.find(item => item[field].toLowerCase() === current[field].toLowerCase());
+          if (existing) {
+            existing[valueAmout] += current[valueAmout];
+          } else {
+            accumulator.push({ ...current });
+          }
+          return accumulator;
+        }, [])
+      } catch{ return [] }
     }
     async function getOverview () {
       providersLoad.value = true
       try {
-        const overviewRes = await system.$commonFun.sendRequest(`${system.$baseurl}cp/overview?online=1`, 'get')
+        const overviewRes = await system.$commonFun.sendRequest(`${system.$baseurl}cp/overview`, 'get')
         if (overviewRes && overviewRes.status === 'success') {
           pagin.total_deployments = overviewRes.data.total_deployments
           pagin.active_applications = overviewRes.data.active_applications
           providerBody.data = overviewRes.data || {}
           dataArr.value = overviewRes.data.map_info
+          providerBody.chipDataAll = await getChipList(overviewRes.data)
           drawV1Chart(dataArr.value)
           worldChange('World')
           changetype()
@@ -1369,11 +1341,9 @@ export default defineComponent({
       providerBody.chipFilter = 'GPUWorld'
       providerBody.chipMaxData = 0
       providerBody.chipData = []
-      providerBody.chipLoad = false
       providerBody.chipOverview = true
       if (type) init()
       getOverview()
-      getHardwareMetricsTotal()
       getUBITotal()
       getUBITable()
       getTotal()
@@ -1430,7 +1400,7 @@ export default defineComponent({
           break;
         case 'World':
           providerBody.chipData = providerBody.chipDataAll.all
-          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].gpu_amount : 0
+          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].gpu_count : 0
           break;
         default:
           list = await findObjectByValue(providerBody.chipDataAll.worldArray, 'region', worldName)
@@ -1870,10 +1840,6 @@ export default defineComponent({
       echartReset()
       reset('init')
     }
-    function onlineMethod (key) {
-      init()
-      // getOverview()
-    }
     onActivated(async () => {
       echarts.registerMap('worldHq', worldGeoJSON)
       reset('init')
@@ -1896,9 +1862,9 @@ export default defineComponent({
       badgeIcon01,
       badgeIcon02,
       accessToken, expands, activeName, cpLoad,
-      versionRef, onlineRef, dataArr,
+      versionRef, dataArr,
       handleSizeChange, handleCurrentChange, handleZKCurrentChange, searchProvider, searchZKProvider, clearProvider, expandChange, getRowKeys,
-      handleClick, handleSelect, versionMethod, onlineMethod, roamMap, chipFilterMethod, worldOverview
+      handleClick, handleSelect, versionMethod, roamMap, chipFilterMethod, worldOverview
     }
   }
 })
