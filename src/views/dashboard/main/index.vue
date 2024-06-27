@@ -90,7 +90,6 @@
                   </svg>
                 </div>
               </div>
-              <div class="world-buttom flex-row overview" @click="worldOverview">{{providerBody.chipOverview ? 'single world' : 'world overview'}}</div>
               <div class='chart' id='chart' v-loading="providersLoad" element-loading-background="rgba(0, 0, 0, 0)"></div>
             </div>
           </el-col>
@@ -98,17 +97,16 @@
             <div class="chip-data" v-loading="providersLoad">
               <div class="chip-filter flex-row space-between">
                 <div class="world-name flex-row">
-                  <div class="flex-row" v-if="providerBody.chipFilter.indexOf('GPU')>-1">
+                  <!-- <div class="flex-row" v-if="providerBody.chipFilter.indexOf('GPU')>-1">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex h-6 w-6 text-gray-dark-1000">
                       <path fill-rule="evenodd" clip-rule="evenodd" d="M7.6279 1.34882C7.84562 1.2244 8.11112 1.21703 8.33541 1.32918L15.9764 5.14967L22.6279 1.34882C22.86 1.21617 23.1452 1.21713 23.3764 1.35132C23.6077 1.48551 23.75 1.73265 23.75 2V18C23.75 18.2691 23.6058 18.5177 23.3721 18.6512L16.3721 22.6512C16.1544 22.7756 15.8889 22.783 15.6646 22.6708L8.0236 18.8503L1.3721 22.6512C1.13998 22.7838 0.854791 22.7829 0.623555 22.6487C0.392319 22.5145 0.25 22.2674 0.25 22V6C0.25 5.73086 0.394215 5.48235 0.627896 5.34882L7.6279 1.34882ZM8.75 17.5365L15.25 20.7865V6.46353L8.75 3.21353V17.5365ZM7.25 3.29239V17.5648L1.75 20.7076V6.43524L7.25 3.29239ZM16.75 6.43524V20.7076L22.25 17.5648V3.29239L16.75 6.43524Z"
                         fill="currentColor" style="fill: color(display-p3 0.6 0.6 0.6); fill-opacity: 1;"></path>
                     </svg>
                     <small>&nbsp;Map: &nbsp;</small>{{providerBody.chipWorld}}
-                  </div>
+                  </div> -->
                 </div>
                 <el-radio-group v-model="providerBody.chipFilter" text-color="#fff" fill="#3c85ff" @change="chipFilterMethod">
-                  <el-radio-button label="GPU" value="GPUWorld" v-if="providerBody.chipOverview" />
-                  <el-radio-button label="GPU" value="GPU" v-else />
+                  <el-radio-button label="GPU" value="GPUWorld" />
                   <el-radio-button label="Memory" value="Memory" />
                   <el-radio-button label="Storage" value="Storage" />
                 </el-radio-group>
@@ -121,8 +119,7 @@
                     <div class="point"></div>
                     <div class="text-region">{{chip.name || chip.gpu_name || chip.region}}</div>
                   </div>
-                  <div class="text-data" v-if="chip.storage_amount">{{system.$commonFun.sizeChange(chip.storage_amount)}}</div>
-                  <div class="text-data" v-else-if="chip.memory_amount">{{system.$commonFun.sizeChange(chip.memory_amount)}}</div>
+                  <div class="text-data" v-if="providerBody.chipFilter !== 'GPUWorld'">{{system.$commonFun.sizeChange(chip.value)}}</div>
                   <div class="text-data" v-else>{{chip.value || chip.gpu_count}}</div>
                 </div>
               </div>
@@ -1187,7 +1184,6 @@ export default defineComponent({
       chipData: [],
       chipDataAll: {
         all: [],
-        worldArray: [],
         memoryArray: [],
         storageArray: []
       },
@@ -1310,12 +1306,22 @@ export default defineComponent({
     }
     async function getUBITotal () {
       const statsRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_UBI}${store.state.versionValue}/stats`, 'get')
-      if (statsRes && statsRes.code === 0) {
+      if (statsRes && statsRes.code === 0 && statsRes.data) {
         providerBody.ubiData = statsRes.data || {}
+
+        if (versionRef.value === 'v1') return
         const map = statsRes.data.location ?.data || []
         dataArr.value = [...dataArr.value, ...map]
         drawV1Chart(dataArr.value)
-        // changeZKtype()
+
+        const gpuListCount = await newArrayList(statsRes.data.gpu.data) || []
+        const memoryList = await newArrayList(statsRes.data.memory.data) || []
+        const storageList = await newArrayList(statsRes.data.storage.data) || []
+        providerBody.chipDataAll.all = [...providerBody.chipDataAll.all, ...gpuListCount]
+        providerBody.chipDataAll.memoryArray = [...providerBody.chipDataAll.memoryArray, ...memoryList]
+        providerBody.chipDataAll.storageArray = [...providerBody.chipDataAll.storageArray, ...storageList]
+        providerBody.chipDataAll = await getChipList(providerBody.chipDataAll)
+        worldChange('World')
       } else providerBody.ubiData = {}
     }
     async function getTotal () {
@@ -1336,22 +1342,32 @@ export default defineComponent({
         providerBody.totalData.smart_contracts = statsRes.smart_contracts || ''
       }
     }
+    async function newArrayList (list, type) {
+      try {
+        const newArray = list.map(item => {
+          const newItem = Object.keys(item).reduce((acc, key) => {
+            const newKey = key === 'gpu_name' || key === 'region' ? 'name' : key === 'gpu_count' || key === 'memory_amount' || key === 'storage_amount' ? 'value' : key
+            acc[newKey] = item[key];
+            return acc;
+          }, {});
+          return newItem;
+        })
+        return newArray
+      } catch{ return [] }
+    }
     async function getChipList (list) {
       let array = {
         all: [],
-        worldArray: [],
         memoryArray: [],
         storageArray: []
       }
       try {
-        let arr = list.world_detail || []
-        let arrMemory = list.amount_of_memory_by_country ? await list.amount_of_memory_by_country.sort((a, b) => b.memory_amount - a.memory_amount) : []
-        let arrStorage = list.amount_of_storage_by_country ? await list.amount_of_storage_by_country.sort((a, b) => b.storage_amount - a.storage_amount) : []
-        array.all = await reduceMethod(list.gpu_classification_count, 'gpu_name', 'gpu_count')
-        array.all = array.all ? await array.all.sort((a, b) => b.gpu_count - a.gpu_count) : []
-        array.worldArray = arr
-        array.memoryArray = arrMemory
-        array.storageArray = arrStorage
+        array.all = await reduceMethod(list.all, 'name', 'value')
+        array.all = array.all ? await array.all.sort((a, b) => b.value - a.value) : []
+        array.memoryArray = await reduceMethod(list.memoryArray, 'name', 'value')
+        array.memoryArray = array.memoryArray ? await array.memoryArray.sort((a, b) => b.value - a.value) : []
+        array.storageArray = await reduceMethod(list.storageArray, 'name', 'value')
+        array.storageArray = array.storageArray ? await array.storageArray.sort((a, b) => b.value - a.value) : []
         return array
       } catch{ return array }
     }
@@ -1378,10 +1394,18 @@ export default defineComponent({
           providerBody.data = overviewRes.data || {}
           const map = overviewRes.data.map_info || []
           dataArr.value = [...dataArr.value, ...map]
-          providerBody.chipDataAll = await getChipList(overviewRes.data)
           drawV1Chart(dataArr.value)
-          worldChange('World')
           changetype()
+          if (versionRef.value === 'v2') {
+            const gpuListCount = await newArrayList(overviewRes.data.gpu_classification_count) || []
+            const memoryList = await newArrayList(overviewRes.data.amount_of_memory_by_country) || []
+            const storageList = await newArrayList(overviewRes.data.amount_of_storage_by_country) || []
+            providerBody.chipDataAll.all = [...providerBody.chipDataAll.all, ...gpuListCount]
+            providerBody.chipDataAll.memoryArray = [...providerBody.chipDataAll.memoryArray, ...memoryList]
+            providerBody.chipDataAll.storageArray = [...providerBody.chipDataAll.storageArray, ...storageList]
+            providerBody.chipDataAll = await getChipList(providerBody.chipDataAll)
+            worldChange('World')
+          }
         }
       } catch{ }
       providersLoad.value = false
@@ -1457,6 +1481,9 @@ export default defineComponent({
       providerBody.chipFilter = 'GPUWorld'
       providerBody.chipMaxData = 0
       providerBody.chipData = []
+      providerBody.chipDataAll.all = []
+      providerBody.chipDataAll.memoryArray = []
+      providerBody.chipDataAll.storageArray = []
       providerBody.chipOverview = true
       if (type) init()
       getOverview()
@@ -1492,12 +1519,6 @@ export default defineComponent({
           break;
       }
     }
-    function worldOverview () {
-      providerBody.chipFilter = providerBody.chipOverview ? 'GPU' : 'GPUWorld'
-      const overview = providerBody.chipOverview ? 'GPU' : 'World'
-      providerBody.chipOverview = !providerBody.chipOverview
-      chipFilterMethod(overview)
-    }
     function findObjectByValue (array, field, value) {
       return array.find(obj => obj[field] === value);
     }
@@ -1514,19 +1535,17 @@ export default defineComponent({
           providerBody.chipData = providerBody.chipDataAll.storageArray
           providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].storage_amount : 0
           break;
-        case 'World':
+        default:
           providerBody.chipData = providerBody.chipDataAll.all
           providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].gpu_count : 0
           break;
-        default:
-          list = await findObjectByValue(providerBody.chipDataAll.worldArray, 'region', worldName)
-          if (list && list.gpu_count && list.gpu_count.length > 0) {
-            gpuList = await reduceMethod(list.gpu_count, 'name', 'value')
-            gpuList = await system.$commonFun.sortBoole(gpuList)
-          } else gpuList = []
-          providerBody.chipData = gpuList
-          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].value : 0
-          break;
+      }
+      const moduleContainer = document.querySelector('.cont-flex');
+      if (moduleContainer) {
+        moduleContainer.scrollTo({
+          top: 0,
+          // behavior: 'smooth',
+        });
       }
     }
     function resetMap () {
@@ -1980,7 +1999,7 @@ export default defineComponent({
       accessToken, expands, activeName, cpLoad,
       versionRef, dataArr,
       handleSizeChange, handleCurrentChange, handleZKCurrentChange, searchProvider, searchZKProvider, clearProvider, expandChange, expandV2Change, getRowKeys, getRowKeysV2,
-      handleClick, handleSelect, versionMethod, roamMap, chipFilterMethod, worldOverview
+      handleClick, handleSelect, versionMethod, roamMap, chipFilterMethod
     }
   }
 })
