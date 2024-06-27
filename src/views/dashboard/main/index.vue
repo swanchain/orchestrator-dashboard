@@ -1529,15 +1529,15 @@ export default defineComponent({
       switch (worldName) {
         case 'Memory':
           providerBody.chipData = providerBody.chipDataAll.memoryArray
-          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].memory_amount : 0
+          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].value : 0
           break;
         case 'Storage':
           providerBody.chipData = providerBody.chipDataAll.storageArray
-          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].storage_amount : 0
+          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].value : 0
           break;
         default:
           providerBody.chipData = providerBody.chipDataAll.all
-          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].gpu_count : 0
+          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].value : 0
           break;
       }
       const moduleContainer = document.querySelector('.cont-flex');
