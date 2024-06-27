@@ -25,13 +25,13 @@
                 <h6 class="flex-row flex-end">
                   <span class="t">Providers</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.providers ? system.$commonFun.replaceFormat(providerBody.data.total_online_computers+(providerBody.ubiData.providers.count||0)):'-'}}</b>
+                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.cp ? system.$commonFun.replaceFormat(providerBody.data.total_online_computers+(providerBody.ubiData.cp.total||0)):'-'}}</b>
               </div>
               <div class="flex-row">
                 <h6 class="flex-row flex-end">
                   <span class="t">Location</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.data ? system.$commonFun.replaceFormat(providerBody.data.total_cp_locations):'-'}}</b>
+                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.location ? system.$commonFun.replaceFormat(providerBody.data.total_cp_locations+(providerBody.ubiData.location.total || 0)):'-'}}</b>
               </div>
             </div>
           </el-col>
@@ -41,13 +41,13 @@
                 <h6 class="flex-row flex-end">
                   <span class="t">CPU</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.providers ? system.$commonFun.replaceFormat(providerBody.data.total_cpu+(providerBody.ubiData.providers.vcpu.total||0)):'-'}}</b>
+                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.cpu ? system.$commonFun.replaceFormat(providerBody.data.total_cpu+(providerBody.ubiData.cpu.total||0)):'-'}}</b>
               </div>
               <div class="flex-row">
                 <h6 class="flex-row flex-end">
                   <span class="t">GPU</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.providers ? system.$commonFun.replaceFormat(providerBody.data.total_gpu+(providerBody.ubiData.providers.gpu.total||0)):'-'}}</b>
+                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.gpu ? system.$commonFun.replaceFormat(providerBody.data.total_gpu+(providerBody.ubiData.gpu.total||0)):'-'}}</b>
               </div>
             </div>
           </el-col>
@@ -57,13 +57,13 @@
                 <h6 class="flex-row flex-end">
                   <span class="t">Storage</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.providers ? system.$commonFun.sizeChange(providerBody.data.total_storage+(providerBody.ubiData.providers.storage.total||0)):'-'}}</b>
+                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.storage ? system.$commonFun.sizeChange(providerBody.data.total_storage+(providerBody.ubiData.storage.total||0)):'-'}}</b>
               </div>
               <div class="flex-row">
                 <h6 class="flex-row flex-end">
                   <span class="t">Memory</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.providers ? system.$commonFun.sizeChange(providerBody.data.total_memory+(providerBody.ubiData.providers.memory.total||0)):'-'}}</b>
+                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.memory ? system.$commonFun.sizeChange(providerBody.data.total_memory+(providerBody.ubiData.memory.total||0)):'-'}}</b>
               </div>
             </div>
           </el-col>
@@ -1312,6 +1312,9 @@ export default defineComponent({
       const statsRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_UBI}${store.state.versionValue}/stats`, 'get')
       if (statsRes && statsRes.code === 0) {
         providerBody.ubiData = statsRes.data || {}
+        const map = statsRes.data.location ?.data || []
+        dataArr.value = [...dataArr.value, ...map]
+        drawV1Chart(dataArr.value)
         // changeZKtype()
       } else providerBody.ubiData = {}
     }
@@ -1373,7 +1376,8 @@ export default defineComponent({
           pagin.total_deployments = overviewRes.data.total_deployments
           pagin.active_applications = overviewRes.data.active_applications
           providerBody.data = overviewRes.data || {}
-          dataArr.value = overviewRes.data.map_info
+          const map = overviewRes.data.map_info || []
+          dataArr.value = [...dataArr.value, ...map]
           providerBody.chipDataAll = await getChipList(overviewRes.data)
           drawV1Chart(dataArr.value)
           worldChange('World')
