@@ -3,7 +3,7 @@
     <div class="flex-row item-label">
       <h1 class="color t">Swan Provider Status</h1>
 
-      <el-select v-model="versionRef.value" placeholder="Select" size="small" @change="versionMethod">
+      <el-select v-if="networkValue !== 'Mainnet'" v-model="versionRef.value" placeholder="Select" size="small" @change="versionMethod">
         <el-option v-for="item in versionRef.options" :key="item.value" :label="item.value" :value="item.value">
           <div class="font-14">{{item.value}}</div>
         </el-option>
@@ -1134,6 +1134,7 @@ export default defineComponent({
     const store = useStore()
     const metaAddress = computed(() => (store.state.metaAddress))
     const accessToken = computed(() => (store.state.accessToken))
+    const networkValue = computed(() => (store.state.networkValue))
     const system = getCurrentInstance().appContext.config.globalProperties
     const route = useRoute()
     const router = useRouter()
@@ -1983,6 +1984,7 @@ export default defineComponent({
       system,
       route,
       metaAddress,
+      networkValue,
       gmtTime,
       providersLoad,
       providersTableLoad,
