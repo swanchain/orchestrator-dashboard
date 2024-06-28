@@ -1,5 +1,6 @@
 import { mainnet, arbitrum } from 'viem/chains'
 import { defaultWagmiConfig } from '@web3modal/wagmi/vue'
+import store from '../store'
 
 const SWAN_PROXIMA = {
     id: Number(20241133), //Number(process.env.NEXT_PUBLIC_L2_PROXIMA_CHAIN_ID),
@@ -25,6 +26,30 @@ const SWAN_PROXIMA = {
     },
     testnet: true,
 }
+const SWAN_MAINNET = {
+    id: Number(254), //Number(process.env.NEXT_PUBLIC_L2_PROXIMA_CHAIN_ID),
+    name: 'Swan Mainnet',
+    network: 'SWAN',
+    iconUrl: 'https://i.imgur.com/Q3oIdip.png',
+    iconBackground: '#000000',
+    nativeCurrency: {
+        decimals: 18,
+        name: 'Swan ETH',
+        symbol: 'sETH',
+    },
+    rpcUrls: {
+        default: {
+            http: [String('https://mainnet-internal.swanchain.io')], // [String(process.env.NEXT_PUBLIC_L2_PROXIMA_RPC_URL)],
+        },
+    },
+    blockExplorers: {
+        default: {
+            name: 'Swan Mainnet Explorer',
+            url: 'http://172.16.200.36/' || '', // process.env.NEXT_PUBLIC_L2_PROXIMA_EXPLORER_URL || '',
+        },
+    },
+    testnet: true,
+}
 
 // 1. Define constants
 const projectId = '96edc188f4c9ba78898f2145f6210614'
@@ -37,7 +62,7 @@ const metadata = {
     icons: ['https://avatars.githubusercontent.com/u/37784886'],
 }
 
-const chains = [SWAN_PROXIMA] //mainnet, arbitrum
+const chains = store.state.networkValue === 'Proxima' ? [SWAN_PROXIMA] : [SWAN_MAINNET] //mainnet, arbitrum
 const config = defaultWagmiConfig({
     chains, // required
     projectId, // required

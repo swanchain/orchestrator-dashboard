@@ -64,7 +64,7 @@ watchAccount(config, {
     try {
       console.log('watch', account)
       console.log('prev', prevAccount)
-      console.log("changed", fristOpen, sessionStorage.getItem('fristOpen_swan'))
+      // console.log("changed")
       if (sessionStorage.getItem('fristOpen_swan') === null && signature.value === '') signout2()
       else if (account ?.isConnected && signature.value === '' && metaAddress.value === '' && fristOpen > 0) {
         console.log("prompted")
