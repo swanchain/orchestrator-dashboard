@@ -17,6 +17,7 @@ const app = createApp(App)
 app.config.globalProperties.$commonFun = commonFun
 app.config.globalProperties.$Qs = qs
 app.config.globalProperties.$baseurl = `${store.state.networkValue === 'Proxima' ? process.env.VUE_APP_BASEAPI : process.env.VUE_APP_BASEAPIMAINNET}${store.state.versionValue}/`
+app.config.globalProperties.$statsurl = `${store.state.networkValue === 'Proxima' ? process.env.VUE_APP_STATS : process.env.VUE_APP_STATS_MAINNET}`
 app.use(ElementPlus, {
     locale: en,
 })

@@ -536,7 +536,7 @@
 
       <div class="border-row">
         <div class="title top flex-row space-between">
-          Swan Proxima Chain
+          {{networkValue !== 'Mainnet' ? 'Swan Proxima Chain' : 'Swan Mainnet'}}
         </div>
         <el-row :gutter="16" :class="{'hide': providerBody.collapse.total}">
           <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
@@ -1326,7 +1326,7 @@ export default defineComponent({
       } else providerBody.ubiData = {}
     }
     async function getTotal () {
-      const statsRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_STATS}v2/stats`, 'get')
+      const statsRes = await system.$commonFun.sendRequest(`${system.$statsurl}v2/stats`, 'get')
       if (statsRes) {
         providerBody.totalData.gas_used_today = statsRes.gas_used_today || ''
         providerBody.totalData.total_addresses = statsRes.total_addresses || ''
@@ -1337,7 +1337,7 @@ export default defineComponent({
       }
     }
     async function getCounters () {
-      const statsRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_STATS}v2/smart-contracts/counters`, 'get')
+      const statsRes = await system.$commonFun.sendRequest(`${system.$statsurl}v2/smart-contracts/counters`, 'get')
       if (statsRes) {
         providerBody.totalData.new_smart_contracts_24h = statsRes.new_smart_contracts_24h || ''
         providerBody.totalData.smart_contracts = statsRes.smart_contracts || ''

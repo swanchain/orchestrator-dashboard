@@ -382,7 +382,7 @@ function cutsNumformat (data) {
 }
 
 function timeFormat (data) {
-  if (!data) return
+  if (!data) return 0
   const d = data / 60 / 60
   return d < 0.001 ? 0 : d
 }
