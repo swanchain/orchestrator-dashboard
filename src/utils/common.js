@@ -375,6 +375,12 @@ function filNumformat (data) {
   return `${replaceFormat(price_regular[0] * 365)} FIL/GiB/year` || '0 FIL/GiB/year'
 }
 
+function cutsNumformat (data) {
+  if (!data) return
+  const num_regular = data ? data.split(" ") : []
+  return num_regular[1] ? `${replaceFormat(num_regular[0])} ${replaceFormat(num_regular[1])}` : replaceFormat(num_regular[0])
+}
+
 function timeFormat (data) {
   if (!data) return
   const d = data / 60 / 60
@@ -488,7 +494,44 @@ function AddFormat (num1, num2) {
 
 async function sortBoole (arr) {
   if (!arr || (arr && arr.length === 0)) return []
-  return arr.sort((a, b) => b.hardware_quantity - a.hardware_quantity)
+  return arr.sort((a, b) => b.value - a.value)
+}
+
+async function acronymsMethod (name) {
+  switch (name) {
+    case 'Malaysia':
+      return 'MY'
+    case 'Canada':
+      return 'CA'
+    case 'United States':
+      return 'US'
+    case 'Japan':
+      return 'JP'
+    case 'China':
+      return 'CN'
+    case 'Taiwan':
+      return 'TW'
+    case 'Hong Kong':
+      return 'HK'
+    case 'Indonesia':
+      return 'ID'
+    case 'Philippines':
+      return 'PH'
+    case 'Thailand':
+      return 'TH'
+    case 'Germany':
+      return 'DE'
+    case 'Ukraine':
+      return 'UA'
+    case 'Memory':
+      return 'Memory'
+    case 'Storage':
+      return 'Storage'
+    case 'World':
+      return 'World'
+    default:
+      return ''
+  }
 }
 
 export default {
@@ -509,6 +552,7 @@ export default {
   storageNumformat,
   fixedformat,
   filNumformat,
+  cutsNumformat,
   timeFormat,
   getUnit,
   goLink,
@@ -521,5 +565,6 @@ export default {
   unifyNumber,
   AddFormat,
   sortBoole,
+  acronymsMethod,
   chainNetworkID
 }

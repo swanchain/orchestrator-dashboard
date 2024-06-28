@@ -20,50 +20,50 @@
       <div v-if="versionRef.value === 'v2'">
         <el-row :gutter="16">
           <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
-            <div class="grid-content total-container" v-loading="providerBody.chipLoad">
+            <div class="grid-content total-container" v-loading="providersLoad">
               <div class="flex-row">
                 <h6 class="flex-row flex-end">
                   <span class="t">Providers</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.totalData.hardwareTotal ? system.$commonFun.replaceFormat(providerBody.totalData.hardwareTotal.provider):'-'}}</b>
+                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.cp ? system.$commonFun.replaceFormat(providerBody.data.total_online_computers+(providerBody.ubiData.cp.total||0)):'-'}}</b>
               </div>
               <div class="flex-row">
                 <h6 class="flex-row flex-end">
                   <span class="t">Location</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.totalData.hardwareTotal ? system.$commonFun.replaceFormat(providerBody.totalData.hardwareTotal.location):'-'}}</b>
+                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.location ? system.$commonFun.replaceFormat(providerBody.data.total_cp_locations+(providerBody.ubiData.location.total || 0)):'-'}}</b>
               </div>
             </div>
           </el-col>
           <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
-            <div class="grid-content total-container" v-loading="providerBody.chipLoad">
+            <div class="grid-content total-container" v-loading="providersLoad">
               <div class="flex-row">
                 <h6 class="flex-row flex-end">
                   <span class="t">CPU</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.totalData.hardwareTotal ? system.$commonFun.replaceFormat(providerBody.totalData.hardwareTotal.CPU):'-'}}</b>
+                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.cpu ? system.$commonFun.replaceFormat(providerBody.data.total_cpu+(providerBody.ubiData.cpu.total||0)):'-'}}</b>
               </div>
               <div class="flex-row">
                 <h6 class="flex-row flex-end">
                   <span class="t">GPU</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.totalData.hardwareTotal ? system.$commonFun.replaceFormat(providerBody.totalData.hardwareTotal.GPU):'-'}}</b>
+                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.gpu ? system.$commonFun.replaceFormat(providerBody.data.total_gpu+(providerBody.ubiData.gpu.total||0)):'-'}}</b>
               </div>
             </div>
           </el-col>
           <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
-            <div class="grid-content total-container" v-loading="providerBody.chipLoad">
+            <div class="grid-content total-container" v-loading="providersLoad">
               <div class="flex-row">
                 <h6 class="flex-row flex-end">
                   <span class="t">Storage</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.totalData.hardwareTotal ? providerBody.totalData.hardwareTotal.storage:'-'}}</b>
+                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.storage ? system.$commonFun.sizeChange(providerBody.data.total_storage+(providerBody.ubiData.storage.total||0)):'-'}}</b>
               </div>
               <div class="flex-row">
                 <h6 class="flex-row flex-end">
                   <span class="t">Memory</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.totalData.hardwareTotal ? providerBody.totalData.hardwareTotal.memory:'-'}}</b>
+                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.memory ? system.$commonFun.sizeChange(providerBody.data.total_memory+(providerBody.ubiData.memory.total||0)):'-'}}</b>
               </div>
             </div>
           </el-col>
@@ -94,31 +94,34 @@
             </div>
           </el-col>
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="flex-row">
-            <div class="chip-data" v-loading="providerBody.chipLoad">
+            <div class="chip-data" v-loading="providersLoad">
               <div class="chip-filter flex-row space-between">
                 <div class="world-name flex-row">
-                  <div class="flex-row" v-if="providerBody.chipFilter === 'GPU'">
+                  <!-- <div class="flex-row" v-if="providerBody.chipFilter.indexOf('GPU')>-1">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex h-6 w-6 text-gray-dark-1000">
                       <path fill-rule="evenodd" clip-rule="evenodd" d="M7.6279 1.34882C7.84562 1.2244 8.11112 1.21703 8.33541 1.32918L15.9764 5.14967L22.6279 1.34882C22.86 1.21617 23.1452 1.21713 23.3764 1.35132C23.6077 1.48551 23.75 1.73265 23.75 2V18C23.75 18.2691 23.6058 18.5177 23.3721 18.6512L16.3721 22.6512C16.1544 22.7756 15.8889 22.783 15.6646 22.6708L8.0236 18.8503L1.3721 22.6512C1.13998 22.7838 0.854791 22.7829 0.623555 22.6487C0.392319 22.5145 0.25 22.2674 0.25 22V6C0.25 5.73086 0.394215 5.48235 0.627896 5.34882L7.6279 1.34882ZM8.75 17.5365L15.25 20.7865V6.46353L8.75 3.21353V17.5365ZM7.25 3.29239V17.5648L1.75 20.7076V6.43524L7.25 3.29239ZM16.75 6.43524V20.7076L22.25 17.5648V3.29239L16.75 6.43524Z"
                         fill="currentColor" style="fill: color(display-p3 0.6 0.6 0.6); fill-opacity: 1;"></path>
                     </svg>
                     <small>&nbsp;Map: &nbsp;</small>{{providerBody.chipWorld}}
-                  </div>
+                  </div> -->
                 </div>
                 <el-radio-group v-model="providerBody.chipFilter" text-color="#fff" fill="#3c85ff" @change="chipFilterMethod">
-                  <el-radio-button label="GPU" value="GPU" />
+                  <el-radio-button label="GPU" value="GPUWorld" />
                   <el-radio-button label="Memory" value="Memory" />
                   <el-radio-button label="Storage" value="Storage" />
                 </el-radio-group>
               </div>
-              <div class="no-result flex-row center" v-if="providerBody.chipData && providerBody.chipData.length === 0">There are no devices present in the selected country</div>
-              <div class="cont flex-row space-between" v-for="chip in providerBody.chipData" :key="chip">
-                <div class="absolute" :style="'width:' + ((chip.hardware_quantity||chip.storage_amount||chip.memory_amount) / providerBody.chipMaxData * 100) + '%;'"></div>
-                <div class="flex-row items-center">
-                  <div class="point"></div>
-                  <div class="text-region">{{chip.config_name || chip.region}}</div>
+              <div class="cont-flex">
+                <div class="no-result flex-row center" v-if="providerBody.chipData && providerBody.chipData.length === 0">There are no devices present in the selected country</div>
+                <div class="cont flex-row space-between" v-for="chip in providerBody.chipData" :key="chip">
+                  <div class="absolute" :style="'width:' + ((chip.value||chip.gpu_count||chip.storage_amount||chip.memory_amount) / providerBody.chipMaxData * 100) + '%;'"></div>
+                  <div class="flex-row items-center">
+                    <div class="point"></div>
+                    <div class="text-region">{{chip.name || chip.gpu_name || chip.region}}</div>
+                  </div>
+                  <div class="text-data" v-if="providerBody.chipFilter !== 'GPUWorld'">{{system.$commonFun.sizeChange(chip.value)}}</div>
+                  <div class="text-data" v-else>{{chip.value || chip.gpu_count}}</div>
                 </div>
-                <div class="text-data">{{chip.hardware_quantity || chip.storage || chip.memory}}</div>
               </div>
             </div>
           </el-col>
@@ -139,23 +142,18 @@
               <h6 class="flex-row">
                 <span class="t">Total CP Online</span>
               </h6>
-              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.data.total_providers ? system.$commonFun.replaceFormat(providerBody.data.total_providers):'-'}}</b>
+              <b v-if="versionRef.value === 'v1'" v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.data.total_providers ? system.$commonFun.replaceFormat(providerBody.data.total_providers):'-'}}</b>
+              <b v-else v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.data ? system.$commonFun.replaceFormat(providerBody.data.total_online_computers):'-'}}</b>
+              <!-- <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_computer_providers):'-'}}</b> -->
             </div>
           </el-col>
-          <!-- <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
-            <div class="grid-content">
-              <h6 class="flex-row">
-                <span class="t">Active Applications</span>
-              </h6>
-              <b v-loading="providersLoad" class="flex-row font-bold color">{{system.$commonFun.replaceFormat(pagin.active_applications)}}</b>
-            </div>
-          </el-col> -->
           <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
             <div class="grid-content">
               <h6 class="flex-row">
                 <span class="t">Total Task</span>
               </h6>
-              <b v-loading="providersLoad" class="flex-row font-bold color">{{system.$commonFun.replaceFormat(pagin.total_deployments)}}</b>
+              <b v-if="versionRef.value === 'v1'" v-loading="providersLoad" class="flex-row font-bold color">{{pagin.active_applications?system.$commonFun.replaceFormat(pagin.active_applications):'-'}}</b>
+              <b v-else v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_task):'-'}}</b>
             </div>
           </el-col>
           <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
@@ -204,7 +202,7 @@
               <h6 class="flex-row">
                 <span class="t">total GPU hours</span>
               </h6>
-              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(providerBody.generalData.total_gpu_hours):'-'}}</b>
+              <b v-loading="providersLoad" class="flex-row font-bold color">{{providerBody.generalData?system.$commonFun.replaceFormat(system.$commonFun.timeFormat(providerBody.generalData.total_gpu_hours)):'-'}}</b>
             </div>
           </el-col>
         </el-row>
@@ -800,7 +798,7 @@
           <el-button type="primary" :disabled="!networkInput ? true:false" round @click="searchProvider">Search</el-button>
           <el-button type="info" :disabled="!networkInput ? true:false" round @click="clearProvider">Clear</el-button>
         </div>
-        <el-table :data="providersData" @expand-change="expandChange" :row-key="getRowKeys" :expand-row-keys="expands" style="width: 100%" empty-text="No Data" v-loading="providersTableLoad">
+        <el-table v-if="versionRef.value === 'v1'" :data="providersData" @expand-change="expandChange" :row-key="getRowKeys" :expand-row-keys="expands" style="width: 100%" empty-text="No Data" v-loading="providersTableLoad">
           <el-table-column type="expand" width="40">
             <template #default="props">
               <div class="service-body" v-if="props.row.computer_provider">
@@ -865,7 +863,7 @@
               <div class="service-body" v-else>No Data</div>
             </template>
           </el-table-column>
-          <el-table-column prop="multiAddress" label="Multi Address" min-width="120">
+          <el-table-column prop="multiAddress" label="Name" min-width="120">
             <template #default="scope">
               <div class="badge">
                 <img v-if="scope.$index < 2 && pagin.pageNo <= 1" :src="badgeIcon01" alt="">
@@ -896,6 +894,104 @@
           <el-table-column prop="uptime" label="Uptime">
             <template #default="scope">
               <div>
+                {{system.$commonFun.unifyNumber(scope.row.uptime)}}%
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-table v-else :data="providersData" @expand-change="expandV2Change" :row-key="getRowKeysV2" :expand-row-keys="expands" style="width: 100%" empty-text="No Data" v-loading="providersTableLoad">
+          <el-table-column type="expand" width="40">
+            <template #default="props">
+              <div class="service-body" v-if="props.row.machines && props.row.machines.length>0">
+                <div v-for="n in props.row.machines" :key="n" class="list">
+                  <div class="li-title">CP Account Address: {{props.row.cp_account_address}}</div>
+                  <ul>
+                    <li v-for="(child, vcpuKeys, k) in n.specs" :key="k" v-show="vcpuKeys === 'cpu'">
+                      <div class="li-body">
+                        <p :class="{'t':true, 't-capitalize': vcpuKeys === 'cpu'}">{{vcpuKeys}}</p>
+                        <p>
+                          <strong>{{child.free}}</strong>free</p>
+                        <p>
+                          <strong>{{child.total}}</strong>total</p>
+                        <p>
+                          <strong>{{child.used}}</strong>used</p>
+                      </div>
+                    </li>
+                    <li v-for="(child, memoryKeys, k) in n.specs" :key="k" v-show="memoryKeys === 'memory'">
+                      <div class="li-body">
+                        <p :class="{'t':true, 't-capitalize': memoryKeys === 'vcpu'}">{{memoryKeys}}</p>
+                        <p>
+                          <strong>{{child.free}}</strong>free</p>
+                        <p>
+                          <strong>{{child.total}}</strong>total</p>
+                        <p>
+                          <strong>{{child.used}}</strong>used</p>
+                      </div>
+                    </li>
+                    <li v-for="(child, storageKeys, k) in n.specs" :key="k" v-show="storageKeys === 'storage'">
+                      <div class="li-body">
+                        <p :class="{'t':true, 't-capitalize': storageKeys === 'vcpu'}">{{storageKeys}}</p>
+                        <p>
+                          <strong>{{child.free}}</strong>free</p>
+                        <p>
+                          <strong>{{child.total}}</strong>total</p>
+                        <p>
+                          <strong>{{child.used}}</strong>used</p>
+                      </div>
+                    </li>
+                  </ul>
+                  <div class="li-title">GPU Source</div>
+                  <ul>
+                    <li class="m-r" v-for="(child, gpuKeys, k) in n.specs" :key="k" v-show="gpuKeys === 'gpu'" style="width:100%;">
+                      <div class="flex-row">
+                        <div v-for="g in child.details" :key="g" :class="{'li-body':true}">
+                          <p :class="{'t':true, 't-capitalize': gpuKeys === 'gpu'}">{{g.product_name}} ({{gpuKeys}})</p>
+                          <p>
+                            <strong>{{g.fb_memory_usage.free}}</strong>free</p>
+                          <p>
+                            <strong>{{g.fb_memory_usage.total}}</strong>total</p>
+                          <p>
+                            <strong>{{g.fb_memory_usage.used}}</strong>used</p>
+                          <p>Status:
+                            <strong>{{g.status}}</strong>
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="service-body text-center" v-else>No Data</div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="multiAddress" label="Name" min-width="120">
+            <template #default="scope">
+              <div class="badge">
+                <img v-if="scope.$index < 2 && pagin.pageNo <= 1" :src="badgeIcon01" alt="">
+                <img v-else :src="badgeIcon02" alt="">
+                <span v-for="address in scope.row.multiAddress" :key="address">{{address}}</span>
+              </div>
+            </template>
+          </el-table-column>
+          <!-- <el-table-column prop="country" label="Country" /> -->
+          <el-table-column prop="active_deployment" label="Active deployment" width="130" />
+          <el-table-column prop="score" label="Score" width="120" />
+          <el-table-column prop="gpu_list" label="GPU" min-width="140">
+            <template #default="scope">
+              <div class="badge">
+                <div class="flex-row machines-style">
+                  <span v-for="(gpu, g) in scope.row.gpu_list" :key="g">
+                    {{gpu}}
+                  </span>
+                </div>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="region" label="Region" min-width="100" />
+          <el-table-column prop="uptime" label="Uptime">
+            <template #default="scope">
+              <div v-if="scope.row.uptime === null">Waiting for calculation</div>
+              <div v-else>
                 {{system.$commonFun.unifyNumber(scope.row.uptime)}}%
               </div>
             </template>
@@ -962,7 +1058,7 @@
                   </ul>
                 </div>
               </div>
-              <div class="service-body" v-else>No Data</div>
+              <div class="service-body text-center" v-else>No Data</div>
             </template>
           </el-table-column>
           <el-table-column prop="name" label="Name" min-width="120">
@@ -1084,17 +1180,16 @@ export default defineComponent({
           storage: '-'
         }
       },
-      chipWorld: 'Canada',
-      chipFilter: 'GPU',
+      chipWorld: 'World',
+      chipFilter: 'GPUWorld',
       chipData: [],
       chipDataAll: {
-        usArray: [],
-        caArray: [],
+        all: [],
         memoryArray: [],
         storageArray: []
       },
       chipMaxData: 0,
-      chipLoad: false,
+      chipOverview: true,
       storageData: {},
       providerData: {},
       generalData: {},
@@ -1182,7 +1277,8 @@ export default defineComponent({
         element.gpu_list = []
         element.multiAddress = []
         try {
-          element.name.forEach(n => {
+          const n = element.name || element.multi_address
+          n.forEach(n => {
             const ip = n.split('/')
             const address = `${ip[2]}:${ip[4]}`
             element.multiAddress.push(address)
@@ -1191,30 +1287,42 @@ export default defineComponent({
           element.multiAddress.push(element.name)
         }
         try {
-          if (element.computer_provider.machines && element.computer_provider.machines.length > 0) {
-            element.computer_provider.machines.forEach((machines) => {
-              if (machines.specs.gpu.details && machines.specs.gpu.details.length > 0) {
-                machines.specs.gpu.details.forEach((gpu) => {
-                  if (element.gpu_list.indexOf(gpu.product_name) < 0) element.gpu_list.push(gpu.product_name)
-                  // const field = 'name';
-                  // const containsValue = element.gpu_list.some(item => item[field].includes(gpu.product_name));
-                  // if (!containsValue) element.gpu_list.push({
-                  //   name: gpu.product_name,
-                  //   status: gpu.status
-                  // })
-                })
-              }
-            })
-          }
+          element.machines = element.machines || element.computer_provider ?.machines || []
+          element.machines.forEach((machines) => {
+            if (machines.specs.gpu.details && machines.specs.gpu.details.length > 0) {
+              machines.specs.gpu.details.forEach((gpu) => {
+                if (element.gpu_list.indexOf(gpu.product_name) < 0) element.gpu_list.push(gpu.product_name)
+                // const field = 'name';
+                // const containsValue = element.gpu_list.some(item => item[field].includes(gpu.product_name));
+                // if (!containsValue) element.gpu_list.push({
+                //   name: gpu.product_name,
+                //   status: gpu.status
+                // })
+              })
+            }
+          })
         } catch{ }
       })
       return l
     }
     async function getUBITotal () {
       const statsRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_UBI}${store.state.versionValue}/stats`, 'get')
-      if (statsRes && statsRes.code === 0) {
+      if (statsRes && statsRes.code === 0 && statsRes.data) {
         providerBody.ubiData = statsRes.data || {}
-        // changeZKtype()
+
+        if (versionRef.value === 'v1') return
+        const map = statsRes.data.location ?.data || []
+        dataArr.value = [...dataArr.value, ...map]
+        drawV1Chart(dataArr.value)
+
+        const gpuListCount = await newArrayList(statsRes.data.gpu.data) || []
+        const memoryList = await newArrayList(statsRes.data.memory.data) || []
+        const storageList = await newArrayList(statsRes.data.storage.data) || []
+        providerBody.chipDataAll.all = [...providerBody.chipDataAll.all, ...gpuListCount]
+        providerBody.chipDataAll.memoryArray = [...providerBody.chipDataAll.memoryArray, ...memoryList]
+        providerBody.chipDataAll.storageArray = [...providerBody.chipDataAll.storageArray, ...storageList]
+        providerBody.chipDataAll = await getChipList(providerBody.chipDataAll)
+        worldChange('World')
       } else providerBody.ubiData = {}
     }
     async function getTotal () {
@@ -1235,46 +1343,47 @@ export default defineComponent({
         providerBody.totalData.smart_contracts = statsRes.smart_contracts || ''
       }
     }
-    async function getHardwareMetricsTotal () {
-      if (versionRef.value !== 'v2') return
-      providerBody.chipLoad = true
+    async function newArrayList (list, type) {
       try {
-        const totalRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASELOGINAPI}cp/hardware_metrics`, 'get')
-        if (totalRes && totalRes.status === "success" && totalRes.data) {
-          providerBody.totalData.hardwareTotal = totalRes.data.total || {}
-          providerBody.chipDataAll = await getChipList(totalRes.data)
-          providerBody.chipData = providerBody.chipDataAll.caArray
-          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].hardware_quantity : 0
-        }
-      } catch{ }
-      providerBody.chipLoad = false
+        const newArray = list.map(item => {
+          const newItem = Object.keys(item).reduce((acc, key) => {
+            const newKey = key === 'gpu_name' || key === 'region' ? 'name' : key === 'gpu_count' || key === 'memory_amount' || key === 'storage_amount' ? 'value' : key
+            acc[newKey] = item[key];
+            return acc;
+          }, {});
+          return newItem;
+        })
+        return newArray
+      } catch{ return [] }
     }
     async function getChipList (list) {
       let array = {
-        usArray: [],
-        caArray: [],
+        all: [],
         memoryArray: [],
         storageArray: []
       }
       try {
-        let arr = await system.$commonFun.sortBoole(list.chips) || []
-        let arrMemory = await list.memory.sort((a, b) => b.memory_amount - a.memory_amount) || []
-        let arrStorage = await list.storage.sort((a, b) => b.storage_amount - a.storage_amount) || []
-        arr = arr.filter(item => item.hardware_name !== 'CPU');
-        const [usArray, caArray] = splitArray(arr, (item) => item.region.indexOf('US') > -1);
-        array.usArray = usArray.slice(0, 8)
-        array.caArray = caArray.slice(0, 8)
-        array.memoryArray = arrMemory.slice(0, 8)
-        array.storageArray = arrStorage.slice(0, 8)
+        array.all = await reduceMethod(list.all, 'name', 'value')
+        array.all = array.all ? await array.all.sort((a, b) => b.value - a.value) : []
+        array.memoryArray = await reduceMethod(list.memoryArray, 'name', 'value')
+        array.memoryArray = array.memoryArray ? await array.memoryArray.sort((a, b) => b.value - a.value) : []
+        array.storageArray = await reduceMethod(list.storageArray, 'name', 'value')
+        array.storageArray = array.storageArray ? await array.storageArray.sort((a, b) => b.value - a.value) : []
         return array
       } catch{ return array }
     }
-    function splitArray (arr, conditionFn) {
-      return arr.reduce((acc, value) => {
-        const index = conditionFn(value) ? 0 : 1;
-        acc[index].push(value);
-        return acc;
-      }, [[], []]);
+    async function reduceMethod (arr, field, valueAmout) {
+      try {
+        return arr.reduce((accumulator, current) => {
+          let existing = accumulator.find(item => item[field].toLowerCase() === current[field].toLowerCase());
+          if (existing) {
+            existing[valueAmout] += current[valueAmout];
+          } else {
+            accumulator.push({ ...current });
+          }
+          return accumulator;
+        }, [])
+      } catch{ return [] }
     }
     async function getOverview () {
       providersLoad.value = true
@@ -1284,10 +1393,20 @@ export default defineComponent({
           pagin.total_deployments = overviewRes.data.total_deployments
           pagin.active_applications = overviewRes.data.active_applications
           providerBody.data = overviewRes.data || {}
-          dataArr.value = overviewRes.data.map_info
-          if (versionRef.value !== 'v2') drawV1Chart(dataArr.value)
-          else drawChart(canadaData)
+          const map = overviewRes.data.map_info || []
+          dataArr.value = [...dataArr.value, ...map]
+          drawV1Chart(dataArr.value)
           changetype()
+          if (versionRef.value === 'v2') {
+            const gpuListCount = await newArrayList(overviewRes.data.gpu_classification_count) || []
+            const memoryList = await newArrayList(overviewRes.data.amount_of_memory_by_country) || []
+            const storageList = await newArrayList(overviewRes.data.amount_of_storage_by_country) || []
+            providerBody.chipDataAll.all = [...providerBody.chipDataAll.all, ...gpuListCount]
+            providerBody.chipDataAll.memoryArray = [...providerBody.chipDataAll.memoryArray, ...memoryList]
+            providerBody.chipDataAll.storageArray = [...providerBody.chipDataAll.storageArray, ...storageList]
+            providerBody.chipDataAll = await getChipList(providerBody.chipDataAll)
+            worldChange('World')
+          }
         }
       } catch{ }
       providersLoad.value = false
@@ -1326,12 +1445,22 @@ export default defineComponent({
         init()
       }
     }
+    function expandV2Change (row, expandedRows) {
+      // console.log(row, expandedRows)
+      if (expandedRows.length) {
+        expands.value = [];
+        if (row) expands.value.push(row.cp_account_address);
+      } else expands.value = [];
+    }
     function expandChange (row, expandedRows) {
       // console.log(row, expandedRows)
       if (expandedRows.length) {
         expands.value = [];
         if (row) expands.value.push(row.node_id);
       } else expands.value = [];
+    }
+    let getRowKeysV2 = (row) => {
+      return row.cp_account_address;
     }
     let getRowKeys = (row) => {
       return row.node_id;
@@ -1349,13 +1478,16 @@ export default defineComponent({
       networkInput.value = ''
       networkZK.owner_addr = ''
       networkZK.node_id = ''
-      providerBody.chipFilter = 'GPU'
+      providerBody.chipWorld = ' World'
+      providerBody.chipFilter = 'GPUWorld'
       providerBody.chipMaxData = 0
       providerBody.chipData = []
-      providerBody.chipLoad = false
+      providerBody.chipDataAll.all = []
+      providerBody.chipDataAll.memoryArray = []
+      providerBody.chipDataAll.storageArray = []
+      providerBody.chipOverview = true
       if (type) init()
       getOverview()
-      getHardwareMetricsTotal()
       getUBITotal()
       getUBITable()
       getTotal()
@@ -1372,41 +1504,49 @@ export default defineComponent({
       }
     ]
     function chipFilterMethod (val) {
-      chart.clear()
+      try { chart.clear() } catch{ }
       switch (val) {
         case 'GPU':
           drawChart(canadaData)
           worldChange('Canada')
           break;
+        case 'GPUWorld':
+          drawV1Chart(dataArr.value)
+          worldChange('World')
+          break;
         default:
-          drawV1Chart([])
+          drawV1Chart(dataArr.value)
           worldChange(val)
           break;
       }
     }
-    function worldChange (name) {
+    function findObjectByValue (array, field, value) {
+      return array.find(obj => obj[field] === value);
+    }
+    async function worldChange (name) {
       providerBody.chipWorld = name
-      switch (name) {
-        case 'Canada':
-          providerBody.chipData = providerBody.chipDataAll.caArray
-          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].hardware_quantity : 0
-          break;
-        case 'United States':
-          providerBody.chipData = providerBody.chipDataAll.usArray
-          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].hardware_quantity : 0
-          break;
+      let list = [], gpuList = []
+      let worldName = await system.$commonFun.acronymsMethod(name)
+      switch (worldName) {
         case 'Memory':
           providerBody.chipData = providerBody.chipDataAll.memoryArray
-          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].memory_amount : 0
+          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].value : 0
           break;
         case 'Storage':
           providerBody.chipData = providerBody.chipDataAll.storageArray
-          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].storage_amount : 0
+          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].value : 0
           break;
         default:
-          providerBody.chipData = []
-          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].hardware_quantity : 0
+          providerBody.chipData = providerBody.chipDataAll.all
+          providerBody.chipMaxData = providerBody.chipData.length > 0 ? providerBody.chipData[0].value : 0
           break;
+      }
+      const moduleContainer = document.querySelector('.cont-flex');
+      if (moduleContainer) {
+        moduleContainer.scrollTo({
+          top: 0,
+          // behavior: 'smooth',
+        });
       }
     }
     function resetMap () {
@@ -1550,7 +1690,8 @@ export default defineComponent({
             },
             data: dataArr,
             symbolSize: 8,
-            zlevel: 1
+            zlevel: 1,
+            animation: versionRef.value === 'v2' ? false : true,
           }
         ]
       })
@@ -1561,7 +1702,7 @@ export default defineComponent({
         chart.resize()
       })
       chart.on('click', function (params) {
-        // console.log(params.name)
+        // console.log(params)
         if (providerBody.chipFilter === 'GPU') worldChange(params.name)
       });
       chart.setOption({
@@ -1828,8 +1969,8 @@ export default defineComponent({
       system.$baseurl = `${process.env.VUE_APP_BASEAPI}${store.state.versionValue}/`
       // console.log(key, system.$baseurl)
       if (versionRef.value === 'v2') {
-        providerBody.chipFilter = 'GPU'
-        drawChart(canadaData)
+        drawV1Chart(dataArr.value)
+        worldChange('World')
         resetMap()
       } else networkInput.value = ''
       echartReset()
@@ -1859,7 +2000,7 @@ export default defineComponent({
       badgeIcon02,
       accessToken, expands, activeName, cpLoad,
       versionRef, dataArr,
-      handleSizeChange, handleCurrentChange, handleZKCurrentChange, searchProvider, searchZKProvider, clearProvider, expandChange, getRowKeys,
+      handleSizeChange, handleCurrentChange, handleZKCurrentChange, searchProvider, searchZKProvider, clearProvider, expandChange, expandV2Change, getRowKeys, getRowKeysV2,
       handleClick, handleSelect, versionMethod, roamMap, chipFilterMethod
     }
   }
@@ -1896,6 +2037,17 @@ export default defineComponent({
     width: 100%;
     margin: 0.1rem 0 0.3rem;
     line-height: 1;
+    &.m {
+      margin: 0.3rem 0 0;
+      :deep(.el-select) {
+        .el-select__wrapper {
+          width: 115px;
+          @media screen and (max-width: 1800px) {
+            width: 100px;
+          }
+        }
+      }
+    }
     h1 {
       margin: 0 0.15rem 0 0;
     }
@@ -1944,6 +2096,9 @@ export default defineComponent({
       margin: 0.35rem 0 0;
       border: 1px solid #3a67cf;
       border-radius: 0.14rem;
+      &.m {
+        margin: 0;
+      }
       .title.top {
         margin: 0;
         cursor: pointer;
@@ -2153,13 +2308,25 @@ export default defineComponent({
             background-color: #26272a;
             border-radius: 8px;
             z-index: 10;
+            &.overview {
+              left: auto;
+              right: 0.18rem;
+              font-size: 12px;
+              cursor: pointer;
+              transition: all 0.2s;
+              text-transform: capitalize;
+              &:hover {
+                background-color: #565658;
+              }
+            }
             .tool {
               width: 30px;
               height: 30px;
               margin: 0;
               border-radius: 4px;
               cursor: pointer;
-              &:hover {
+              &:hover,
+              &.active {
                 background-color: #0d0e12;
               }
               svg {
@@ -2186,6 +2353,7 @@ export default defineComponent({
           height: calc(100% - 0.35rem);
           margin: 0.35rem auto 0;
           flex-direction: column;
+          overflow: hidden;
           .chip-filter {
             height: 40px;
             .world-name {
@@ -2213,47 +2381,70 @@ export default defineComponent({
             height: calc(100% - 40px);
             margin: auto;
           }
-          .cont {
-            position: relative;
-            flex-direction: row;
-            width: calc(100% - 0.32rem);
-            padding: 0.07rem 0.16rem;
-            margin: 0.1rem 0 0;
-            font-size: 0.18rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            color: #fff;
-            z-index: 9;
+          .cont-flex {
+            height: 420px;
+            overflow-y: scroll;
+            scrollbar-width: none;
+            scrollbar-color: rgba(60, 70, 110, 0.6) rgba(13, 14, 18, 1);
+            @media screen and (max-width: 992px) {
+              height: 320px;
+            }
             @media screen and (max-width: 600px) {
-              padding: 0.12rem 0.16rem;
-              font-size: 12px;
+              height: 220px;
             }
-            .absolute {
-              position: absolute;
-              top: 0;
-              left: 0;
-              right: 0;
-              bottom: 0;
-              background: linear-gradient(
-                45deg,
-                rgba(60, 133, 255, 0),
-                #3c85ff
-              );
-              border-radius: 10px;
-              z-index: -1;
+            &::-webkit-scrollbar-track {
+              background: rgba(13, 14, 18, 1);
+              border-radius: 4px;
             }
-            .items-center {
-              .point {
-                width: 12px;
-                height: 12px;
-                background-color: #52555f;
-                border-radius: 100%;
+            &::-webkit-scrollbar {
+              width: 4px;
+              background: rgba(60, 70, 110, 0.6);
+            }
+            &::-webkit-scrollbar-thumb {
+              background: rgba(60, 70, 110, 0.6);
+            }
+            .cont {
+              position: relative;
+              flex-direction: row;
+              width: calc(100% - 0.32rem);
+              padding: 0.07rem 0.16rem;
+              margin: 0.1rem 0 0;
+              font-size: 0.18rem;
+              font-weight: 700;
+              letter-spacing: 1px;
+              color: #fff;
+              z-index: 9;
+              @media screen and (max-width: 600px) {
+                padding: 0.12rem 0.16rem;
+                font-size: 12px;
               }
-              .text-region {
-                margin: 0 0 0 0.11rem;
+              .absolute {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(
+                  45deg,
+                  rgba(60, 133, 255, 0),
+                  #3c85ff
+                );
+                border-radius: 10px;
+                z-index: -1;
               }
-            }
-            .text-data {
+              .items-center {
+                .point {
+                  width: 12px;
+                  height: 12px;
+                  background-color: #52555f;
+                  border-radius: 100%;
+                }
+                .text-region {
+                  margin: 0 0 0 0.11rem;
+                }
+              }
+              .text-data {
+              }
             }
           }
         }
@@ -2499,6 +2690,9 @@ export default defineComponent({
             // color: #333;
             // border-top: rgb(220, 223, 230) 1px solid;
             // border-bottom: rgb(220, 223, 230) 1px solid;
+            &.text-center {
+              text-align: center;
+            }
             .tit {
               margin: 0.2rem 0 0;
               font-size: 16px;
@@ -2525,7 +2719,6 @@ export default defineComponent({
               ul {
                 display: flex;
                 align-items: stretch;
-                justify-content: space-between;
                 flex-wrap: wrap;
                 margin: 0 auto 0.25rem;
                 @media screen and (max-width: 768px) {
