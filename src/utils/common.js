@@ -278,7 +278,7 @@ function debounce(fn, delay) {
 async function sign(config) {
   const rightnow = (Date.now() / 1000).toFixed(0)
   const sortanow = rightnow - (rightnow % 600)
-  const local = process.env.VUE_APP_DOMAINNAME
+  const local = store.state.networkValue === 'Proxima' ? process.env.VUE_APP_DOMAINNAME : process.env.VUE_APP_DOMAINNAME_MAINNET
   const buff = Buffer.from("Signing in to " + local + " at " + sortanow, 'utf-8')
   let signature = null
   let signErr = ''
