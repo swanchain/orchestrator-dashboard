@@ -25,13 +25,15 @@
                 <h6 class="flex-row flex-end">
                   <span class="t">Providers</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.cp ? system.$commonFun.replaceFormat(providerBody.data.total_online_computers+(providerBody.ubiData.cp.total||0)):'-'}}</b>
+                <b class="flex-row font-bold color" v-if="networkValue !== 'Mainnet'">{{providerBody.data && providerBody.ubiData.cp ? system.$commonFun.replaceFormat(providerBody.data.total_online_computers+(providerBody.ubiData.cp.total||0)):'-'}}</b>
+                <b class="flex-row font-bold color" v-else>{{providerBody.data ? system.$commonFun.replaceFormat(providerBody.data.total_online_computers):'-'}}</b>
               </div>
               <div class="flex-row">
                 <h6 class="flex-row flex-end">
                   <span class="t">Location</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.location ? system.$commonFun.replaceFormat(providerBody.data.total_cp_locations+(providerBody.ubiData.location.total || 0)):'-'}}</b>
+                <b class="flex-row font-bold color" v-if="networkValue !== 'Mainnet'">{{providerBody.data && providerBody.ubiData.location ? system.$commonFun.replaceFormat(providerBody.data.total_cp_locations+(providerBody.ubiData.location.total || 0)):'-'}}</b>
+                <b class="flex-row font-bold color" v-else>{{providerBody.data ? system.$commonFun.replaceFormat(providerBody.data.total_cp_locations):'-'}}</b>
               </div>
             </div>
           </el-col>
@@ -41,13 +43,15 @@
                 <h6 class="flex-row flex-end">
                   <span class="t">CPU</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.cpu ? system.$commonFun.replaceFormat(providerBody.data.total_cpu+(providerBody.ubiData.cpu.total||0)):'-'}}</b>
+                <b class="flex-row font-bold color" v-if="networkValue !== 'Mainnet'">{{providerBody.data && providerBody.ubiData.cpu ? system.$commonFun.replaceFormat(providerBody.data.total_cpu+(providerBody.ubiData.cpu.total||0)):'-'}}</b>
+                <b class="flex-row font-bold color" v-else>{{providerBody.data ? system.$commonFun.replaceFormat(providerBody.data.total_cpu):'-'}}</b>
               </div>
               <div class="flex-row">
                 <h6 class="flex-row flex-end">
                   <span class="t">GPU</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.gpu ? system.$commonFun.replaceFormat(providerBody.data.total_gpu+(providerBody.ubiData.gpu.total||0)):'-'}}</b>
+                <b class="flex-row font-bold color" v-if="networkValue !== 'Mainnet'">{{providerBody.data && providerBody.ubiData.gpu ? system.$commonFun.replaceFormat(providerBody.data.total_gpu+(providerBody.ubiData.gpu.total||0)):'-'}}</b>
+                <b class="flex-row font-bold color" v-else>{{providerBody.data ? system.$commonFun.replaceFormat(providerBody.data.total_gpu):'-'}}</b>
               </div>
             </div>
           </el-col>
@@ -57,13 +61,15 @@
                 <h6 class="flex-row flex-end">
                   <span class="t">Storage</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.storage ? system.$commonFun.sizeChange(providerBody.data.total_storage+(providerBody.ubiData.storage.total||0)):'-'}}</b>
+                <b class="flex-row font-bold color" v-if="networkValue !== 'Mainnet'">{{providerBody.data && providerBody.ubiData.storage ? system.$commonFun.sizeChange(providerBody.data.total_storage+(providerBody.ubiData.storage.total||0)):'-'}}</b>
+                <b class="flex-row font-bold color" v-else>{{providerBody.data ? system.$commonFun.sizeChange(providerBody.data.total_storage):'-'}}</b>
               </div>
               <div class="flex-row">
                 <h6 class="flex-row flex-end">
                   <span class="t">Memory</span>
                 </h6>
-                <b class="flex-row font-bold color">{{providerBody.data && providerBody.ubiData.memory ? system.$commonFun.sizeChange(providerBody.data.total_memory+(providerBody.ubiData.memory.total||0)):'-'}}</b>
+                <b class="flex-row font-bold color" v-if="networkValue !== 'Mainnet'">{{providerBody.data && providerBody.ubiData.memory ? system.$commonFun.sizeChange(providerBody.data.total_memory+(providerBody.ubiData.memory.total||0)):'-'}}</b>
+                <b class="flex-row font-bold color" v-else>{{providerBody.data ? system.$commonFun.sizeChange(providerBody.data.total_memory):'-'}}</b>
               </div>
             </div>
           </el-col>
@@ -208,7 +214,7 @@
         </el-row>
       </div>
 
-      <div class="border-row">
+      <div class="border-row" v-if="networkValue !== 'Mainnet'">
         <div class="title top flex-row space-between">
           ECP (Edge Computing Provider)
         </div>
@@ -536,7 +542,7 @@
 
       <div class="border-row">
         <div class="title top flex-row space-between">
-          Swan Proxima Chain
+          {{networkValue !== 'Mainnet' ? 'Swan Proxima Chain' : 'Swan Mainnet'}}
         </div>
         <el-row :gutter="16" :class="{'hide': providerBody.collapse.total}">
           <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
@@ -693,7 +699,7 @@
               </div>
             </el-col>
           </el-row>
-          <el-row :gutter="16" v-if="activeName === 'ZK-CP'" class="erchart-body" v-loading="cpLoad">
+          <el-row :gutter="16" v-if="activeName === 'ZK-CP' && networkValue !== 'Mainnet'" class="erchart-body" v-loading="cpLoad">
             <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
               <div class="erchart">
                 <div class="drain-time"></div>
@@ -785,6 +791,11 @@
                   <b v-if="providerBody.ubiData.providers">{{providerBody.ubiData.providers.gpu.total}}</b> Total
                 </h6>
               </div>
+            </el-col>
+          </el-row>
+          <el-row :gutter="16" v-if="activeName === 'ZK-CP' && networkValue === 'Mainnet'" class="erchart-body">
+            <el-col :xs="24" :xl="24">
+              <div class="coming-soon">Coming soon</div>
             </el-col>
           </el-row>
         </el-tabs>
@@ -1000,7 +1011,7 @@
         <el-pagination hide-on-single-page :page-size="pagin.pageSize" :current-page="pagin.pageNo" :pager-count="5" :small="small" :background="background" layout="total, prev, pager, next" :total="pagin.total" @size-change="handleSizeChange" @current-change="handleCurrentChange"
         />
       </div>
-      <div class="providers-cp" v-if="activeName === 'ZK-CP'">
+      <div class="providers-cp" v-if="activeName === 'ZK-CP' && networkValue !== 'Mainnet'">
         <div class="search-body flex">
           <el-input class="zk-input" v-model="networkZK.owner_addr" placeholder="Owner Addr" @chang="searchZKProvider" @input="searchZKProvider" />
           <el-input class="zk-input" v-model="networkZK.node_id" placeholder="Node ID" @chang="searchZKProvider" @input="searchZKProvider" />
@@ -1252,6 +1263,7 @@ export default defineComponent({
       providersTableLoad.value = false
     }
     async function getUBITable () {
+      if(networkValue.value === 'Mainnet') return
       providersTableLoad.value = true
       const page = paginZK.pageNo > 0 ? paginZK.pageNo - 1 : 0
       const params = {
@@ -1305,7 +1317,8 @@ export default defineComponent({
       })
       return l
     }
-    async function getUBITotal () {
+    async function getUBITotal() {
+      if(networkValue.value === 'Mainnet') return
       const statsRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_UBI}${store.state.versionValue}/stats`, 'get')
       if (statsRes && statsRes.code === 0 && statsRes.data) {
         providerBody.ubiData = statsRes.data || {}
@@ -1326,7 +1339,7 @@ export default defineComponent({
       } else providerBody.ubiData = {}
     }
     async function getTotal () {
-      const statsRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_STATS}v2/stats`, 'get')
+      const statsRes = await system.$commonFun.sendRequest(`${system.$statsurl}v2/stats`, 'get')
       if (statsRes) {
         providerBody.totalData.gas_used_today = statsRes.gas_used_today || ''
         providerBody.totalData.total_addresses = statsRes.total_addresses || ''
@@ -1337,7 +1350,7 @@ export default defineComponent({
       }
     }
     async function getCounters () {
-      const statsRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_STATS}v2/smart-contracts/counters`, 'get')
+      const statsRes = await system.$commonFun.sendRequest(`${system.$statsurl}v2/smart-contracts/counters`, 'get')
       if (statsRes) {
         providerBody.totalData.new_smart_contracts_24h = statsRes.new_smart_contracts_24h || ''
         providerBody.totalData.smart_contracts = statsRes.smart_contracts || ''
@@ -1956,7 +1969,8 @@ export default defineComponent({
     const echartReset = async () => {
       cpLoad.value = true
       await system.$commonFun.timeout(500)
-      if (activeName.value === 'ZK-CP') changeZKtype()
+      if(networkValue.value === 'Mainnet') return
+      else if (activeName.value === 'ZK-CP') changeZKtype()
       else changetype()
     }
     function handleSelect (key, keyPath) {
@@ -2600,6 +2614,12 @@ export default defineComponent({
                 margin: auto;
               }
             }
+          }
+          .coming-soon{
+            padding: 0.4rem 0;
+            font-size: 0.24rem;
+            color: #fff;
+            text-align: center;
           }
         }
       }
