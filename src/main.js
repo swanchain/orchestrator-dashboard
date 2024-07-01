@@ -1,5 +1,5 @@
 import {
-    createApp
+  createApp
 } from 'vue'
 import App from './App.vue'
 import router from './router'
@@ -18,10 +18,11 @@ app.config.globalProperties.$commonFun = commonFun
 app.config.globalProperties.$Qs = qs
 app.config.globalProperties.$baseurl = `${store.state.networkValue === 'Proxima' ? process.env.VUE_APP_BASEAPI : process.env.VUE_APP_BASEAPIMAINNET}${store.state.versionValue}/`
 app.config.globalProperties.$statsurl = `${store.state.networkValue === 'Proxima' ? process.env.VUE_APP_STATS : process.env.VUE_APP_STATS_MAINNET}`
+app.config.globalProperties.$loginurl = `${store.state.networkValue === 'Proxima' ? process.env.VUE_APP_BASELOGINAPI : process.env.VUE_APP_MAINNETLOGINAPI}`
 app.use(ElementPlus, {
-    locale: en,
+  locale: en,
 })
-    .use(i18n)
-    .use(store)
-    .use(router)
+  .use(i18n)
+  .use(store)
+  .use(router)
 app.mount('#app')
