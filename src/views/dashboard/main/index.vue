@@ -1969,7 +1969,7 @@ export default defineComponent({
     const echartReset = async () => {
       cpLoad.value = true
       await system.$commonFun.timeout(500)
-      if(networkValue.value === 'Mainnet') return
+      if(networkValue.value === 'Mainnet' && activeName.value === 'ZK-CP') cpLoad.value = false
       else if (activeName.value === 'ZK-CP') changeZKtype()
       else changetype()
     }
