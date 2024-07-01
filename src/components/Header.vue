@@ -249,7 +249,7 @@ export default defineComponent({
 
     async function createCom () {
       tokenShow.value = true
-      const listRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASELOGINAPI}api_token`, 'post')
+      const listRes = await system.$commonFun.sendRequest(`${system.$loginurl}api_token`, 'post')
       if (listRes && listRes.status === 'success') {
         system.$commonFun.messageTip('success', listRes.message ? listRes.message : 'Success!')
         store.dispatch('setAccessApiKey', listRes.data.token ?.token || '')
@@ -263,7 +263,7 @@ export default defineComponent({
       tokenShow.value = true
       let formData = new FormData()
       formData.append('api_token', tokenName)
-      const listRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASELOGINAPI}api_token/delete`, 'post', formData)
+      const listRes = await system.$commonFun.sendRequest(`${system.$loginurl}api_token/delete`, 'post', formData)
       if (listRes && listRes.status === 'success') {
         store.dispatch('setAccessApiKey', '')
         system.$commonFun.messageTip('success', listRes.message ? listRes.message : 'Delete successfully!')
@@ -276,7 +276,7 @@ export default defineComponent({
       toolData.value = ''
 
       try {
-        const keysRes = await system.$commonFun.sendRequest(`${process.env.VUE_APP_BASELOGINAPI}api_token`, 'get')
+        const keysRes = await system.$commonFun.sendRequest(`${system.$loginurl}api_token`, 'get')
 
         if (keysRes && keysRes.status === 'success') {
           // Assuming the 'data' field in response contains the required token

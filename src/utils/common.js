@@ -12,7 +12,7 @@ import { disconnect } from '@wagmi/core'
 let chainNetworkID = store.state.networkValue === 'Proxima' ? 20241133 : 254
 let lastTime = 0
 
-async function sendRequest (apilink, type, jsonObject, api_token) {
+async function sendRequest(apilink, type, jsonObject, api_token) {
   // signOutFun()
   // axios.defaults.timeout = 60000
   axios.defaults.headers.common['Authorization'] = `Bearer ${api_token ? api_token : store.state.accessToken}`
@@ -55,11 +55,11 @@ async function sendRequest (apilink, type, jsonObject, api_token) {
   }
 }
 
-async function timeout (delay) {
+async function timeout(delay) {
   return new Promise((resolve) => setTimeout(resolve, delay))
 }
 
-async function messageTip (type, text) {
+async function messageTip(type, text) {
   ElMessage({
     showClose: true,
     message: text,
@@ -67,7 +67,7 @@ async function messageTip (type, text) {
   })
 }
 
-function momentFun (dateItem) {
+function momentFun(dateItem) {
   let dateNew = dateItem * 1000
   let dataUnit = ''
   let dataTime = new Date(dateNew) + ''
@@ -93,7 +93,7 @@ function momentFun (dateItem) {
   return dateNew
 }
 
-function copyContent (text, tipCont) {
+function copyContent(text, tipCont) {
   var txtArea = document.createElement('textarea')
   txtArea.id = 'txt'
   txtArea.style.position = 'fixed'
@@ -119,7 +119,7 @@ function copyContent (text, tipCont) {
   }
   return false
 }
-async function Init (callback) {
+async function Init(callback) {
   if (typeof window.ethereum === 'undefined') {
     window.open('https://metamask.io/download.html')
     alert("Consider installing MetaMask!");
@@ -178,7 +178,7 @@ if (typeof window.ethereum === 'undefined') {
   web3Init = web3
 }
 
-async function walletChain (chainId) {
+async function walletChain(chainId) {
   let text = {}
   const currentID = await web3Init.eth.net.getId()
   switch (chainId) {
@@ -229,7 +229,7 @@ async function walletChain (chainId) {
   }
 }
 
-async function login (config) {
+async function login(config) {
   const chain_id = await web3Init.eth.net.getId()
   if (!store.state.metaAddress || store.state.metaAddress === undefined) {
     const accounts = await providerInit.request({
@@ -250,7 +250,7 @@ async function login (config) {
   return [!!token, '']
 }
 
-async function throttle () {
+async function throttle() {
   // Prevent multiple signatures
   let now = new Date().valueOf();
   if (lastTime > 0 && (now - lastTime) <= 2000) return false
@@ -258,7 +258,7 @@ async function throttle () {
   return true
 }
 
-function debounce (fn, delay) {
+function debounce(fn, delay) {
   if (typeof fn !== 'function') {
     throw new TypeError('Fn is not a function')
   }
@@ -275,7 +275,7 @@ function debounce (fn, delay) {
   };
 }
 
-async function sign (config) {
+async function sign(config) {
   const rightnow = (Date.now() / 1000).toFixed(0)
   const sortanow = rightnow - (rightnow % 600)
   const local = process.env.VUE_APP_DOMAINNAME
@@ -298,10 +298,10 @@ async function sign (config) {
   return [signature, signErr]
 }
 
-async function performSignin (sig) {
+async function performSignin(sig) {
   try {
     const reqOpts = [store.state.metaAddress, sig]
-    const response = await sendRequest(`${process.env.VUE_APP_BASELOGINAPI}login`, 'post', reqOpts)
+    const response = await sendRequest(`${store.state.networkValue === 'Proxima' ? process.env.VUE_APP_BASELOGINAPI : process.env.VUE_APP_MAINNETLOGINAPI}login`, 'post', reqOpts)
     if (response && response.access_token) {
       store.dispatch('setAccessApiKey', response.api_token || '')
       store.dispatch('setAccessToken', response.access_token)
@@ -317,7 +317,7 @@ async function performSignin (sig) {
   }
 }
 
-async function signOutFun (status) {
+async function signOutFun(status) {
   if (store.state.accessToken || status) {
     await disconnect(config.config)
     store.dispatch('setMetaAddress', '')
@@ -326,18 +326,18 @@ async function signOutFun (status) {
   store.dispatch('setSignature', '')
 }
 
-function hiddAddress (val) {
+function hiddAddress(val) {
   if (val) return `${val.substring(0, 5)}...${val.substring(val.length - 5)}`
   else return '-'
 }
 
-function expiredTime (validDays) {
+function expiredTime(validDays) {
   if (String(validDays) === '0') return 'Forever'
   else if (validDays === undefined) return '-'
   else return momentFun(validDays)
 }
 
-function sizeChange (bytes) {
+function sizeChange(bytes) {
   if (bytes === 0) return '0 B'
   if (!bytes) return '-'
   var k = 1024 // or 1000
@@ -348,7 +348,7 @@ function sizeChange (bytes) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
 
-function byteStorage (limit) {
+function byteStorage(limit) {
   if (limit <= 0) {
     return '0'
   } else {
@@ -356,38 +356,38 @@ function byteStorage (limit) {
   }
 }
 
-function storageNumformat (data) {
+function storageNumformat(data) {
   if (!data) return
   let dataList = data.split(' ')
   dataList[0] = parseFloat(dataList[0]).toFixed(2)
   return dataList[1] ? `${dataList[0]} ${dataList[1]}` : dataList[0]
 }
 
-function fixedformat (num1, num2) {
+function fixedformat(num1, num2) {
   if (!num1 || !num2) return 0
   let dataList = num1 / num2 * 100
   return parseFloat(dataList).toFixed(2)
 }
 
-function filNumformat (data) {
+function filNumformat(data) {
   if (!data) return
   const price_regular = data ? data.split(" ") : []
   return `${replaceFormat(price_regular[0] * 365)} FIL/GiB/year` || '0 FIL/GiB/year'
 }
 
-function cutsNumformat (data) {
+function cutsNumformat(data) {
   if (!data) return
   const num_regular = data ? data.split(" ") : []
   return num_regular[1] ? `${replaceFormat(num_regular[0])} ${replaceFormat(num_regular[1])}` : replaceFormat(num_regular[0])
 }
 
-function timeFormat (data) {
+function timeFormat(data) {
   if (!data) return 0
   const d = data / 60 / 60
   return d < 0.001 ? 0 : d
 }
 
-async function getUnit (id) {
+async function getUnit(id) {
   let unit = 'ETH'
   let name = ''
   let url = ''
@@ -428,11 +428,11 @@ async function getUnit (id) {
   })
 }
 
-function goLink (link) {
+function goLink(link) {
   window.open(link)
 }
 
-async function checkNetwork () {
+async function checkNetwork() {
   const getnetID = await web3Init.eth.net.getId()
   if (getnetID !== chainNetworkID) {
     walletChain(chainNetworkID)
@@ -440,7 +440,7 @@ async function checkNetwork () {
   } else return false
 }
 
-function NumFormat (num) {
+function NumFormat(num) {
   try {
     if (num) return parseFloat(num).toFixed(2)
     else return '-'
@@ -449,7 +449,7 @@ function NumFormat (num) {
   }
 }
 
-function replaceFormat (value) {
+function replaceFormat(value) {
   try {
     if (String(value) === '0') return '0'
     else if (!value) return '-'
@@ -463,7 +463,7 @@ function replaceFormat (value) {
   }
 }
 
-function floorFormat (num) {
+function floorFormat(num) {
   try {
     if (num) return Math.floor(parseFloat(num))
     else return '-'
@@ -472,7 +472,7 @@ function floorFormat (num) {
   }
 }
 
-function unifyNumber (num) {
+function unifyNumber(num) {
   if (!num) return 0
   const handleNum = parseFloat(num * 100)
   const isToFixed = handleNum.toString().includes('.') && handleNum.toString().split('.')[1].length > 2
@@ -484,7 +484,7 @@ function unifyNumber (num) {
   } else return handleNum
 }
 
-function AddFormat (num1, num2) {
+function AddFormat(num1, num2) {
   try {
     return parseFloat(num1) + parseFloat(num2)
   } catch {
@@ -492,12 +492,12 @@ function AddFormat (num1, num2) {
   }
 }
 
-async function sortBoole (arr) {
+async function sortBoole(arr) {
   if (!arr || (arr && arr.length === 0)) return []
   return arr.sort((a, b) => b.value - a.value)
 }
 
-async function acronymsMethod (name) {
+async function acronymsMethod(name) {
   switch (name) {
     case 'Malaysia':
       return 'MY'
