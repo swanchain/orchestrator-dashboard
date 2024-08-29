@@ -3,11 +3,11 @@
     <div class="flex-row item-label">
       <h1 class="color t">Swan Provider Status</h1>
 
-      <el-select v-if="networkValue !== 'Mainnet'" v-model="versionRef.value" placeholder="Select" size="small" @change="versionMethod">
+      <!-- <el-select v-if="networkValue !== 'Mainnet'" v-model="versionRef.value" placeholder="Select" size="small" @change="versionMethod">
         <el-option v-for="item in versionRef.options" :key="item.value" :label="item.value" :value="item.value">
           <div class="font-14">{{item.value}}</div>
         </el-option>
-      </el-select>
+      </el-select> -->
     </div>
     <div class="describe ">
       Use this status page to check an Swan Provider information and status.
